@@ -1,67 +1,67 @@
 # AI Quota Hub & Reset-Aware Multi-Provider Quota Scheduler
 
+🌐 **Language / Dil:** **English** | [Türkçe (README.tr.md)](README.tr.md)
+
 > **⚠️ Experimental / "As-Is" Community Release (PRs Welcome)**
 >
-> This project is a personal developer tool built to monitor live 5-hour and weekly quota windows across **Google Antigravity (`agy`)**, **Claude Code (`claude`)**, and **OpenAI Codex (`codex`)**, and to route multi-agent work packages without sudden quota exhaustion.
-> Because AI CLI tools and telemetry formats evolve rapidly, this repository is shared **"as-is"** without commercial support guarantees. Issues, forks, and Pull Requests from the community are warmly welcome!
+> **AI Quota Hub** is a local engineering & SCADA-style orchestration tool built to monitor live 5-hour and weekly quota windows across **Google Antigravity (`agy`)**, **Claude Code (`claude`)**, and **OpenAI Codex (`codex`)** at zero token cost, and to mathematically route multi-agent work packages without sudden quota exhaustion.
 >
-> *Bu proje; **Google Antigravity (`agy`)**, **Claude Code (`claude`)** ve **OpenAI Codex (`codex`)** üzerindeki 5 saatlik ve haftalık kota pencerelerini sıfır token maliyetiyle izlemek ve alt-ajan iş paketlerini kota patlaması yaşamadan matematiksel olarak yönlendirmek için geliştirilmiş kişisel bir mühendislik aracıdır. Sağlayıcı arayüzleri sık değiştiği için **"olduğu gibi" (as-is)** açık kaynak olarak paylaşılmıştır; topluluk katkıları (PR / Fork) memnuniyetle kabul edilir.*
+> Because AI CLI tools and telemetry formats evolve rapidly, this repository is shared **"as-is"** without commercial support guarantees. Issues, forks, and Pull Requests from the community are warmly welcome!
 
 ---
 
 ## 🎛️ SCADA / High-Performance HMI Single-Screen Dashboard
 
-The Web Dashboard (`http://127.0.0.1:8765`) is designed with a **SCADA / High-Performance HMI (L1 Overview + L2 Drill-Down Faceplates)** philosophy:
-- **Zero Vertical Page Scroll (`100vh`)**: All critical operational telemetry is visible at a single glance on **Screen 1 (`[1] 🎛️ L1 SCADA Genel Bakış`)**:
-  - **3 Provider Telemetry Units** (`AGY` dual pools `agy_gemini` + `agy_claude_gpt`, `Claude Code`, `OpenAI Codex`) with 5h/7d bars, Usable/Stranded ratios, Reset timers, and collapsible `[🔍 Modeller]` faceplates.
-  - **0–10 Provider Preference Sliders & Live SWRR Allocation Table** (`Target Share`, `Actual 24h Share`, `Sigma Band`, `Max Workers`, `Effort Policy`).
-  - **Live Running Processes (`Coordinators` & `Headless Workers`)** with automatic workspace resolution.
-  - **4 Quota Pools Live Matrix (`Usable` · `Stranded` · `Opportunity Cost Φ`)**, **Policy Doctor & Reserve Health LEDs**, and **6 One-Click L2 Faceplate Pushbuttons** (also accessible via keyboard shortcuts `1`–`7` and `ESC` to return to `L1`).
-- **Contextual `?` Help Guides on Every Panel**: Every card and table header includes a `?` button that opens an interactive explanation of its metrics, formulas, and practical usage.
+The Web Dashboard (`http://127.0.0.1:8765`) is built around a **SCADA / High-Performance HMI (L1 Overview + L2 Popup Faceplates)** design:
+- **Bilingual UI (`🌐 EN | TR`)**: Defaults to **English (`EN`)** with one-click live switching to **Turkish (`TR`)** in the top header bar.
+- **Zero Vertical Page Scroll (`100vh`)**: All 10 operational subsystems (Mode/Orchestrator, Live 5h/7d Quotas, 0–10 SWRR Provider Mix, Concurrency Limits, Live Processes & Autonomous Goal, Work Package Router, Reserves & Banked Resets, Policy Doctor, 4 Pools Math & Scorecard, Model Review & JSON API) are visible at a single glance on the **L1 Overview Grid**.
+- **Live Telemetry Hover Callout Popovers**: Hovering over any KPI row, provider card, SWRR row, or pool pill opens a live SCADA telemetry callout popup (`#scada-hover-popover`) with sub-model breakdowns, Usable/Stranded ratios, Huber cost profiles, and Policy Doctor audit results—without clicking.
+- **Centered Modal Faceplates (`🔍 Details` / `ESC`)**: Clicking any card's `🔍 Details` button opens its deep configuration & inspection faceplate as a centered modal overlay without shifting or scrolling the main screen.
+- **Contextual `?` Help Guides**: Every card and faceplate header includes a `?` button that explains its metrics, formulas, and practical usage in the active language (`EN` or `TR`).
 
 ---
 
-## Mimari & Dosya Yapısı (Architecture)
+## 🏗️ Architecture & Key Modules
 
-- [agy_collector.py](collectors/agy_collector.py): Yerel `language_server` sürecini, PID ve `--csrf_token` bilgisini yakalar; Connect Protocol üzerinden `GetUserStatus` RPC uç noktasına bağlanarak `Gemini` (`agy_gemini`) ve `Claude/GPT` (`agy_claude_gpt`) havuzlarının kotalarını ve `resetTime` sayaçlarını ayrıştırır.
-- [claude_collector.py](collectors/claude_collector.py): `~/.claude/` altındaki oturum/maliyet (`cost-state`, `total_tokens_reminder`) loglarını ve OAuth kullanım verilerini (`fh`: 5-saatlik, `sd`: 7-günlük) birleştirerek `haiku`, `sonnet` ve `opus` kotalarını normalize eder.
-- [codex_collector.py](collectors/codex_collector.py): `~/.codex/sessions/` altındaki en güncel `rollout-*.jsonl` dosyalarından ve kullanım uç noktasından `rate_limits` (`primary` 300dk, `secondary` 10080dk) ile `banked_resets` verilerini ayrıştırır.
-- [allocation.py](allocation.py): `0–10` sağlayıcı tercih sürgüleri (`preference_weights`), gerçek zamanlı kota erime hızı öğrenicisi (`BurnRateLearner`), sürdürülebilir havuz kapasitesi (`C(q)`), sigma bantları (`saver`, `economy`, `normal`) ve Smooth Weighted Round Robin (`step_swrr`) iş dağılım motoru.
-- [policy_doctor.py](policy_doctor.py): Orkestratör ve alt-ajan kurallarını (`~/.agents/`) haftada bir otomatik tarayan, model uygunluk ve kota koruma çelişkilerini yakalayan ve her mesajda yüklenen (`Always-Loaded`) kural dosyalarının token bütçesini / kompaktlık puanını (`0–100`) denetleyen **Policy Doctor** motoru (`GET /api/policy-doctor`, `POST /api/policy-doctor/run`).
-- [model_catalog.json](model_catalog.json) & [model_review.py](model_review.py): Kod dışına taşınmış kanonik model kataloğu, sıfır-LLM yerel model keşfi (`agy models`, `~/.codex/models_cache.json`, `models.dev`, `OpenRouter`), harmanlanmış fiyat oranı (`blended_price = 0.25·in + 0.75·out`) ve 14 günlük deneme (`probation`) karne özeti.
-- [orchestrator.py](orchestrator.py) & [scheduler.py](scheduler.py): Capability Floor (`LOW`, `MID`, `HIGH`), SWRR sağlayıcı seçimi, Cross-Family Independent Review, dinamik Codex Koordinatör Rezervi (`R_orch`) ve `%85 / %95` kota el değiştirme (handoff) kurallarını işletir.
-- [main.py](main.py): FastAPI sunucusu (`GET /api/quotas`, `POST /api/preferences`, `POST /api/limits`, `GET /api/policy-doctor`, `POST /api/policy-doctor/run`, `GET /api/models/review`, `POST /api/models/review/run`, `POST /api/models/decision`, `POST /api/orchestrator`, `POST /api/dispatch`, `POST /api/simulate`).
-- [static/index.html](static/index.html): SCADA HMI Tek Ekran (L1/L2) Web Dashboard arayüzü.
+- [collectors/agy_collector.py](collectors/agy_collector.py): Discovers the local Antigravity `language_server` process, PID, and `--csrf_token`, then queries the Connect Protocol `GetUserStatus` RPC endpoint to normalize both `Gemini` (`agy_gemini`) and `Claude/GPT` (`agy_claude_gpt`) quota pools and reset countdowns.
+- [collectors/claude_collector.py](collectors/claude_collector.py): Combines `~/.claude/` session/cost logs (`cost-state`, `total_tokens_reminder`) and OAuth usage windows (`fh`: 5-hour, `sd`: 7-day) into normalized `haiku`, `sonnet`, and `opus` metrics.
+- [collectors/codex_collector.py](collectors/codex_collector.py): Parses the latest `rollout-*.jsonl` files under `~/.codex/sessions/` and usage endpoints for `rate_limits` (`primary` 300m, `secondary` 10080m) and `banked_resets`.
+- [allocation.py](allocation.py): Implements `0–10` provider preference sliders (`preference_weights`), real-time empirical burn-rate learning (`BurnRateLearner`), sustainable pool capacity (`C(q)`), sigma bands (`saver`, `economy`, `normal`), and Smooth Weighted Round Robin (`step_swrr`) dispatch.
+- [policy_doctor.py](policy_doctor.py): Automated weekly/on-demand rule consistency & token-budget auditor (`~/.agents/`), checking cross-provider routing alignment, Anti-Spike protection, and `Always-Loaded` rule compaction score (`0–100`) (`GET /api/policy-doctor`, `POST /api/policy-doctor/run`).
+- [model_catalog.json](model_catalog.json) & [model_review.py](model_review.py): Externalized canonical model catalog, zero-LLM local model discovery (`agy models`, `~/.codex/models_cache.json`, `models.dev`, `OpenRouter`), blended price ratio (`0.25·in + 0.75·out`), and 14-day probation scorecard.
+- [orchestrator.py](orchestrator.py) & [scheduler.py](scheduler.py): Enforces Capability Floor (`LOW`, `MID`, `HIGH`), SWRR provider selection, Cross-Family Independent Review, dynamic Codex Continuity Reserve (`R_orch`), and `85% / 95%` quota handoff gates.
+- [main.py](main.py): FastAPI server (`GET /api/quotas`, `POST /api/preferences`, `POST /api/limits`, `GET /api/policy-doctor`, `POST /api/policy-doctor/run`, `GET /api/models/review`, `POST /api/models/review/run`, `POST /api/models/decision`, `POST /api/orchestrator`, `POST /api/dispatch`, `POST /api/simulate`).
+- [static/index.html](static/index.html): Single-Screen SCADA HMI Web Dashboard (`EN` default + `TR` option).
 
 ---
 
-## Hızlı Başlangıç (Quick Start)
+## 🚀 Quick Start
 
 ```powershell
-# 1. Bağımlılıkları yükle / Install dependencies
+# 1. Install dependencies
 pip install fastapi uvicorn httpx pydantic pytest
 
-# 2. Sunucuyu ve SCADA Web Dashboard'u başlat (http://127.0.0.1:8765)
+# 2. Start the server & SCADA Web Dashboard (http://127.0.0.1:8765)
 python cli.py serve --port 8765
 
-# 3. Komut satırından anlık normalize kotaları sorgula (GET /api/quotas formatında)
+# 3. Query normalized live quotas from the CLI (GET /api/quotas format)
 python cli.py status
 
-# 4. Policy Doctor kural çelişki ve kompaktlık denetimini çalıştır
+# 4. Run Policy Doctor rule consistency & compaction audit
 python policy_doctor.py
 
-# 5. Komut satırından bir iş paketini en uygun modele yönlendir
+# 5. Route a work package to the best eligible model from the CLI
 python cli.py route --task "WP-REV-01: Cross-family review" --kind review --implementer-family gemini
 
-# 6. Birim ve entegrasyon testlerini çalıştır
+# 6. Run the unit & integration test suite
 python -m pytest -v
 ```
 
 ---
 
-## Kişisel Çalışma Alanı Eşlemeleri (`owner-overrides/quota-hub.json`)
+## 🔧 Custom Workspace Aliases (`owner-overrides/quota-hub.json`)
 
-Canlı süreç toplayıcısı ([collectors/live_activity.py](collectors/live_activity.py)), kişisel proje isimlerini kod içinde barındırmaz. Kendi projeleriniz için `~/.agents/owner-overrides/quota-hub.json` dosyasında `workspace_aliases` ve `live_activity_pattern` tanımlayabilirsiniz:
+The live process collector ([collectors/live_activity.py](collectors/live_activity.py)) contains zero hardcoded personal project paths. You can define your own project aliases and process patterns in `~/.agents/owner-overrides/quota-hub.json`:
 
 ```json
 {
@@ -72,6 +72,14 @@ Canlı süreç toplayıcısı ([collectors/live_activity.py](collectors/live_act
 }
 ```
 
-## Lisans (License)
+---
 
-[MIT License](LICENSE)
+## ⚖️ License: GNU AGPLv3 + Commercial Dual-License
+
+This project is dual-licensed under the **GNU Affero General Public License v3.0 ([AGPL-3.0](LICENSE))** for open-source/community use and a **Commercial License** for proprietary enterprise/SaaS use:
+
+1. **Open-Source / Community Use (GNU AGPLv3)**:
+   - Free to use, study, modify, and contribute back.
+   - If you distribute modified versions or host/offer AI Quota Hub as a network service / SaaS / internal commercial platform to users, you **must** make your complete modified source code publicly available under AGPLv3.
+2. **Commercial / Proprietary License**:
+   - If your organization wishes to embed AI Quota Hub into a closed-source commercial product, enterprise platform, or SaaS offering without AGPLv3 copyleft obligations, please contact the copyright holder (**Onur Yıldız** via GitHub [@yildizonur07](https://github.com/yildizonur07)) to arrange a separate commercial license.

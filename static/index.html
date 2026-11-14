@@ -1129,7 +1129,7 @@
 
       <div class="header-controls">
         <!-- Persistent Operating Mode Selector -->
-        <div class="mode-switch-group" title="Seçilen mod quota_hub_state.json içinde kalıcı olarak saklanır">
+        <div class="mode-switch-group" title="Selected mode is persisted in quota_hub_state.json">
           <button id="btn-mode-endurance" class="mode-btn active-endurance" onclick="switchOperatingMode('endurance')">
             🛡️ ENDURANCE MODE
           </button>
@@ -1139,9 +1139,9 @@
         </div>
 
         <div class="orchestrator-selector">
-          <label for="orch-select">Koordinatör:</label>
+          <label for="orch-select">Coordinator:</label>
           <select id="orch-select" onchange="changeOrchestrator(this.value)">
-            <option value="auto">⚡ Auto (En Yüksek Kotalı HIGH Model)</option>
+            <option value="auto">⚡ Auto (Highest Quota HIGH Model)</option>
             <option value="claude-opus-5-5-medium">AGY · Claude Opus 5.5 (Med)</option>
             <option value="claude-opus-5-5">Claude Code · Opus 5.5 (Med)</option>
             <option value="gemini-4-argon-medium">AGY · Gemini 4 Argon (Med)</option>
@@ -1150,26 +1150,30 @@
         </div>
 
         <button class="btn btn-sm" onclick="refreshQuotas()">
-          <span>↻</span> Yenile (<span id="poll-countdown" class="mono">10s</span>)
+          <span>↻</span> Refresh (<span id="poll-countdown" class="mono">10s</span>)
         </button>
 
-        <button class="btn btn-sm" onclick="openScadaFaceplate('scada-json-section')" title="Canlı GET /api/quotas JSON Çıktısını Aç">
+        <button class="btn btn-sm" onclick="openScadaFaceplate('scada-json-section')" title="Open Live GET /api/quotas JSON Output">
           <span>📡</span> Raw JSON
         </button>
 
-        <button class="btn btn-sm" id="btn-toggle-scada-layout" onclick="toggleScadaLayout()" title="SCADA Tek Ekran (100vh) ile Klasik Görünüm arasında geçiş yap">
-          <span>🖥️</span> <span id="scada-layout-label">Tek Ekran: AÇIK</span>
+        <button class="btn btn-sm" id="btn-toggle-scada-layout" onclick="toggleScadaLayout()" title="Toggle between SCADA Single-Screen (100vh) and Classic Scroll View">
+          <span>🖥️</span> <span id="scada-layout-label">Single Screen: ON</span>
         </button>
 
-        <button class="btn btn-sm" id="btn-open-help" onclick="openHelpModal()" title="AI Quota Hub Kullanım Kılavuzu & Analiz Rehberi" style="border-color: rgba(56, 189, 248, 0.55); background: rgba(56, 189, 248, 0.12); color: #38bdf8; font-weight: 700;">
+        <button class="btn btn-sm" id="btn-lang-toggle" onclick="toggleLanguage()" title="Switch Language (English / Türkçe)" style="border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.1); color: #34d399; font-weight: 700;">
+          <span>🌐</span> <span id="lang-toggle-label">EN | TR</span>
+        </button>
+
+        <button class="btn btn-sm" id="btn-open-help" onclick="openHelpModal()" title="AI Quota Hub User Manual & Analysis Guide" style="border-color: rgba(56, 189, 248, 0.55); background: rgba(56, 189, 248, 0.12); color: #38bdf8; font-weight: 700;">
           <span style="display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: #38bdf8; color: #070a12; font-size: 0.72rem; font-weight: 800;">?</span>
-          <span>Rehber</span>
+          <span>Guide</span>
         </button>
       </div>
     </div>
 
     <!-- Hidden nav helper for backward-compatible test assertions -->
-    <nav class="scada-nav-bar" id="scada-nav-bar" aria-label="SCADA Ekran Seçici">
+    <nav class="scada-nav-bar" id="scada-nav-bar" aria-label="SCADA Screen Selector">
       <button type="button" id="scada-tab-l1" onclick="switchScadaScreen('l1')">L1</button>
     </nav>
   </header>
@@ -1183,22 +1187,22 @@
         <div class="pulse-dot"></div>
         <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
           <span id="active-mode-pill" class="badge badge-info" data-scada-tip="mode_pill">ENDURANCE MODE</span>
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('mode_and_sim')" title="Bu bölüm ne işe yarar? Detaylı açıklama için tıkla">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('mode_and_sim')" title="What does this section do? Click for detailed explanation">?</button>
           <span style="font-size: 0.73rem; color: var(--text-secondary);" id="active-mode-desc">
-            Uzun vadeli haftalık bütçeyi korur; ancak sıfırlanmasına az kalan ("stranded") kotaları agresif biçimde değerlendirir.
+            Protects multi-day weekly budget from early exhaustion while aggressively harvesting stranded quota before reset.
           </span>
-          <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Önerilen Koordinatör:</span>
-          <strong id="active-orch-name" class="mono" style="font-size: 0.8rem; color: var(--accent-blue); cursor: help;" data-scada-tip="orch_active">Yükleniyor...</strong>
+          <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Recommended Coordinator:</span>
+          <strong id="active-orch-name" class="mono" style="font-size: 0.8rem; color: var(--accent-blue); cursor: help;" data-scada-tip="orch_active">Loading...</strong>
           <span id="active-orch-reason" class="scada-detail-only" style="font-size: 0.72rem; color: var(--text-secondary);"></span>
         </div>
       </div>
 
       <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
-        <button type="button" class="btn btn-sm" style="padding: 0.18rem 0.55rem; font-size: 0.7rem;" onclick="toggleSimPresetBar()" title="Simülasyon ve stres testi senaryolarını göster/gizle">
-          🧪 Test Senaryoları ▾
+        <button type="button" class="btn btn-sm" style="padding: 0.18rem 0.55rem; font-size: 0.7rem;" onclick="toggleSimPresetBar()" title="Show/hide simulation and stress-test scenarios">
+          🧪 Test Scenarios ▾
         </button>
         <div class="preset-bar" id="sim-preset-bar" style="display: none;">
-          <button class="btn btn-sm" onclick="applySimulation('live')">🟢 Canlı Telemetri</button>
+          <button class="btn btn-sm" onclick="applySimulation('live')">🟢 Live Telemetry</button>
           <button class="btn btn-sm" style="border-color: rgba(168, 85, 247, 0.55); color: #c084fc;" onclick="applySimulation('banked_reset_harvest')">
             🎟️ Banked Reset Harvest
           </button>
@@ -1206,9 +1210,9 @@
             ⚡ Pre-Reset Harvest
           </button>
           <button class="btn btn-sm" style="border-color: rgba(245, 158, 11, 0.45); color: #fbbf24;" onclick="applySimulation('five_hour_bottleneck')">
-            🛑 5s Darboğazı
+            🛑 5h Bottleneck
           </button>
-          <button class="btn btn-sm" onclick="applySimulation('codex_exhausted')">🔴 Codex %96 Dolu</button>
+          <button class="btn btn-sm" onclick="applySimulation('codex_exhausted')">🔴 Codex 96% Used</button>
         </div>
       </div>
     </section>
@@ -1228,9 +1232,9 @@
           <div style="display: flex; gap: 0.3rem; align-items: center;">
             <span id="agy-conf-badge" class="badge badge-info">VERIFIED</span>
             <span id="agy-status-badge" class="badge badge-healthy">HEALTHY</span>
-            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-agy')" title="Alt model kotalarını ve RPC kaynağını aç">🔍 Detay</button>
-            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('card_agy')" title="AGY Kota Kartı & 2 Ayrı Havuz hakkında detaylı bilgi">?</button>
+            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-agy')" title="Open sub-model quotas and RPC source">🔍 Detail</button>
+            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
+            <button type="button" class="section-help-btn" onclick="openSectionHelp('card_agy')" title="Detailed info about AGY Quota Card & 2 Independent Pools">?</button>
           </div>
         </div>
 
@@ -1314,16 +1318,16 @@
           <div style="display: flex; gap: 0.3rem; align-items: center;">
             <span id="claude-conf-badge" class="badge badge-info">VERIFIED</span>
             <span id="claude-status-badge" class="badge badge-healthy">HEALTHY</span>
-            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-claude')" title="Alt model kotalarını ve 5s harcama detayını aç">🔍 Detay</button>
-            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('card_claude')" title="Claude Code Kota Kartı hakkında detaylı bilgi">?</button>
+            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-claude')" title="Open sub-model quotas and 5h spend details">🔍 Detail</button>
+            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
+            <button type="button" class="section-help-btn" onclick="openSectionHelp('card_claude')" title="Detailed info about Claude Code Quota Card">?</button>
           </div>
         </div>
 
         <div class="windows-box">
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">5-Saatlik (5h)</span>
+              <span class="window-title">5-Hour Window (5h)</span>
               <span class="window-value mono" id="claude-win-5h-txt">--%</span>
             </div>
             <div class="progress-track">
@@ -1333,7 +1337,7 @@
 
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Haftalık (7d Pool)</span>
+              <span class="window-title">Weekly Cap (7d Pool)</span>
               <span class="window-value mono" id="claude-win-7d-txt">--%</span>
             </div>
             <div class="progress-track">
@@ -1356,14 +1360,14 @@
             <span class="model-pill-val mono" id="claude-m-haiku">--%</span>
           </div>
           <div class="model-pill">
-            <span class="model-pill-name">5s Harcama</span>
+            <span class="model-pill-name">5h Spend</span>
             <span class="model-pill-val mono" id="claude-m-cost">$0.00</span>
           </div>
         </div>
 
         <div class="provider-footer">
           <span class="mono" id="claude-pool-meta">Usable: --%</span>
-          <span>Sıfırlanma: <strong id="claude-reset" class="mono">--:--:--</strong></span>
+          <span>Reset: <strong id="claude-reset" class="mono">--:--:--</strong></span>
         </div>
       </div>
 
@@ -1380,9 +1384,9 @@
           <div style="display: flex; gap: 0.3rem; align-items: center;">
             <span id="codex-conf-badge" class="badge badge-info">VERIFIED</span>
             <span id="codex-status-badge" class="badge badge-healthy">HEALTHY</span>
-            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-codex')" title="Alt model kotalarını ve Banked Reset detayını aç">🔍 Detay</button>
-            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('card_codex')" title="OpenAI Codex Kota Kartı hakkında detaylı bilgi">?</button>
+            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-codex')" title="Open sub-model quotas and Banked Reset details">🔍 Detail</button>
+            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
+            <button type="button" class="section-help-btn" onclick="openSectionHelp('card_codex')" title="Detailed info about OpenAI Codex Quota Card">?</button>
           </div>
         </div>
 
@@ -1429,7 +1433,7 @@
 
         <div class="provider-footer">
           <span class="mono" id="codex-pool-meta">Orch Rsv: --%</span>
-          <span>Sıfırlanma: <strong id="codex-reset" class="mono">--:--:--</strong></span>
+          <span>Reset: <strong id="codex-reset" class="mono">--:--:--</strong></span>
         </div>
       </div>
     </section>
@@ -1438,14 +1442,14 @@
     <section class="panel" id="policy-doctor-card" style="padding: 1.1rem 1.25rem; border-color: rgba(56, 189, 248, 0.35);">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🛡️</span> Policy Doctor &amp; Kurallar
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('policy_doctor')" title="Bu bölüm ne işe yarar? Detaylı açıklama için tıkla">?</button>
+          <span>🛡️</span> Policy Doctor &amp; Rules
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('policy_doctor')" title="What does this section do? Click for detailed explanation">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
           <span id="pd-overall-badge" class="badge badge-healthy" data-scada-tip="pd_checks">PASS</span>
-          <span id="pd-compaction-badge" class="badge badge-info" data-scada-tip="pd_tokens">KOMP: --/100</span>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('policy-doctor-card')" title="Tüm aktif kuralları, 5 denetim kalemini ve dosya/token tablosunu aç">🔍 Detay</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <span id="pd-compaction-badge" class="badge badge-info" data-scada-tip="pd_tokens">COMP: --/100</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('policy-doctor-card')" title="Open all active rules, 5 audit checks, and file/token budget table">🔍 Detail</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
@@ -1453,47 +1457,47 @@
       <div style="display: flex; flex-direction: column; gap: 0.32rem;">
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.3rem;">
           <div class="scada-kpi-mini" data-scada-tip="pd_checks" style="cursor: help;">
-            <span style="color: var(--text-muted);">Denetim:</span>
+            <span style="color: var(--text-muted);">Checks:</span>
             <strong class="mono" id="pd-kv-checks" style="color: var(--accent-emerald);">—</strong>
           </div>
           <div class="scada-kpi-mini" data-scada-tip="pd_tokens" style="cursor: help;">
-            <span style="color: var(--text-muted);">Prompt Yükü:</span>
+            <span style="color: var(--text-muted);">Prompt Load:</span>
             <strong class="mono" id="pd-kv-tokens" style="color: var(--accent-blue);">—</strong>
           </div>
         </div>
         <div class="scada-kpi-mini" data-scada-tip="pd_rules" style="cursor: help;">
-          <span style="color: var(--text-muted);">Haftalık Tarama:</span>
+          <span style="color: var(--text-muted);">Weekly Audit:</span>
           <span class="mono" id="pd-kv-dates" style="font-size: 0.65rem; color: var(--text-secondary);">—</span>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; margin-top: 0.1rem;">
-          <span class="mono" style="font-size: 0.65rem; color: var(--text-muted); cursor: help;" id="pd-schedule-info" data-scada-tip="pd_rules">4 Kural Grubu · Suggest-Only</span>
+          <span class="mono" style="font-size: 0.65rem; color: var(--text-muted); cursor: help;" id="pd-schedule-info" data-scada-tip="pd_rules">4 Rule Groups · Suggest-Only</span>
           <button class="btn btn-sm btn-primary" style="padding: 0.2rem 0.55rem; font-size: 0.68rem;" id="btn-run-policy-doctor" onclick="runPolicyDoctorNow()">
-            <span>🔍</span> Şimdi Denetle
+            <span>🔍</span> Audit Now
           </button>
         </div>
       </div>
 
-      <!-- Secondary Detail Content (Opened via 🔍 Detay Faceplate Modal) -->
+      <!-- Secondary Detail Content (Opened via 🔍 Detail Faceplate Modal) -->
       <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.5rem;">
         <div class="phase2-grid" style="align-items: start;">
           <!-- Left: Active Rules Summary (4 Digestible Cards) -->
           <div style="display: flex; flex-direction: column; gap: 0.6rem;">
             <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.03em;">
-              📋 Çalışma Öncesi &amp; Sırasında Geçerli Aktif Kurallar Özeti (`~/.agents`)
+              📋 Active Orchestrator &amp; Subagent Rules Summary (`~/.agents`)
             </div>
             <div id="pd-active-rules-grid" style="display: grid; grid-template-columns: 1fr; gap: 0.55rem;">
-              <div class="rules-cat-card"><div style="color: var(--text-muted); font-size: 0.76rem;">Yükleniyor...</div></div>
+              <div class="rules-cat-card"><div style="color: var(--text-muted); font-size: 0.76rem;">Loading...</div></div>
             </div>
           </div>
 
           <!-- Right: Policy Doctor Checks, Token Footprint & Compaction Suggestions -->
           <div style="display: flex; flex-direction: column; gap: 0.65rem;">
             <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.03em;">
-              🩺 Policy Doctor — Çelişki Tespiti &amp; Dosya Bütçesi / Kompaktlık Raporu
+              🩺 Policy Doctor — Contradiction Audit &amp; File Token Budget / Compaction Report
             </div>
 
             <div id="pd-checks-list" style="display: flex; flex-direction: column; gap: 0.42rem; font-size: 0.76rem;">
-              Yükleniyor...
+              Loading...
             </div>
 
             <div id="pd-proposals-box" style="display: flex; flex-direction: column; gap: 0.38rem; font-size: 0.74rem;">
@@ -1501,21 +1505,21 @@
 
             <div style="background: rgba(7, 10, 18, 0.55); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.74rem;">
               <div style="font-weight: 600; color: var(--text-secondary); margin-bottom: 0.45rem;">
-                📏 Dosya Bazlı Satır &amp; Token Bütçesi Tablosu (`DELEGATION.md`, `ROUTING.md`, `SKILL.md` vb.)
+                📏 Per-File Line &amp; Token Budget Table (`DELEGATION.md`, `ROUTING.md`, `SKILL.md`, etc.)
               </div>
               <div style="overflow-x: auto;">
                 <table class="candidates-table">
                   <thead>
                     <tr>
-                      <th>Dosya</th>
-                      <th>Tür</th>
-                      <th>Satır</th>
-                      <th>Tahmini Token / Bütçe</th>
-                      <th>Durum</th>
+                      <th>File</th>
+                      <th>Category</th>
+                      <th>Lines</th>
+                      <th>Est. Tokens / Budget</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody id="pd-files-tbody">
-                    <tr><td colspan="5">Yükleniyor...</td></tr>
+                    <tr><td colspan="5">Loading...</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1529,14 +1533,14 @@
     <section class="panel" id="provider-preference-card" style="padding: 1.1rem 1.25rem;">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🎚️</span> Tercihler (0–10) &amp; SWRR
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('preference_swrr')" title="Tercih Slider'ları ve SWRR İş Dağılımı hakkında detaylı bilgi">?</button>
+          <span>🎚️</span> Preferences (0–10) &amp; SWRR
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('preference_swrr')" title="Detailed info about Preference Sliders & SWRR Allocation">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
           <span id="pref-save-status" class="badge badge-info">SWRR</span>
           <button class="btn btn-sm" style="padding: 0.14rem 0.4rem; font-size: 0.65rem;" id="btn-cancel-prefs" onclick="cancelPreferenceSliders()">Cancel</button>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('provider-preference-card')" title="Tam 8 sütunlu SWRR dağılım ve kapasite tablosunu aç">🔍 Detay</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('provider-preference-card')" title="Open full 8-column SWRR allocation and capacity table">🔍 Detail</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
@@ -1589,7 +1593,7 @@
             </tr>
           </thead>
           <tbody id="allocation-table-body">
-            <tr><td colspan="8" style="color: var(--text-muted);">Yükleniyor...</td></tr>
+            <tr><td colspan="8" style="color: var(--text-muted);">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -1599,13 +1603,13 @@
     <section class="panel" id="limits-card" style="padding: 1.1rem 1.25rem;">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🔒</span> Eşzamanlılık Limitleri
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('concurrency_limits')" title="Eşzamanlı İşçi Tavanları (policy.json) hakkında detaylı bilgi">?</button>
+          <span>🔒</span> Concurrency Limits
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('concurrency_limits')" title="Detailed info about Concurrency Ceilings (policy.json)">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
           <span id="limits-save-status" class="badge badge-info">READY</span>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('limits-card')" title="Alt havuz limitlerini (limit-pool-*) ve policy.json yedek yollarını aç">🔍 Detay</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('limits-card')" title="Open per-pool ceilings (limit-pool-*) and policy.json backup paths">🔍 Detail</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
@@ -1616,15 +1620,15 @@
           <input type="number" id="limit-max-leaves" min="1" max="20" value="10" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
         </label>
         <label class="scada-kpi-mini" style="cursor: pointer;">
-          <span>AGY Tavan</span>
+          <span>AGY Cap</span>
           <input type="number" id="limit-prov-agy" min="0" max="20" value="6" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
         </label>
         <label class="scada-kpi-mini" style="cursor: pointer;">
-          <span>Claude Tavan</span>
+          <span>Claude Cap</span>
           <input type="number" id="limit-prov-claude" min="0" max="20" value="6" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
         </label>
         <label class="scada-kpi-mini" style="cursor: pointer;">
-          <span>Codex Tavan</span>
+          <span>Codex Cap</span>
           <input type="number" id="limit-prov-codex" min="0" max="20" value="6" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
         </label>
       </div>
@@ -1639,7 +1643,7 @@
 
       <!-- Secondary Detail Content: Per-Pool Ceilings & Backup Paths -->
       <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.55rem; border-top: 1px solid var(--border-subtle); padding-top: 0.65rem;">
-        <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-primary);">Havuz Bazlı Alt Tavanlar (`max_per_pool`)</div>
+        <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-primary);">Per-Pool Sub-Ceilings (`max_per_pool`)</div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 0.65rem; font-size: 0.74rem; color: var(--text-secondary);">
           <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
             <span>Pool: `agy_gemini`</span>
@@ -1669,35 +1673,35 @@
     <section id="scada-reserves-section">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🛡️</span> Codex Rezervi &amp; Banked
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('codex_reserve')" title="Dinamik Codex Koordinatör Rezervi hakkında detaylı bilgi">?</button>
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('banked_resets')" title="Codex Banked Resets & Fırsat Maliyeti hakkında detaylı bilgi">?</button>
+          <span>🛡️</span> Codex Reserve &amp; Banked
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('codex_reserve')" title="Detailed info about Dynamic Codex Coordinator Reserve">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('banked_resets')" title="Detailed info about Codex Banked Resets & Opportunity Cost">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
           <span id="codex-reserve-badge" class="badge badge-healthy" data-scada-tip="reserve_status">PROTECTED</span>
           <span id="banked-status-badge" class="badge badge-purple" data-scada-tip="banked_status">VERIFIED</span>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-reserves-section')" title="Tam Banked Reset kupon listesini, zamanlama analizini ve rezerv detaylarını aç">🔍 Detay</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-reserves-section')" title="Open full Banked Reset voucher list, timing analysis, and reserve details">🔍 Detail</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
       <!-- Primary L1 Info & Backlog Command -->
       <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1;">
         <div id="l1-reserve-mini-summary" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.28rem;">
-          <div class="scada-kpi-mini"><span>5s / 7g Rezerv:</span><strong class="mono" style="color: var(--accent-blue);">--% / --%</strong></div>
-          <div class="scada-kpi-mini"><span>Rutin Kodlama:</span><strong class="mono" style="color: #34d399;">--</strong></div>
+          <div class="scada-kpi-mini"><span>5h / 7d Reserve:</span><strong class="mono" style="color: var(--accent-blue);">--% / --%</strong></div>
+          <div class="scada-kpi-mini"><span>Routine Coding:</span><strong class="mono" style="color: #34d399;">--</strong></div>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.3rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 7px; padding: 0.28rem 0.45rem; margin-top: auto;">
           <label style="font-size: 0.66rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.22rem;">
-            <span>Görev:</span>
+            <span>Tasks:</span>
             <input type="number" id="backlog-tasks-input" min="0" max="50" value="4" style="width: 42px; padding: 0.12rem 0.25rem; font-size: 0.68rem;" />
           </label>
           <label style="font-size: 0.66rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.22rem;">
-            <span>Review:</span>
+            <span>Reviews:</span>
             <input type="number" id="backlog-reviews-input" min="0" max="30" value="2" style="width: 42px; padding: 0.12rem 0.25rem; font-size: 0.68rem;" />
           </label>
-          <button class="btn btn-sm btn-primary" style="padding: 0.16rem 0.45rem; font-size: 0.66rem;" onclick="updateBacklogSettings()">Güncelle</button>
+          <button class="btn btn-sm btn-primary" style="padding: 0.16rem 0.45rem; font-size: 0.66rem;" onclick="updateBacklogSettings()">Update</button>
         </div>
       </div>
 
@@ -1708,24 +1712,24 @@
             🎟️ Codex Banked Manual Resets &amp; Schedule-Shift Opportunity Cost
           </div>
           <div id="banked-reset-summary" style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.78rem;">
-            Yükleniyor...
+            Loading...
           </div>
           <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.55rem; margin-top: 0.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem;">
-            <div style="font-size: 0.72rem; color: var(--text-muted);">Manuel Doğrulama Fallback:</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Manual Verification Fallback:</div>
             <div style="display: flex; align-items: center; gap: 0.4rem;">
               <input type="number" id="manual-banked-count" min="0" max="10" value="3" style="width: 60px; padding: 0.2rem 0.4rem;" />
-              <button class="btn btn-sm" onclick="saveManualBankedOverride(true)">Manuel Kaydet</button>
-              <button class="btn btn-sm" onclick="saveManualBankedOverride(false)">Canlıya Dön</button>
+              <button class="btn btn-sm" onclick="saveManualBankedOverride(true)">Save Manual</button>
+              <button class="btn btn-sm" onclick="saveManualBankedOverride(false)">Use Live</button>
             </div>
           </div>
         </div>
 
         <div class="panel" style="padding: 0.9rem 1rem;">
           <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
-            🛡️ Dinamik Codex Koordinatör Rezervi (`R_orch`) &amp; Süreklilik Politikası
+            🛡️ Dynamic Codex Coordinator Reserve (`R_orch`) &amp; Continuity Policy
           </div>
           <div id="codex-reserve-summary" style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.78rem;">
-            Yükleniyor...
+            Loading...
           </div>
         </div>
       </div>
@@ -1735,26 +1739,26 @@
     <section class="panel" id="scada-processes-section" style="padding: 1rem 1.25rem;">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🖥️</span> Canlı Süreçler &amp; Hedef
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('live_processes')" title="Canlı Süreçler paneli hakkında detaylı bilgi">?</button>
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('project_goals')" title="Uzun Vadeli Hedef & Otonom Görev Üretimi hakkında detaylı bilgi">?</button>
+          <span>🖥️</span> Live Processes &amp; Goal
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('live_processes')" title="Detailed info about Live Processes panel">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('project_goals')" title="Detailed info about Long-Term Goal & Autonomous Task Generation">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
-          <span id="live-proc-summary" class="badge badge-info" data-scada-tip="proc_sessions">Taranıyor...</span>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-processes-section')" title="Tam süreç/PID listesini ve Otonom Uzun Vadeli Hedef formunu aç">🔍 Detay &amp; Hedef</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <span id="live-proc-summary" class="badge badge-info" data-scada-tip="proc_sessions">Scanning...</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-processes-section')" title="Open full process/PID list and Autonomous Long-Term Goal form">🔍 Detail &amp; Goal</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
       <!-- Primary L1 Summary & Goal Status (Zero Scroll) -->
       <div class="scada-l1-only" style="display: flex; flex-direction: column; gap: 0.28rem; flex: 1;">
         <div id="l1-proc-mini-summary" style="display: flex; flex-direction: column; gap: 0.22rem; font-size: 0.67rem;">
-          <div class="scada-kpi-mini" data-scada-tip="proc_sessions"><span>Aktif Oturumlar:</span><strong class="mono" style="color: var(--accent-blue);">Taranıyor...</strong></div>
-          <div class="scada-kpi-mini" data-scada-tip="proc_workers"><span>Arka Plan İşçileri:</span><strong class="mono" style="color: var(--text-secondary);">0 Worker</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="proc_sessions"><span>Active Sessions:</span><strong class="mono" style="color: var(--accent-blue);">Scanning...</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="proc_workers"><span>Background Workers:</span><strong class="mono" style="color: var(--text-secondary);">0 Workers</strong></div>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: auto; padding-top: 0.15rem;">
-          <span id="project-goals-badge" class="badge badge-info" style="font-size: 0.62rem; cursor: help;" data-scada-tip="proc_goals">STANDART KUYRUK MODU</span>
-          <button type="button" class="btn btn-sm" style="padding: 0.16rem 0.45rem; font-size: 0.66rem; border-color: rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="openScadaFaceplate('scada-processes-section')">🧭 Hedef Gir</button>
+          <span id="project-goals-badge" class="badge badge-info" style="font-size: 0.62rem; cursor: help;" data-scada-tip="proc_goals">STANDARD QUEUE MODE</span>
+          <button type="button" class="btn btn-sm" style="padding: 0.16rem 0.45rem; font-size: 0.66rem; border-color: rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="openScadaFaceplate('scada-processes-section')">🧭 Set Goal</button>
         </div>
       </div>
 
@@ -1763,18 +1767,18 @@
         <div id="live-activity-grid" style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 1rem;">
           <div>
             <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">
-              🎯 Orkestratör &amp; 💬 Doğrudan Sohbet Oturumları (`AGY` · `Claude` · `Codex`)
+              🎯 Orchestrator &amp; 💬 Direct Chat Sessions (`AGY` · `Claude` · `Codex`)
             </div>
             <div id="live-coordinators-list" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem;">
-              Yükleniyor...
+              Loading...
             </div>
           </div>
           <div>
             <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">
-              ⚙️ Arka Planda Koşan Subagent'lar &amp; İşçiler (`subagent` / `agy -p` / `codex exec`)
+              ⚙️ Background Subagents &amp; Headless Workers (`subagent` / `agy -p` / `codex exec`)
             </div>
             <div id="live-workers-list" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem;">
-              Yükleniyor...
+              Loading...
             </div>
           </div>
         </div>
@@ -1782,36 +1786,36 @@
         <!-- Orchestrator Long-Term Goal & Self-Replenishing Task Generator -->
         <div id="scada-goals-box" style="border-top: 1px solid var(--border-subtle); padding-top: 0.8rem; display: flex; flex-direction: column; gap: 0.6rem;">
           <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
-            🧭 Orkestratör Uzun Vadeli Hedef &amp; Otonom Görev Üretimi (Long-Term Goal &amp; Self-Replenish)
+            🧭 Orchestrator Long-Term Goal &amp; Autonomous Task Generation (Self-Replenish)
           </div>
           <div style="font-size: 0.74rem; color: var(--text-secondary);">
-            Boş bırakılırsa orkestratör yalnızca elindeki görev listesini tamamlar. Uzun vadeli hedef girildiğinde ise eldeki görevler bittiğinde hem mevcut uygulamayı değerlendirip iyileştirme görevleri hem de hedefe yönelik yeni özellik görevleri üretir.
+            When left empty, the orchestrator only completes the current task queue. When a long-term goal is set, it evaluates the project and generates new improvement/feature tasks once the queue empties.
           </div>
           <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem;">
             <div class="form-group">
-              <label for="goal-long-term-input">🎯 Uzun Vadeli Hedef (`long_term_goal`)</label>
-              <textarea id="goal-long-term-input" rows="2" placeholder="Örn: Uygulamayı kullanması kolay, görsel ve işitsel olarak göze çarpan bir hale getirip yayınlamak..."></textarea>
+              <label for="goal-long-term-input">🎯 Long-Term Goal (`long_term_goal`)</label>
+              <textarea id="goal-long-term-input" rows="2" placeholder="e.g. Polish the application UX/audio and prepare for public release..."></textarea>
             </div>
             <div class="form-group">
-              <label for="goal-short-term-input">⚡ Kısa Vadeli Odak (`short_term_goal` — İsteğe Bağlı)</label>
-              <textarea id="goal-short-term-input" rows="2" placeholder="Örn: Ses kalitesi, ilk 30 sn onboarding..."></textarea>
+              <label for="goal-short-term-input">⚡ Short-Term Focus (`short_term_goal` — Optional)</label>
+              <textarea id="goal-short-term-input" rows="2" placeholder="e.g. Audio engine latency, first 30s onboarding..."></textarea>
             </div>
           </div>
           <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;">
               <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-secondary); cursor: pointer;">
                 <input type="checkbox" id="goal-auto-evaluate" checked />
-                🔍 Mevcut Uygulamayı Değerlendir (`auto_evaluate_and_improve`)
+                🔍 Auto-Evaluate &amp; Improve (`auto_evaluate_and_improve`)
               </label>
               <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-secondary); cursor: pointer;">
                 <input type="checkbox" id="goal-auto-generate" checked />
-                ✨ Yeni Görev Grubu Üret (`auto_generate_new_tasks`)
+                ✨ Auto-Generate New Tasks (`auto_generate_new_tasks`)
               </label>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <span id="goal-save-status" style="font-size: 0.72rem; color: var(--text-muted);"></span>
-              <button class="btn btn-sm" onclick="clearProjectGoals()">Temizle (Standart Mod)</button>
-              <button class="btn btn-sm btn-primary" onclick="saveProjectGoals()">💾 Hedefi Kaydet &amp; Aktif Et</button>
+              <button class="btn btn-sm" onclick="clearProjectGoals()">Clear (Standard Mode)</button>
+              <button class="btn btn-sm btn-primary" onclick="saveProjectGoals()">💾 Save &amp; Activate Goal</button>
             </div>
           </div>
         </div>
@@ -1825,21 +1829,21 @@
     <section id="scada-router-section">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🚀</span> İş Paketi Yönlendirici
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('work_scheduler')" title="Reset-Aware İş Paketi Yönlendirici hakkında detaylı bilgi">?</button>
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('assignment_record')" title="Atama Kaydı & Matematiksel Çizelgeleme hakkında detaylı bilgi">?</button>
+          <span>🚀</span> Work Package Router
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('work_scheduler')" title="Detailed info about Reset-Aware Work Package Router">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('assignment_record')" title="Detailed info about Assignment Record & Mathematical Scheduling">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
           <span id="route-floor-badge" class="badge badge-healthy" style="font-size: 0.6rem; cursor: help;" data-scada-tip="router_summary">READY</span>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-router-section')" title="Tüm yönlendirme parametrelerini, CLI komutunu ve aday model sıralama tablosunu aç">🔍 Detay</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-router-section')" title="Open all routing parameters, CLI command, and candidate ranking table">🔍 Detail</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
       <!-- Primary L1 Dispatch Controls & Selected Model Output (Always Visible, Zero Scroll) -->
       <div style="display: flex; flex-direction: column; gap: 0.28rem; flex: 1;">
         <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 0.28rem;">
-          <input type="text" id="wp-task" value="WP-AUTH-01: JWT doğrulama middleware" style="padding: 0.22rem 0.45rem; font-size: 0.69rem;" title="Görev Başlığı (Work Package Title)" />
+          <input type="text" id="wp-task" value="WP-AUTH-01: JWT verification middleware" style="padding: 0.22rem 0.45rem; font-size: 0.69rem;" title="Work Package Title" />
           <select id="wp-kind" style="padding: 0.22rem 0.35rem; font-size: 0.69rem;" onchange="dispatchWorkPackage()">
             <option value="scan">scan (LOW)</option>
             <option value="extract">extract (LOW)</option>
@@ -1854,14 +1858,14 @@
         </div>
 
         <div class="scada-kpi-mini" data-scada-tip="router_summary" style="cursor: help;">
-          <span style="color: var(--text-muted);">Seçilen:</span>
+          <span style="color: var(--text-muted);">Selected:</span>
           <strong class="mono" id="res-model" style="color: var(--accent-emerald); font-size: 0.67rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">—</strong>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: auto;">
-          <span class="mono" style="font-size: 0.65rem; color: var(--accent-blue); cursor: help;" id="res-pred-cost" data-scada-tip="router_summary">Maliyet: —</span>
+          <span class="mono" style="font-size: 0.65rem; color: var(--accent-blue); cursor: help;" id="res-pred-cost" data-scada-tip="router_summary">Cost: —</span>
           <button class="btn btn-sm btn-primary" style="padding: 0.18rem 0.55rem; font-size: 0.68rem;" onclick="dispatchWorkPackage()">
-            <span>⚡</span> Hesapla &amp; Delege Et
+            <span>⚡</span> Route &amp; Dispatch
           </button>
         </div>
       </div>
@@ -1869,43 +1873,43 @@
       <!-- Secondary Detail Content: Full Parameters, Presets, CLI & Candidate Ranking Table -->
       <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.55rem; border-top: 1px solid var(--border-subtle); padding-top: 0.65rem;">
         <div class="preset-bar">
-          <span style="font-size: 0.73rem; color: var(--text-muted); align-self: center;">Hazır Paketler:</span>
-          <button class="btn btn-sm" onclick="fillPreset('scan')">🔍 Low: Scout Tarama</button>
-          <button class="btn btn-sm" onclick="fillPreset('implement')">🛠️ Mid: Modül İmplementasyonu</button>
-          <button class="btn btn-sm" onclick="fillPreset('review_gemini')">⚖️ High: Cross-Family Review (Gemini İşi)</button>
-          <button class="btn btn-sm" onclick="fillPreset('design')">🏛️ High: Mimari Tasarım</button>
+          <span style="font-size: 0.73rem; color: var(--text-muted); align-self: center;">Presets:</span>
+          <button class="btn btn-sm" onclick="fillPreset('scan')">🔍 Low: Scout Scan</button>
+          <button class="btn btn-sm" onclick="fillPreset('implement')">🛠️ Mid: Module Implementation</button>
+          <button class="btn btn-sm" onclick="fillPreset('review_gemini')">⚖️ High: Cross-Family Review (Gemini Code)</button>
+          <button class="btn btn-sm" onclick="fillPreset('design')">🏛️ High: Architecture Design</button>
         </div>
 
         <div class="form-grid">
           <div class="form-group">
-            <label for="wp-ambiguity">Belirsizlik (`ambiguity`)</label>
+            <label for="wp-ambiguity">Ambiguity (`ambiguity`)</label>
             <select id="wp-ambiguity">
-              <option value="low" selected>low (Net Spesifikasyon)</option>
-              <option value="med">med (Orta Belirsizlik)</option>
-              <option value="high">high (Yüksek Belirsizlik -> HIGH Floor)</option>
+              <option value="low" selected>low (Clear Specification)</option>
+              <option value="med">med (Moderate Ambiguity)</option>
+              <option value="high">high (High Ambiguity -> HIGH Floor)</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="wp-blast">Etki Alanı (`blast_radius`)</label>
+            <label for="wp-blast">Blast Radius (`blast_radius`)</label>
             <select id="wp-blast">
-              <option value="local">local (Tek Dosya / Lokal)</option>
-              <option value="module" selected>module (Modül İçi)</option>
-              <option value="cross-module">cross-module (Modüller Arası -> HIGH Floor)</option>
-              <option value="irreversible">irreversible (Geri Dönüşsüz -> HIGH Floor)</option>
+              <option value="local">local (Single File / Local)</option>
+              <option value="module" selected>module (Intra-Module)</option>
+              <option value="cross-module">cross-module (Cross-Module -> HIGH Floor)</option>
+              <option value="irreversible">irreversible (Irreversible -> HIGH Floor)</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="wp-dep">Bağımlılık Rolü (`dependency_role`)</label>
+            <label for="wp-dep">Dependency Role (`dependency_role`)</label>
             <select id="wp-dep">
-              <option value="leaf" selected>leaf (Uç Görev - Round DOWN)</option>
-              <option value="upstream">upstream (Kritik Üst Görev - Round UP -> HIGH)</option>
+              <option value="leaf" selected>leaf (Leaf Task - Round DOWN)</option>
+              <option value="upstream">upstream (Critical Upstream - Round UP -> HIGH)</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="wp-context">Bağlam İhtiyacı (`context_need`)</label>
+            <label for="wp-context">Context Need (`context_need`)</label>
             <select id="wp-context">
               <option value="pointer" selected>pointer (~32k token)</option>
               <option value="module">module (~128k token)</option>
@@ -1914,74 +1918,74 @@
           </div>
 
           <div class="form-group full">
-            <label for="wp-imp-family">Üretici Ailesi (`implementer_family` - Review için)</label>
+            <label for="wp-imp-family">Author Family (`implementer_family` - for Review)</label>
             <select id="wp-imp-family">
-              <option value="">Yok (Uygulanmaz)</option>
-              <option value="gemini">gemini (AGY Gemini üretti -> Farklı aile incelemeli)</option>
-              <option value="claude">claude (Claude üretti -> Farklı aile incelemeli)</option>
-              <option value="openai">openai (Codex üretti -> Farklı aile incelemeli)</option>
+              <option value="">None (Not Applicable)</option>
+              <option value="gemini">gemini (Authored by AGY Gemini -> Require Cross-Family)</option>
+              <option value="claude">claude (Authored by Claude -> Require Cross-Family)</option>
+              <option value="openai">openai (Authored by Codex -> Require Cross-Family)</option>
             </select>
           </div>
 
           <div class="form-group full">
-            <label for="wp-prompt">İşçi Komut Metni (`prompt` &amp; `edit_scope`)</label>
+            <label for="wp-prompt">Worker Prompt (`prompt` &amp; `edit_scope`)</label>
             <textarea id="wp-prompt" rows="2">Scope: src/auth/. Read contract in docs/spec.md, implement JWT verification middleware and run pytest tests/test_auth.py. Do not touch files outside src/auth/.</textarea>
           </div>
         </div>
 
         <label style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--text-secondary); cursor: pointer;">
           <input type="checkbox" id="wp-live-exec" />
-          Gerçek Headless CLI Alt Sürecini Başlat (`agy -p` / `claude -p` / `codex exec`)
+          Launch Real Headless CLI Subprocess (`agy -p` / `claude -p` / `codex exec`)
         </label>
 
         <div class="kv-grid">
           <div class="kv-item">
-            <div class="kv-label">Floor / Effort / Mod</div>
+            <div class="kv-label">Floor / Effort / Mode</div>
             <div class="kv-val mono" id="res-floor">—</div>
           </div>
           <div class="kv-item">
-            <div class="kv-label">Yedek Model (Fallback @95%)</div>
+            <div class="kv-label">Fallback Model (Fallback @95%)</div>
             <div class="kv-val mono" id="res-fallback" style="color: var(--accent-amber);">—</div>
           </div>
         </div>
 
         <div>
-          <div class="kv-label" style="margin-bottom: 0.25rem;">Reset-Aware Seçim Gerekçesi</div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Reset-Aware Selection Rationale</div>
           <div id="res-rationale" class="mono" style="font-size: 0.75rem; color: var(--text-secondary);">—</div>
         </div>
 
         <div>
-          <div class="kv-label" style="margin-bottom: 0.25rem;">Üretilen Headless CLI Komutu</div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Generated Headless CLI Command</div>
           <div id="res-cli" class="cli-box">agy --add-dir "..." --model gemini-3.8-flash-medium --print-timeout 4m -p="..."</div>
         </div>
 
         <div>
-          <div class="kv-label" style="margin-bottom: 0.25rem;">Aday Model Sıralaması (Dual-Window Feasibility &amp; Opportunity Cost)</div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Candidate Model Ranking (Dual-Window Feasibility &amp; Opportunity Cost)</div>
           <table class="candidates-table">
             <thead>
               <tr>
-                <th>Model &amp; Havuz</th>
+                <th>Model &amp; Pool</th>
                 <th>Tier</th>
-                <th>Kalan</th>
-                <th>Tahmini (5s/7g)</th>
-                <th>Skor</th>
-                <th>Matematiksel Nedenler</th>
+                <th>Remaining</th>
+                <th>Predicted (5h/7d)</th>
+                <th>Score</th>
+                <th>Mathematical Reasons</th>
               </tr>
             </thead>
             <tbody id="res-candidates-body">
-              <tr><td colspan="6" style="color: var(--text-muted); text-align: center;">Henüz yönlendirme yapılmadı.</td></tr>
+              <tr><td colspan="6" style="color: var(--text-muted); text-align: center;">No routing performed yet.</td></tr>
             </tbody>
           </table>
         </div>
 
         <div>
-          <div class="kv-label" style="margin-bottom: 0.25rem;">Elenecek / Reddedilen Modeller</div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Rejected / Filtered Models</div>
           <div id="res-rejected-box" class="mono" style="font-size: 0.72rem; color: var(--text-muted);">—</div>
         </div>
 
         <div>
-          <div class="kv-label" style="margin-bottom: 0.25rem;">Çalıştırma Çıktısı</div>
-          <div id="res-output" class="cli-box" style="color: #cbd5e1; border-color: var(--border-subtle);">Bekleniyor...</div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Execution Output</div>
+          <div id="res-output" class="cli-box" style="color: #cbd5e1; border-color: var(--border-subtle);">Waiting...</div>
         </div>
       </div>
     </section>
@@ -1990,14 +1994,14 @@
     <section class="panel" id="scada-math-section">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>📊</span> 4 Havuz Matematiği &amp; Karne
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('cost_learner_pools')" title="Empirik Kota Maliyet Öğrenici & Havuz Fırsat Maliyetleri hakkında detaylı bilgi">?</button>
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('agent_scorecard')" title="Canlı Ajan Performans Karnesi hakkında detaylı bilgi">?</button>
+          <span>📊</span> 4-Pool Math &amp; Scorecard
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('cost_learner_pools')" title="Detailed info about Empirical Cost Learner & Pool Opportunity Costs">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('agent_scorecard')" title="Detailed info about Live Agent Performance Scorecard">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
           <span id="learner-obs-badge" class="badge badge-info" style="font-size: 0.6rem; cursor: help;" data-scada-tip="scorecard_obs">0 OBS</span>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-math-section')" title="Tam 4 havuz tablosunu, Huber maliyet tahminlerini ve Ajan Performans Karnesini aç">🔍 Detay</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-math-section')" title="Open full 4-pool table, Huber cost predictions, and Agent Performance Scorecard">🔍 Detail</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
@@ -2006,14 +2010,14 @@
         <table class="candidates-table" style="font-size: 0.64rem;">
           <thead>
             <tr>
-              <th style="padding: 0.2rem 0.3rem;">Havuz</th>
-              <th style="padding: 0.2rem 0.3rem;">5s Net</th>
-              <th style="padding: 0.2rem 0.3rem;">7g Net</th>
+              <th style="padding: 0.2rem 0.3rem;">Pool</th>
+              <th style="padding: 0.2rem 0.3rem;">5h Net</th>
+              <th style="padding: 0.2rem 0.3rem;">7d Net</th>
               <th style="padding: 0.2rem 0.3rem;">Φ</th>
             </tr>
           </thead>
           <tbody id="scada-l1-pools-tbody">
-            <tr><td colspan="4" style="color: var(--text-muted);">Yükleniyor...</td></tr>
+            <tr><td colspan="4" style="color: var(--text-muted);">Loading...</td></tr>
           </tbody>
         </table>
       </div>
@@ -2023,39 +2027,39 @@
         <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.1rem;">
           <div>
             <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.45rem;">
-              4 Gerçek Kota Havuzu: Usable Before Reset · Stranded Ratio · Opportunity Cost (`Phi`)
+              4 Real Quota Pools: Usable Before Reset · Stranded Ratio · Opportunity Cost (`Phi`)
             </div>
             <table class="candidates-table">
               <thead>
                 <tr>
-                  <th>Havuz (`pool_id`)</th>
-                  <th>5s Usable / Stranded</th>
-                  <th>7g Usable / Stranded</th>
-                  <th>Phi (5s / 7g)</th>
+                  <th>Pool (`pool_id`)</th>
+                  <th>5h Usable / Stranded</th>
+                  <th>7d Usable / Stranded</th>
+                  <th>Phi (5h / 7d)</th>
                   <th>Confidence</th>
                 </tr>
               </thead>
               <tbody id="pool-math-tbody">
-                <tr><td colspan="5">Yükleniyor...</td></tr>
+                <tr><td colspan="5">Loading...</td></tr>
               </tbody>
             </table>
           </div>
           <div>
             <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.45rem;">
-              Görev Türüne Göre Tahmini Kota Tüketimi (Cold-Start Priors + Huber Empirical Blend)
+              Predicted Quota Burn by Task Type (Cold-Start Priors + Huber Empirical Blend)
             </div>
             <table class="candidates-table">
               <thead>
                 <tr>
-                  <th>Havuz</th>
-                  <th>Görev (`tier`/`kind`)</th>
-                  <th>5s Mean / Upper</th>
-                  <th>7g Mean / Upper</th>
-                  <th>Kaynak</th>
+                  <th>Pool</th>
+                  <th>Task (`tier`/`kind`)</th>
+                  <th>5h Mean / Upper</th>
+                  <th>7d Mean / Upper</th>
+                  <th>Source</th>
                 </tr>
               </thead>
               <tbody id="cost-learner-tbody">
-                <tr><td colspan="5">Yükleniyor...</td></tr>
+                <tr><td colspan="5">Loading...</td></tr>
               </tbody>
             </table>
           </div>
@@ -2064,26 +2068,26 @@
         <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.85rem;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
             <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary); text-transform: uppercase;">
-              🎯 Tekrarlamasız (No-Duplication) Canlı Ajan Performans Karnesi (`Automated Tests` vs `Feature Acceptance`)
+              🎯 No-Duplication Live Agent Performance Scorecard (`Automated Tests` vs `Feature Acceptance`)
             </div>
             <span class="badge badge-healthy" id="scorecard-policy-badge">NO DUPLICATE BENCHMARKING · IN-FLIGHT ONLY</span>
           </div>
           <table class="candidates-table">
             <thead>
               <tr>
-                <th>Kategori / Zorluk (`kind · tier · complexity`)</th>
-                <th>Ajan (`provider / model`)</th>
-                <th>Görev (`N`)</th>
-                <th>Otomatik Test % (`tests_passed`)</th>
-                <th>Gerçek Kabul % (`feature_accepted`)</th>
-                <th>Test-Kabul Sapması</th>
-                <th>Regresyon / Rework</th>
-                <th>Medyan Süre / 7g Maliyet</th>
-                <th>Empirik Kalite (`Q`)</th>
+                <th>Stratum (`kind · tier · complexity`)</th>
+                <th>Agent (`provider / model`)</th>
+                <th>Tasks (`N`)</th>
+                <th>Auto Test % (`tests_passed`)</th>
+                <th>Actual Acceptance % (`feature_accepted`)</th>
+                <th>Test-Accept Divergence</th>
+                <th>Regressions / Rework</th>
+                <th>Median Duration / 7d Cost</th>
+                <th>Empirical Quality (`Q`)</th>
               </tr>
             </thead>
             <tbody id="agent-scorecard-tbody">
-              <tr><td colspan="9">Henüz tamamlanmış görev gözlemi yok — gerçek görevler tamamlandıkça katman bazında dolacaktır.</td></tr>
+              <tr><td colspan="9">No completed task observations yet — populates per stratum as real tasks finish.</td></tr>
             </tbody>
           </table>
         </div>
@@ -2094,13 +2098,13 @@
     <section class="panel" id="model-review-card">
       <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🧪</span> Model Review &amp; Katalog
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('model_review')" title="Model Review & Fiyat/Performans Keşfi hakkında detaylı bilgi">?</button>
+          <span>🧪</span> Model Review &amp; Catalog
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('model_review')" title="Detailed info about Model Review & Price/Performance Discovery">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
           <span id="model-review-staleness-badge" class="badge badge-info" data-scada-tip="model_review_status" style="cursor: help;">FRESH</span>
-          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('model-review-card')" title="Model öneri tablosunu, probation listesini ve pahalı/elenen modelleri aç">🔍 Detay</button>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('model-review-card')" title="Open model proposals table, probation list, and excluded expensive models">🔍 Detail</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
 
@@ -2108,11 +2112,11 @@
       <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1;">
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.28rem; font-size: 0.68rem;">
           <label class="scada-kpi-mini" style="cursor: pointer;">
-            <span>Max Fiyat Oranı</span>
+            <span>Max Price Ratio</span>
             <input type="number" id="mr-max-price-ratio" step="0.1" min="0.1" max="50" value="2.0" style="width: 50px; padding: 0.12rem 0.28rem; font-size: 0.68rem;" />
           </label>
           <label class="scada-kpi-mini" style="cursor: pointer;">
-            <span>Probation Payı</span>
+            <span>Probation Share</span>
             <input type="number" id="mr-probation-share" step="0.05" min="0" max="1" value="0.10" style="width: 50px; padding: 0.12rem 0.28rem; font-size: 0.68rem;" />
           </label>
         </div>
@@ -2183,15 +2187,15 @@
     <section class="panel" id="scada-json-section">
       <div class="panel-header">
         <div class="panel-title">
-          <span>📡</span> Canlı `GET /api/quotas` Normalize JSON Özeti
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('raw_json')" title="Canlı GET /api/quotas JSON Özeti hakkında detaylı bilgi">?</button>
+          <span>📡</span> Live `GET /api/quotas` Normalized JSON Summary
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('raw_json')" title="Detailed info about Live GET /api/quotas JSON Summary">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <span class="mono" style="font-size: 0.75rem; color: var(--text-secondary);" id="last-updated-ts"></span>
-          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Close (ESC)</button>
         </div>
       </div>
-      <div id="raw-quotas-json" class="raw-json-drawer mono">Yükleniyor...</div>
+      <div id="raw-quotas-json" class="raw-json-drawer mono">Loading...</div>
     </section>
   </main>
 
@@ -2390,11 +2394,11 @@
           <div style="display: flex; align-items: center; gap: 0.7rem;">
             <span style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #0ea5e9, #6366f1); color: #fff; font-weight: 800; font-size: 0.95rem;">?</span>
             <div>
-              <div id="sec-help-title" style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">Bölüm Açıklaması</div>
-              <div id="sec-help-subtitle" style="font-size: 0.74rem; color: var(--text-secondary);">Detaylı kullanım ve metrik rehberi</div>
+              <div id="sec-help-title" style="font-size: 1rem; font-weight: 700; color: var(--text-primary);">Section Overview</div>
+              <div id="sec-help-subtitle" style="font-size: 0.74rem; color: var(--text-secondary);">Detailed usage and metrics guide</div>
             </div>
           </div>
-          <button class="btn btn-sm" onclick="closeSectionHelp()" style="border-color: rgba(244, 63, 94, 0.45); color: #fb7185;">✕ Kapat (ESC)</button>
+          <button class="btn btn-sm" onclick="closeSectionHelp()" style="border-color: rgba(244, 63, 94, 0.45); color: #fb7185;">✕ Close (ESC)</button>
         </div>
         <div id="sec-help-body" style="padding: 1.25rem 1.4rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.95rem; font-size: 0.83rem; line-height: 1.6; color: var(--text-primary);">
         </div>
@@ -2402,6 +2406,203 @@
     </div>
 
     <script>
+      let currentLang = (typeof localStorage !== 'undefined' && localStorage.getItem('scada_lang')) || 'en';
+      function trText(enStr, trStr) {
+        return currentLang === 'tr' ? trStr : enStr;
+      }
+
+      const SECTION_HELP_DOCS_EN = {
+        mode_and_sim: {
+          title: '🧭 Operating Mode (Endurance vs Sprint), Recommended Coordinator & Simulation Bar',
+          subtitle: 'Controls global quota burn strategy and stress-test simulation scenarios',
+          what: 'This top bar controls whether the orchestrator paces quota across multiple days (Endurance) or maximizes near-term throughput over the next few hours (Sprint), and recommends the healthiest HIGH-tier Coordinator model.',
+          metrics: [
+            '<strong>🛡️ ENDURANCE MODE (Default):</strong> Protects the 7-day weekly budget from early exhaustion while aggressively harvesting stranded quota that would otherwise expire unused.',
+            '<strong>⚡ SPRINT MODE:</strong> Maximizes near-term (5-hour) throughput by relaxing weekly conservation guards and routing to the strongest available models.',
+            '<strong>Recommended Coordinator:</strong> Displays the HIGH-tier model (Opus 5.5, Argon, GPT-6.1-Sol) with the healthiest dual-window quota.',
+            '<strong>Test Scenarios (Simulation Bar):</strong> Lets you test "What if Codex is 96% used?" or "Which model wins 2 hours before reset?" without burning real quota. Click <strong>🟢 Live Telemetry</strong> to return to real data.'
+          ],
+          action: 'Keep Endurance Mode active for multi-day development. Switch to Sprint Mode only when pushing an urgent deadline within a few hours.'
+        },
+        card_agy: {
+          title: '🟦 Google Antigravity (`agy`) Quota Card & 2 Independent Quota Pools',
+          subtitle: 'Zero-token live telemetry via local language_server.exe Connect RPC',
+          what: 'Although Antigravity (AGY) is a single IDE/CLI, it provides TWO completely independent quota pools. This card displays live 5-hour (5h) and weekly (7d) windows for both pools.',
+          metrics: [
+            '<strong>Pool 1: Gemini (`agy_gemini`):</strong> Quota for <code>Gemini 4 Argon</code> and <code>Gemini 4 Hydrogen / 3.8 Flash</code>.',
+            '<strong>Pool 2: Claude &amp; GPT (`agy_claude_gpt`):</strong> Quota for AGY-hosted <code>Claude Opus 5.5</code>, <code>Claude Sonnet 5.5</code>, and <code>GPT-OSS</code>. <em>Even if your Gemini pool is 100% exhausted, this second pool can be 100% available!</em>',
+            '<strong>Gem Usable &amp; Stranded:</strong> Net usable quota after safety buffers and the percentage of quota projected to expire unused at reset.'
+          ],
+          action: 'When the Gemini pool is busy, the orchestrator automatically shifts independent reviews or module implementation to the second AGY pool (`agy_claude_gpt`).'
+        },
+        card_claude: {
+          title: '🟧 Claude Code (`claude`) Quota Card',
+          subtitle: 'Live quota tracking from Anthropic OAuth usage API and local session logs',
+          what: 'Displays the shared 5-Hour Window (5h) and 7-Day Weekly Cap (7d Shared Pool) for your direct Claude Code CLI / Desktop subscription.',
+          metrics: [
+            '<strong>5-Hour Window (5h):</strong> Rolling short-term rate limit that starts with your first message and resets 5 hours later.',
+            '<strong>Weekly Cap (7d Pool):</strong> Shared 7-day budget across Sonnet 5.5, Opus 5.5, and Haiku 5.5.',
+            '<strong>Opus 5.5 (High) &amp; Sonnet 5.5 (Mid):</strong> Opus 5.5 is enabled for architecture design, independent code review (<code>reviewer</code>), and critical escalations (<code>advisor</code>); Sonnet 5.5 handles bounded implementation (<code>implementer</code>).'
+          ],
+          action: 'When the active Coordinator runs on Claude, the Anti-Pileup rule routes multi-turn implementation tasks to AGY or Codex pools whenever healthy.'
+        },
+        card_codex: {
+          title: '🟩 OpenAI Codex (`codex`) Quota Card',
+          subtitle: 'Live 5h/7d quota and Banked Reset tracking via chatgpt.com/backend-api/wham/usage',
+          what: 'Displays 5-hour and weekly quota windows for OpenAI Codex (GPT-6.1-Sol), plus accumulated manual full-reset vouchers (Banked Resets).',
+          metrics: [
+            '<strong>Primary 5h Window &amp; Weekly Cap:</strong> Short-term and 7-day remaining capacity for GPT-6.1-Sol.',
+            '<strong>Banked Resets:</strong> Count of applicable "Full reset (Weekly + 5 hr)" vouchers in your account.',
+            '<strong>Orch Rsv (Coordinator Reserve):</strong> Percentage of Codex quota protected from routine leaf workers so Codex remains available for planning and verification.'
+          ],
+          action: 'When Codex quota drops below the dynamic reserve threshold, routine coding tasks are automatically routed to AGY and Claude.'
+        },
+        policy_doctor: {
+          title: '🛡️ Orchestrator & Subagent Rules Summary + Policy Doctor (Weekly Auditor)',
+          subtitle: 'Digestible summary of active rules, automated contradiction detector, and prompt compaction analyzer',
+          what: 'Solves two needs: (1) Gives you a clean summary of all rules that the Orchestrator and subagents obey before and during work; (2) Automatically scans all rule files weekly (or on demand) to catch contradictions and token bloat.',
+          metrics: [
+            '<strong>Left Panel (Active Rules Summary):</strong> Lists live rules across 4 categories: Coordinator &amp; Pool Rules, Subagent Turn/Context/Resume Bounds, Independent Review &amp; 2-Attempt Breaker, and Anti-Spike Model Eligibility.',
+            '<strong>Right Panel (Policy Doctor Checks):</strong> Verifies <code>sync.ps1 -Check</code> parity, model gate consistency, subagent read-only tool bounds, and <code>policy.json</code> invariants (<code>PASS</code> / <code>WARN</code> / <code>FAIL</code>).',
+            '<strong>Always-Loaded Prompt &amp; Compaction Score (0–100):</strong> Measures total token footprint of always-loaded rule files and suggests concrete compactions without losing rule coverage.'
+          ],
+          action: 'After editing any rule or skill file, click <strong>"🔍 Audit Now"</strong> to verify zero contradictions or sync drift.'
+        },
+        preference_swrr: {
+          title: '🎚️ Provider Preference (0–10 Sliders) & Burn-Rate-Aware SWRR Allocation',
+          subtitle: 'Combines your personal provider preference sliders with live capacity and burn rates',
+          what: 'Lets you set your preferred weight (0–10) for each provider. The scheduler multiplies your slider weight by real-time remaining capacity and empirical burn rates (BurnRateLearner) using Smooth Weighted Round Robin (SWRR).',
+          metrics: [
+            '<strong>0–10 Sliders:</strong> Setting a slider to <code>0</code> disables automatic routing to that provider.',
+            '<strong>Target Share vs Actual 24h Share:</strong> Compares target task distribution against actual dispatches over the last 24 hours.',
+            '<strong>Sigma Band (<code>normal</code> · <code>economy</code> · <code>saver</code>):</strong> Automatically reduces concurrent workers and non-critical reasoning effort when quota burn outpaces time to reset.'
+          ],
+          action: 'Lower a provider slider to conserve its quota for later, or set it to 0 to pause routing to it.'
+        },
+        concurrency_limits: {
+          title: '🔒 Editable Concurrency Limits (`~/.agents/policy.json`)',
+          subtitle: 'Hard safety ceilings on concurrent subagent workers',
+          what: 'Lets you edit the hard concurrency ceilings (`~/.agents/policy.json`) directly from the dashboard.',
+          metrics: [
+            '<strong>Max Leaves (1..20):</strong> Maximum total concurrent leaf subagents across all providers (default: 10).',
+            '<strong>AGY / Claude / Codex Cap:</strong> Maximum concurrent workers per provider (default: 6).',
+            '<strong>Per-Pool Sub-Ceilings (`agy_gemini`, `agy_claude_gpt`, `claude_shared`, `codex_shared`):</strong> Maximum concurrent workers per individual quota pool.'
+          ],
+          action: 'Click <strong>Save Limits</strong> after adjusting ceilings; the server atomically backs up and updates <code>~/.agents/policy.json</code>.'
+        },
+        banked_resets: {
+          title: '🎟️ Codex Banked Manual Resets & Schedule-Shift Opportunity Cost',
+          subtitle: 'Expiration tracking and pre-expiry harvest optimization for Codex reset vouchers',
+          what: 'Tracks "Full reset (Weekly + 5 hr)" vouchers. Redeeming a voucher resets both 5h and 7d quota to 100% BUT shifts your weekly reset anchor to Now + 7 days.',
+          metrics: [
+            '<strong>Available Vouchers &amp; Expiry:</strong> Countdown until each voucher expires.',
+            '<strong>Schedule-Shift Opportunity Cost:</strong> Calculates natural weekly reset days lost if redeemed right now vs. harvesting current quota first.',
+            '<strong>🌾 Pre-Expiry Harvest Overlay:</strong> When a voucher is within 72h of expiring and real tasks exist in the queue, dynamically boosts Codex allocation so current quota is harvested before redemption.'
+          ],
+          action: 'The system never auto-redeems vouchers; it advises optimal timing so you never waste a natural reset.'
+        },
+        codex_reserve: {
+          title: '🛡️ Dynamic Codex Coordinator Reserve (`R_orch`) & Continuity',
+          subtitle: 'Dynamic shield preventing the primary coordinator from running out of quota mid-project',
+          what: 'Protects a dynamic percentage of Codex quota based on your active task and review backlog so Codex remains available for coordination and verification.',
+          metrics: [
+            '<strong>5-Hour &amp; Weekly Reserve (%):</strong> Quota percentage reserved exclusively for coordination and critical decisions.',
+            '<strong>Routine Coding Permission:</strong> Shows <code>ALLOWED</code> when Codex has surplus above the reserve, or <code>GUARDED</code> when routine coding is offloaded to AGY/Claude.',
+            '<strong>Tasks &amp; Reviews Inputs:</strong> Update your active backlog size to tighten or relax the reserve.'
+          ],
+          action: 'Increase the Tasks/Reviews counts during large multi-module milestones to preserve Codex capacity for final integration.'
+        },
+        live_processes: {
+          title: '🖥️ Live Running Processes on This Machine',
+          subtitle: 'Real-time X-ray of open AGY, Claude, and Codex sessions and background headless workers',
+          what: 'Displays all active AI processes (with PIDs, working directories, and busy/idle status) across two columns.',
+          metrics: [
+            '<strong>Left Column (🎯 Orchestrator &amp; 💬 Direct Chat Sessions):</strong> Lists open IDE/CLI sessions, their project directory (<code>cwd</code>), and whether they are actively thinking (<code>BUSY</code> / <code>IDLE</code>).',
+            '<strong>Right Column (⚙️ Background Subagents &amp; Headless Workers):</strong> Lists active subagent worker processes, their model, and task summary.'
+          ],
+          action: 'Quickly spot stuck background workers or sessions running in the wrong workspace directory.'
+        },
+        project_goals: {
+          title: '🧭 Orchestrator Long-Term Goal & Autonomous Task Generation',
+          subtitle: 'Self-replenishing goal engine when the immediate task backlog empties',
+          what: 'When a long-term goal is configured, instead of idling once the current task queue finishes, the orchestrator uses surplus quota to audit the project and generate new improvement tasks aligned with your goal.',
+          metrics: [
+            '<strong>🎯 Long-Term Goal (`long_term_goal`):</strong> Target end-state for the project.',
+            '<strong>⚡ Short-Term Focus (`short_term_goal`):</strong> Immediate sprint priority area.',
+            '<strong>🔍 Auto-Evaluate &amp; Improve:</strong> Runs read-only scouts/auditors to identify gaps.',
+            '<strong>✨ Auto-Generate New Tasks:</strong> Queues new bounded work packages toward the goal.'
+          ],
+          action: 'Click <strong>Clear (Standard Mode)</strong> if you want the orchestrator to stop as soon as the explicit task list finishes.'
+        },
+        work_scheduler: {
+          title: '🚀 Reset-Aware Work Package Router (Work Package Scheduler)',
+          subtitle: 'Mathematical model selector and headless CLI dispatcher based on task traits and live quotas',
+          what: 'Evaluates task kind, ambiguity, blast radius, and dependency role against live dual-window quotas to select the optimal provider/model and generate a ready-to-run CLI command.',
+          metrics: [
+            '<strong>Presets:</strong> 1-click presets for Scout Scan (Low), Module Implementation (Mid), Cross-Family Review, and Architecture Design (High).',
+            '<strong>Author Family (`implementer_family`):</strong> For <code>review</code> tasks, specifies which model family wrote the code so the router selects an independent family.',
+            '<strong>Launch Real Headless CLI Subprocess:</strong> When checked, executes the generated command live in the background.'
+          ],
+          action: 'Use this router anytime you want an instant mathematical recommendation and CLI command for a new task.'
+        },
+        assignment_record: {
+          title: '📋 Assignment Record & Mathematical Scheduling',
+          subtitle: 'Transparent decision report showing why the winning model was selected and why others were filtered',
+          what: 'Shows how every candidate model was scored across 5-hour and weekly windows, predicted quota cost, and fallback routing.',
+          metrics: [
+            '<strong>Selected Provider &amp; Pool:</strong> Winning model and quota pool.',
+            '<strong>Predicted Cost (5h / 7d):</strong> Estimated percentage points of 5h and 7d quota this task will consume.',
+            '<strong>Candidate Model Ranking Table:</strong> Ranks all eligible models by mathematical score.',
+            '<strong>Rejected / Filtered Models:</strong> Explains why ineligible models were excluded (e.g., below capability floor or quota exhausted).'
+          ],
+          action: 'Inspect "Rejected / Filtered Models" whenever you want to see why a specific model was skipped.'
+        },
+        cost_learner_pools: {
+          title: '📊 Empirical Quota Cost Learner (`QuotaCostLearner`) & Pool Opportunity Costs (`Phi`)',
+          subtitle: 'SQLite Huber-robust cost learner and 4-pool mathematical state',
+          what: 'Measures quota before and after real tasks to learn empirical token/quota burn per task type and computes each pool’s scarcity/opportunity cost (`Phi`).',
+          metrics: [
+            '<strong>Left Table (4 Real Quota Pools):</strong> Shows net <code>Usable</code> quota before reset, <code>Stranded</code> ratio (quota projected to expire unused), and opportunity cost (<code>Phi</code> — low means abundant/expiring soon, high means scarce).',
+            '<strong>Right Table (Predicted Quota Burn):</strong> Mean and upper-bound quota burn estimates for <code>implement</code> and <code>review</code> tasks per pool.'
+          ],
+          action: 'Prioritize pools with high <code>Stranded</code> ratio (&gt;35%) and low <code>Phi</code> (&lt;0.15) to harvest free capacity before reset.'
+        },
+        agent_scorecard: {
+          title: '🎯 No-Duplication Live Agent Performance Scorecard',
+          subtitle: 'Empirical quality scorecard measured from real in-flight tasks without duplicate benchmarking',
+          what: 'Instead of wasting quota running the same task twice, tracks the divergence between Automated Test Pass Rate and Actual Feature Acceptance Rate across real tasks.',
+          metrics: [
+            '<strong>Auto Test % (`tests_passed`):</strong> Percentage of tasks where unit tests passed.',
+            '<strong>Actual Acceptance % (`feature_accepted`):</strong> Percentage of tasks accepted by independent review / owner without rework.',
+            '<strong>Test-Accept Divergence:</strong> Flags models that pass superficial tests but fail real acceptance.',
+            '<strong>Empirical Quality (`Q`):</strong> Composite quality score (0.00–1.00) combining acceptance, speed, low rework, and zero regressions.'
+          ],
+          action: 'Compare empirical quality (`Q`) across strata to see which model performs best on your actual codebase.'
+        },
+        model_review: {
+          title: '🧪 Model Review — Discovery & Price/Performance Proposals (Suggest-Only)',
+          subtitle: 'Weekly catalog scanner that discovers new models, filters ultra-expensive spikes, and proposes candidates',
+          what: 'Scans provider catalogs, filters out models exceeding `max_price_ratio`, and presents price/performance candidates for owner approval. Operates strictly in Suggest-Only mode.',
+          metrics: [
+            '<strong>Max Price Ratio:</strong> Maximum blended $/Mtok ratio relative to the HIGH-tier reference (e.g., >2.0x is auto-excluded).',
+            '<strong>Probation Share (0..1):</strong> Share of eligible tasks (e.g., 0.10 = 10%) routed to a model on 14-day probation.',
+            '<strong>Approve / Probation / Reject:</strong> Approve directly, test on 14-day probation, or reject for 30 days.'
+          ],
+          action: 'Place promising new models on <strong>Probation</strong> (10% share) first, then promote to active once empirically proven.'
+        },
+        raw_json: {
+          title: '📡 Live `GET /api/quotas` Normalized JSON Summary',
+          subtitle: 'Live preview of the normalized JSON payload consumed by the Orchestrator and CLI tools',
+          what: 'Displays the normalized JSON response from `http://127.0.0.1:8765/api/quotas` read by the Orchestrator, Claude Code, Codex, and AGY before dispatching work.',
+          metrics: [
+            '<strong>operating_mode:</strong> Active mode (<code>endurance</code> or <code>sprint</code>).',
+            '<strong>providers:</strong> Live remaining quota fractions (0.0–1.0) and reset timers across all three providers.',
+            '<strong>codex_reserve &amp; orchestrator:</strong> Active coordinator and Codex continuity reserve.'
+          ],
+          action: 'Use this schema as a reference when integrating external scripts with Quota Hub.'
+        }
+      };
+
       const SECTION_HELP_DOCS = {
         mode_and_sim: {
           title: '🧭 Çalışma Modu (Endurance vs Sprint), Önerilen Koordinatör & Simülasyon Çubuğu',
@@ -2594,8 +2795,11 @@
         }
       };
 
+      let activeSectionHelpKey = null;
       function openSectionHelp(sectionKey) {
-        const doc = SECTION_HELP_DOCS[sectionKey];
+        activeSectionHelpKey = sectionKey;
+        const dict = currentLang === 'tr' ? SECTION_HELP_DOCS : SECTION_HELP_DOCS_EN;
+        const doc = dict[sectionKey] || SECTION_HELP_DOCS_EN[sectionKey];
         if (!doc) {
           openHelpModal();
           return;
@@ -2610,17 +2814,17 @@
           const metricsHtml = (doc.metrics || []).map(m => `<li style="margin-bottom: 0.35rem;">${m}</li>`).join('');
           bodyEl.innerHTML = `
             <div style="background: rgba(56, 189, 248, 0.09); border: 1px solid var(--border-highlight); border-radius: 10px; padding: 0.85rem 1.05rem;">
-              <div style="font-weight: 700; color: var(--accent-blue); margin-bottom: 0.25rem;">📌 Bu Bölüm Ne İşe Yarar?</div>
+              <div style="font-weight: 700; color: var(--accent-blue); margin-bottom: 0.25rem;">${trText('📌 What Does This Section Do?', '📌 Bu Bölüm Ne İşe Yarar?')}</div>
               <div style="color: var(--text-secondary); font-size: 0.82rem;">${doc.what}</div>
             </div>
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.9rem 1.05rem;">
-              <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">🔍 Ekrandaki Metrikler ve Kontrollerin Anlamı</div>
+              <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">${trText('🔍 Meaning of Metrics & Controls', '🔍 Ekrandaki Metrikler ve Kontrollerin Anlamı')}</div>
               <ul style="padding-left: 1.2rem; color: var(--text-secondary); font-size: 0.8rem; margin: 0;">
                 ${metricsHtml}
               </ul>
             </div>
             <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.32); border-radius: 10px; padding: 0.8rem 1.05rem;">
-              <div style="font-weight: 700; color: #34d399; margin-bottom: 0.2rem;">💡 Pratik Kullanım İpucu</div>
+              <div style="font-weight: 700; color: #34d399; margin-bottom: 0.2rem;">${trText('💡 Practical Tip', '💡 Pratik Kullanım İpucu')}</div>
               <div style="color: var(--text-secondary); font-size: 0.81rem;">${doc.action}</div>
             </div>
           `;
@@ -2681,14 +2885,14 @@
     }
 
     function formatSeconds(sec) {
-      if (sec === null || sec === undefined) return 'Pasif (0% kullanım)';
+      if (sec === null || sec === undefined) return trText('Inactive (0% used)', 'Pasif (0% kullanım)');
       const s = Math.max(0, parseInt(sec || 0, 10));
       const d = Math.floor(s / 86400);
       const h = Math.floor((s % 86400) / 3600);
       const m = Math.floor((s % 3600) / 60);
       const remS = s % 60;
       if (d > 0) {
-        return `${d}g ${h}s ${m}dk`;
+        return currentLang === 'tr' ? `${d}g ${h}s ${m}dk` : `${d}d ${h}h ${m}m`;
       }
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(remS).padStart(2, '0')}`;
     }
@@ -2716,7 +2920,7 @@
 
     function formatPct(remFraction) {
       if (remFraction === null || remFraction === undefined) return 'UNKNOWN';
-      return `%${Math.round(remFraction * 100)} kalan`;
+      return currentLang === 'tr' ? `%${Math.round(remFraction * 100)} kalan` : `${Math.round(remFraction * 100)}% rem`;
     }
 
     function updateBar(barId, txtId, remFraction, resetSec, blockedByWeekly, windowInactive) {
@@ -2728,7 +2932,7 @@
           bar.className = 'progress-fill fill-warning';
         }
         if (txt) {
-          txt.textContent = 'UNKNOWN (Canlı veri bekleniyor)';
+          txt.textContent = trText('UNKNOWN (Awaiting live telemetry)', 'UNKNOWN (Canlı veri bekleniyor)');
         }
         return;
       }
@@ -2740,12 +2944,14 @@
       }
       if (txt) {
         const timerStr = windowInactive
-          ? ' · ⏱Pasif (Başlamadı)'
+          ? trText(' · ⏱Inactive (Not started)', ' · ⏱Pasif (Başlamadı)')
           : ((resetSec !== undefined && resetSec !== null) ? ` · ⏱${formatSeconds(resetSec)}` : '');
         if (blockedByWeekly) {
-          txt.textContent = `Haftalık tavan doldu (%0 etkin)${timerStr}`;
+          txt.textContent = trText(`Weekly cap reached (0% effective)${timerStr}`, `Haftalık tavan doldu (%0 etkin)${timerStr}`);
         } else {
-          txt.textContent = `%${pctUsed} dolu · %${pctRem} kalan${timerStr}`;
+          txt.textContent = currentLang === 'tr'
+            ? `%${pctUsed} dolu · %${pctRem} kalan${timerStr}`
+            : `${pctUsed}% used · ${pctRem}% rem${timerStr}`;
         }
       }
     }
@@ -3038,13 +3244,19 @@
         btnSpr.className = 'mode-btn active-sprint';
         pill.className = 'badge badge-warning';
         pill.textContent = '⚡ SPRINT MODE (NEAR-TERM THROUGHPUT)';
-        desc.textContent = 'Yakın vadeli (5 saat) iş çıkarma hızını maksimize eder; yakında sıfırlanacak kotaları agresif biçimde eritir.';
+        desc.textContent = trText(
+          'Maximizes near-term (5-hour) throughput; aggressively burns soon-to-reset quotas.',
+          'Yakın vadeli (5 saat) iş çıkarma hızını maksimize eder; yakında sıfırlanacak kotaları agresif biçimde eritir.'
+        );
       } else {
         btnEnd.className = 'mode-btn active-endurance';
         btnSpr.className = 'mode-btn';
         pill.className = 'badge badge-info';
         pill.textContent = '🛡️ ENDURANCE MODE (SUSTAINED MULTI-DAY)';
-        desc.textContent = 'Çok günlü haftalık bütçeyi erken tükenmeye karşı korur; ancak sıfırlanmasına az kalan ("stranded") kotaları agresif biçimde hasat eder.';
+        desc.textContent = trText(
+          'Protects multi-day weekly budget from early exhaustion while aggressively harvesting stranded quota before reset.',
+          'Çok günlü haftalık bütçeyi erken tükenmeye karşı korur; ancak sıfırlanmasına az kalan ("stranded") kotaları agresif biçimde hasat eder.'
+        );
       }
 
       if (backlog) {
@@ -3077,10 +3289,10 @@
       if (badge) {
         if (g.active) {
           badge.className = 'badge badge-purple';
-          badge.textContent = '🎯 OTONOM HEDEF & GÖREV ÜRETİMİ AKTİF';
+          badge.textContent = trText('🎯 AUTONOMOUS GOAL & TASK GEN ACTIVE', '🎯 OTONOM HEDEF & GÖREV ÜRETİMİ AKTİF');
         } else {
           badge.className = 'badge badge-info';
-          badge.textContent = 'STANDART KUYRUK MODU';
+          badge.textContent = trText('STANDARD QUEUE MODE', 'STANDART KUYRUK MODU');
         }
       }
       if (!projectGoalsDirty) {
@@ -3090,13 +3302,13 @@
         if (genEl) genEl.checked = g.auto_generate_new_tasks !== false;
       }
       if (statusEl && g.updated_at && !projectGoalsDirty) {
-        statusEl.textContent = `Son kayıt: ${new Date(g.updated_at).toLocaleTimeString()}`;
+        statusEl.textContent = `${trText('Last saved:', 'Son kayıt:')} ${new Date(g.updated_at).toLocaleTimeString()}`;
       }
     }
 
     async function saveProjectGoals() {
       const statusEl = document.getElementById('goal-save-status');
-      if (statusEl) statusEl.textContent = 'Kaydediliyor...';
+      if (statusEl) statusEl.textContent = trText('Saving...', 'Kaydediliyor...');
       const payload = {
         long_term_goal: document.getElementById('goal-long-term-input')?.value ?? '',
         short_term_goal: document.getElementById('goal-short-term-input')?.value ?? '',
@@ -3112,11 +3324,11 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || `HTTP ${res.status}`);
         projectGoalsDirty = false;
-        if (statusEl) statusEl.textContent = '✅ Hedef kaydedildi!';
+        if (statusEl) statusEl.textContent = trText('✅ Goal saved!', '✅ Hedef kaydedildi!');
         renderQuotas(data);
       } catch (err) {
         console.error('saveProjectGoals error:', err);
-        if (statusEl) statusEl.textContent = `Hata: ${err.message || 'Kaydedilemedi'}`;
+        if (statusEl) statusEl.textContent = `${trText('Error:', 'Hata:')} ${err.message || 'Failed'}`;
       }
     }
 
@@ -3161,29 +3373,31 @@
       const chatCnt = live.active_chat_count ?? coords.filter(c => c.status === 'busy' && c.session_kind !== 'orchestrator').length;
       const workerCnt = live.active_worker_count || 0;
       if (procBadge) {
-        procBadge.textContent = `${orchCnt} Ork · ${chatCnt} Sohbet · ${workerCnt} Worker`;
+        procBadge.textContent = currentLang === 'tr'
+          ? `${orchCnt} Ork · ${chatCnt} Sohbet · ${workerCnt} Worker`
+          : `${orchCnt} Orch · ${chatCnt} Chat · ${workerCnt} Worker`;
       }
       const l1ProcMini = document.getElementById('l1-proc-mini-summary');
       if (l1ProcMini) {
-        const topCoord = coords[0] ? `${String(coords[0].provider || '').toUpperCase()} · ${coords[0].name}` : 'Açık oturum yok';
-        const topWorker = workers[0] ? `${String(workers[0].provider || '').toUpperCase()} · ${workers[0].model} (PID ${workers[0].pid})` : 'Çalışan subagent/worker yok';
+        const topCoord = coords[0] ? `${String(coords[0].provider || '').toUpperCase()} · ${coords[0].name}` : trText('No open sessions', 'Açık oturum yok');
+        const topWorker = workers[0] ? `${String(workers[0].provider || '').toUpperCase()} · ${workers[0].model} (PID ${workers[0].pid})` : trText('No active workers', 'Çalışan subagent/worker yok');
         l1ProcMini.innerHTML = `
-          <div class="scada-kpi-mini" data-scada-tip="proc_sessions" style="cursor:help;"><span style="color:var(--text-muted);">Oturum (${coords.length}):</span><strong class="mono" style="color:var(--accent-blue); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topCoord)}</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="proc_sessions" style="cursor:help;"><span style="color:var(--text-muted);">${trText('Sessions', 'Oturum')} (${coords.length}):</span><strong class="mono" style="color:var(--accent-blue); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topCoord)}</strong></div>
           <div class="scada-kpi-mini" data-scada-tip="proc_workers" style="cursor:help;"><span style="color:var(--text-muted);">Worker (${workerCnt}):</span><strong class="mono" style="color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topWorker)}</strong></div>
         `;
       }
       const coordEl = document.getElementById('live-coordinators-list');
       if (coordEl) {
         if (coords.length === 0) {
-          coordEl.innerHTML = `<div style="color: var(--text-muted);">Açık oturum bulunamadı.</div>`;
+          coordEl.innerHTML = `<div style="color: var(--text-muted);">${trText('No open sessions detected.', 'Açık oturum bulunamadı.')}</div>`;
         } else {
           coordEl.innerHTML = coords.map(c => {
             const isBusy = c.status === 'busy';
             const isOrch = c.session_kind === 'orchestrator';
             const badgeCls = isBusy ? 'badge-healthy' : 'badge-info';
             const kindBadge = isOrch
-              ? `<span class="badge badge-purple" style="font-size:0.65rem; padding:0.1rem 0.38rem;">🎯 ORKESTRATÖR</span>`
-              : `<span class="badge badge-info" style="font-size:0.65rem; padding:0.1rem 0.38rem;">💬 SOHBET</span>`;
+              ? `<span class="badge badge-purple" style="font-size:0.65rem; padding:0.1rem 0.38rem;">${trText('🎯 ORCHESTRATOR', '🎯 ORKESTRATÖR')}</span>`
+              : `<span class="badge badge-info" style="font-size:0.65rem; padding:0.1rem 0.38rem;">${trText('💬 CHAT', '💬 SOHBET')}</span>`;
             const prov = escapeHtml((c.provider || 'claude').toUpperCase());
             const pidTxt = c.pid ? `(PID ${escapeHtml(c.pid)})` : '';
             return `
@@ -3201,7 +3415,7 @@
       const workEl = document.getElementById('live-workers-list');
       if (workEl) {
         if (workers.length === 0) {
-          workEl.innerHTML = `<div style="color: var(--text-muted);">Şu an arka planda çalışan subagent veya headless CLI işçisi yok.</div>`;
+          workEl.innerHTML = `<div style="color: var(--text-muted);">${trText('No background subagents or headless CLI workers currently running.', 'Şu an arka planda çalışan subagent veya headless CLI işçisi yok.')}</div>`;
         } else {
           workEl.innerHTML = workers.map(w => `
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.45rem 0.65rem; display: flex; flex-direction: column; gap: 0.2rem;">
@@ -3291,14 +3505,14 @@
       const bankedObj = codex.banked_resets || {};
       document.getElementById('codex-m-banked').textContent = `${bankedObj.applicable_available_count ?? 0} Full Reset`;
       const cxRes = data.codex_reserve || {};
-      document.getElementById('codex-pool-meta').textContent = `Orch Rsv: %${cxRes.reserve_5h_pct ?? 0} (5s) / %${cxRes.reserve_weekly_pct ?? 0} (7g)`;
+      document.getElementById('codex-pool-meta').textContent = `Orch Rsv: %${cxRes.reserve_5h_pct ?? 0} (5h) / %${cxRes.reserve_weekly_pct ?? 0} (7d)`;
       document.getElementById('codex-reset').textContent = formatSeconds(codex.reset_in_sec);
 
       // Render Banked Resets Strategy Panel
       const br = data.banked_reset_strategy || {};
       const brBadge = document.getElementById('banked-status-badge');
       brBadge.className = getConfidenceBadgeClass(br.confidence);
-      brBadge.textContent = `${br.confidence || 'UNKNOWN'} · ${br.available_full_resets ?? 0} ADET`;
+      brBadge.textContent = `${br.confidence || 'UNKNOWN'} · ${br.available_full_resets ?? 0} ${trText('AVAIL', 'ADET')}`;
       const brEl = document.getElementById('banked-reset-summary');
       if (brEl) {
         const warningsHtml = (br.actionable_warnings || []).map(w => `
@@ -3311,16 +3525,15 @@
           return `
             <div class="mono" style="background: rgba(7,10,18,0.55); border: 1px solid ${expSoon ? 'rgba(245,158,11,0.45)' : 'var(--border-subtle)'}; border-radius: 6px; padding: 0.35rem 0.55rem; display: flex; justify-content: space-between; font-size: 0.72rem;">
               <span>${escapeHtml(it.credit_type)} <span style="color: var(--text-muted);">(${escapeHtml(String(it.id || '').slice(-8))})</span></span>
-              <span style="color: ${expSoon ? '#fbbf24' : '#34d399'};">Son Kullanma: ${formatSeconds(it.expires_in_sec)} (${escapeHtml(String(it.expires_at || '').slice(0, 10))})</span>
+              <span style="color: ${expSoon ? '#fbbf24' : '#34d399'};">${trText('Expires in:', 'Son Kullanma:')} ${formatSeconds(it.expires_in_sec)} (${escapeHtml(String(it.expires_at || '').slice(0, 10))})</span>
             </div>
           `;
         }).join('');
         const ho = br.harvest_overlay || {};
-        const tc = br.timing_comparison || {};
         const harvestBadgeHtml = ho.active ? `
           <div style="background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.5); border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.73rem; color: #34d399; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-            <span><strong>🌾 PRE-EXPIRY HARVEST OVERLAY ACTIVE:</strong> Codex görev tahsisi dinamik artırıldı (Boost: <strong>+${ho.allocation_boost_score ?? 0}</strong> · Rutin Rezerv Gevşetildi: <strong>%${Math.round((ho.min_coordination_reserve_5h || 0.05)*100)} 5s / %${Math.round((ho.min_coordination_reserve_weekly || 0.04)*100)} 7g</strong>)</span>
-            <span class="mono" style="font-size: 0.7rem; color: #a7f3d0;">Uygun Kuyruk: ${ho.suitable_queued_tasks_count ?? 0} görev · No-Filler Guard: ON</span>
+            <span><strong>🌾 PRE-EXPIRY HARVEST OVERLAY ACTIVE:</strong> ${trText('Codex allocation dynamically boosted', 'Codex görev tahsisi dinamik artırıldı')} (Boost: <strong>+${ho.allocation_boost_score ?? 0}</strong> · ${trText('Reserve Relaxed:', 'Rutin Rezerv Gevşetildi:')} <strong>%${Math.round((ho.min_coordination_reserve_5h || 0.05)*100)} 5h / %${Math.round((ho.min_coordination_reserve_weekly || 0.04)*100)} 7d</strong>)</span>
+            <span class="mono" style="font-size: 0.7rem; color: #a7f3d0;">${trText('Eligible Queue:', 'Uygun Kuyruk:')} ${ho.suitable_queued_tasks_count ?? 0} · No-Filler Guard: ON</span>
           </div>
         ` : '';
         const bannerHtml = br.comparative_timing_banner ? `
@@ -3331,8 +3544,8 @@
         ` : '';
         brEl.innerHTML = `
           <div style="display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
-            <span><strong>Mevcut Hak:</strong> <span class="mono" style="color: var(--accent-purple);">${br.available_full_resets ?? 0}x ${escapeHtml(br.credit_type || 'Full reset (Weekly + 5 hr)')}</span></span>
-            <span><strong>Talep Ağırlıklı Kayıp:</strong> <span class="mono" style="color: var(--accent-amber);">+${br.schedule_shift_days_lost ?? 0}g (OppCost=${br.effective_schedule_shift_opportunity_cost ?? 0})</span></span>
+            <span><strong>${trText('Available Credits:', 'Mevcut Hak:')}</strong> <span class="mono" style="color: var(--accent-purple);">${br.available_full_resets ?? 0}x ${escapeHtml(br.credit_type || 'Full reset (Weekly + 5 hr)')}</span></span>
+            <span><strong>${trText('Demand-Weighted Loss:', 'Talep Ağırlıklı Kayıp:')}</strong> <span class="mono" style="color: var(--accent-amber);">+${br.schedule_shift_days_lost ?? 0}d (OppCost=${br.effective_schedule_shift_opportunity_cost ?? 0})</span></span>
           </div>
           ${harvestBadgeHtml}
           ${bannerHtml}
@@ -3341,7 +3554,7 @@
             ${escapeHtml(br.recommendation || '')}
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-            ${itemsHtml || '<div style="color: var(--text-muted);">Aktif banked reset kaydı yok.</div>'}
+            ${itemsHtml || `<div style="color: var(--text-muted);">${trText('No active banked reset records.', 'Aktif banked reset kaydı yok.')}</div>`}
           </div>
         `;
       }
@@ -3361,8 +3574,8 @@
       const l1ReserveMini = document.getElementById('l1-reserve-mini-summary');
       if (l1ReserveMini) {
         l1ReserveMini.innerHTML = `
-          <div class="scada-kpi-mini" data-scada-tip="reserve_status" style="cursor:help;"><span style="color:var(--text-muted);">5s/7g Rsv:</span><strong class="mono" style="color:var(--accent-blue);">%${cxRes.reserve_5h_pct ?? 0} / %${cxRes.reserve_weekly_pct ?? 0}</strong></div>
-          <div class="scada-kpi-mini" data-scada-tip="banked_status" style="cursor:help;"><span style="color:var(--text-muted);">Kupon/Kod:</span><strong class="mono" style="color:${cxRes.routine_coding_allowed_on_codex ? '#34d399' : '#fbbf24'};">${br.available_full_resets ?? 0}x · ${cxRes.routine_coding_allowed_on_codex ? 'SERBEST' : 'KORUMALI'}</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="reserve_status" style="cursor:help;"><span style="color:var(--text-muted);">${trText('5h/7d Rsv:', '5s/7g Rsv:')}</span><strong class="mono" style="color:var(--accent-blue);">%${cxRes.reserve_5h_pct ?? 0} / %${cxRes.reserve_weekly_pct ?? 0}</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="banked_status" style="cursor:help;"><span style="color:var(--text-muted);">${trText('Voucher/Code:', 'Kupon/Kod:')}</span><strong class="mono" style="color:${cxRes.routine_coding_allowed_on_codex ? '#34d399' : '#fbbf24'};">${br.available_full_resets ?? 0}x · ${cxRes.routine_coding_allowed_on_codex ? trText('ALLOWED', 'SERBEST') : trText('GUARDED', 'KORUMALI')}</strong></div>
         `;
       }
       const rEl = document.getElementById('codex-reserve-summary');
@@ -3370,17 +3583,17 @@
         rEl.innerHTML = `
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
             <div class="kv-item">
-              <div class="kv-label">5-Saatlik Rezerv</div>
+              <div class="kv-label">${trText('5-Hour Reserve', '5-Saatlik Rezerv')}</div>
               <div class="kv-val mono" style="color: var(--accent-blue);">%${cxRes.reserve_5h_pct ?? 0}</div>
             </div>
             <div class="kv-item">
-              <div class="kv-label">Haftalık Rezerv</div>
+              <div class="kv-label">${trText('Weekly Reserve', 'Haftalık Rezerv')}</div>
               <div class="kv-val mono" style="color: var(--accent-indigo);">%${cxRes.reserve_weekly_pct ?? 0}</div>
             </div>
             <div class="kv-item">
-              <div class="kv-label">Rutin Kodlama İzni</div>
+              <div class="kv-label">${trText('Routine Coding', 'Rutin Kodlama İzni')}</div>
               <div class="kv-val mono" style="color: ${cxRes.routine_coding_allowed_on_codex ? '#34d399' : '#fbbf24'};">
-                ${cxRes.routine_coding_allowed_on_codex ? 'İZİN VERİLDİ' : 'KORUNUYOR (AGY/Claude Öncelikli)'}
+                ${cxRes.routine_coding_allowed_on_codex ? trText('ALLOWED', 'İZİN VERİLDİ') : trText('GUARDED (Prefer AGY/Claude)', 'KORUNUYOR (AGY/Claude Öncelikli)')}
               </div>
             </div>
           </div>
@@ -3411,6 +3624,7 @@
       // Sync L1 Command Deck 4-Pool Mini Matrix & Reserve KPIs
       const l1PoolsBody = document.getElementById('scada-l1-pools-tbody');
       if (l1PoolsBody) {
+        const strLbl = trText('str.', 'yan.');
         l1PoolsBody.innerHTML = Object.values(pools).map(ps => {
           const fh = ps.five_hour || {};
           const wk = ps.weekly || {};
@@ -3420,8 +3634,8 @@
           return `
             <tr data-scada-tip="pool_${escapeHtml(ps.pool_id)}" style="cursor:help;">
               <td class="mono" style="font-weight: 600; color: var(--accent-blue);">${escapeHtml(ps.pool_id)}</td>
-              <td class="mono">%${Math.round((fh.usable_before_reset || 0) * 100)} <span style="color: ${str5 >= 35 ? '#fbbf24' : 'var(--text-muted)'};">(${str5}% yan.)</span></td>
-              <td class="mono">%${Math.round((wk.usable_before_reset || 0) * 100)} <span style="color: ${str7 >= 35 ? '#fbbf24' : 'var(--text-muted)'};">(${str7}% yan.)</span></td>
+              <td class="mono">%${Math.round((fh.usable_before_reset || 0) * 100)} <span style="color: ${str5 >= 35 ? '#fbbf24' : 'var(--text-muted)'};">(${str5}% ${strLbl})</span></td>
+              <td class="mono">%${Math.round((wk.usable_before_reset || 0) * 100)} <span style="color: ${str7 >= 35 ? '#fbbf24' : 'var(--text-muted)'};">(${str7}% ${strLbl})</span></td>
               <td class="mono">Φ=${phiWk}</td>
             </tr>
           `;
@@ -3435,7 +3649,7 @@
       }
       const l1BnkEl = document.getElementById('l1-kpi-bnk');
       if (l1BnkEl) {
-        l1BnkEl.textContent = `${br.available_full_resets ?? 0} ADET (${br.confidence || 'OK'})`;
+        l1BnkEl.textContent = `${br.available_full_resets ?? 0} ${trText('AVAIL', 'ADET')} (${br.confidence || 'OK'})`;
       }
       const navLedRsv = document.getElementById('nav-led-rsv');
       if (navLedRsv) {
@@ -3446,7 +3660,7 @@
       const cl = data.cost_learning || {};
       const obsBadge = document.getElementById('learner-obs-badge');
       if (obsBadge) {
-        obsBadge.textContent = `${cl.measured_single_job_count ?? 0} MEASURED SINGLE-JOB · ${(cl.recent_observations || []).length} KAYIT`;
+        obsBadge.textContent = `${cl.measured_single_job_count ?? 0} MEASURED · ${(cl.recent_observations || []).length} ${trText('OBS', 'KAYIT')}`;
       }
       const clBody = document.getElementById('cost-learner-tbody');
       if (clBody) {
@@ -3467,7 +3681,7 @@
         const sc = cl.agent_scorecard || {};
         const strata = sc.by_category_and_complexity || [];
         if (strata.length === 0) {
-          scBody.innerHTML = `<tr><td colspan="9" style="color: var(--text-muted);">Henüz tamamlanmış görev gözlemi yok — gerçek görevler tamamlandıkça katman bazında dolacaktır (Sentetik duplikasyon yapılmaz).</td></tr>`;
+          scBody.innerHTML = `<tr><td colspan="9" style="color: var(--text-muted);">${trText('No completed task observations yet — populates per stratum as real tasks finish (zero synthetic duplication).', 'Henüz tamamlanmış görev gözlemi yok — gerçek görevler tamamlandıkça katman bazında dolacaktır (Sentetik duplikasyon yapılmaz).')}</td></tr>`;
         } else {
           const rows = [];
           for (const st of strata) {
@@ -3480,7 +3694,7 @@
                   <td class="mono">${escapeHtml(ag.tasks_evaluated)}</td>
                   <td class="mono" style="color: #34d399;">%${Math.round((ag.automated_test_pass_rate || 0) * 100)}</td>
                   <td class="mono" style="color: ${ag.actual_feature_acceptance_rate >= 0.8 ? '#34d399' : '#fbbf24'};">%${Math.round((ag.actual_feature_acceptance_rate || 0) * 100)}</td>
-                  <td class="mono" style="color: ${divPct > 0 ? '#f87171' : 'var(--text-secondary)'};">${divPct > 0 ? `+${divPct}% sapma` : '0% (Uyumlu)'}</td>
+                  <td class="mono" style="color: ${divPct > 0 ? '#f87171' : 'var(--text-secondary)'};">${divPct > 0 ? `+${divPct}% ${trText('div', 'sapma')}` : trText('0% (Aligned)', '0% (Uyumlu)')}</td>
                   <td class="mono">${ag.regressions_per_task ?? 0} reg / ${ag.rework_per_task ?? 0} rw</td>
                   <td class="mono">${ag.median_duration_sec ?? 0}s · %${ag.median_weekly_cost_pct ?? 0}</td>
                   <td class="mono" style="font-weight: 700;">${(ag.empirical_quality_score ?? 0).toFixed(2)}</td>
@@ -3534,7 +3748,7 @@
         }
       };
       document.getElementById('raw-quotas-json').textContent = JSON.stringify(briefSchemaPreview, null, 2);
-      document.getElementById('last-updated-ts').textContent = `Son güncelleme: ${new Date().toLocaleTimeString()}`;
+      document.getElementById('last-updated-ts').textContent = `${trText('Last updated:', 'Son güncelleme:')} ${new Date().toLocaleTimeString()}`;
     }
 
     async function refreshQuotas() {
@@ -3715,7 +3929,10 @@
       const promptEl = document.getElementById('wp-prompt');
 
       if (preset === 'scan') {
-        taskEl.value = 'WP-SCAN-01: Tüm API endpoint tanımlarını ve Pydantic şemalarını envanterle';
+        taskEl.value = trText(
+          'WP-SCAN-01: Inventory all FastAPI endpoint definitions and Pydantic schemas',
+          'WP-SCAN-01: Tüm API endpoint tanımlarını ve Pydantic şemalarını envanterle'
+        );
         kindEl.value = 'scan';
         ambEl.value = 'low';
         blastEl.value = 'local';
@@ -3724,7 +3941,10 @@
         famEl.value = '';
         promptEl.value = 'Read-only scout: list all FastAPI routes and return compact <=150 words inventory.';
       } else if (preset === 'implement') {
-        taskEl.value = 'WP-IMPL-02: Kota sıfırlanma sayacı ve 85% uyarı eşiği hesaplayıcısını uygula';
+        taskEl.value = trText(
+          'WP-IMPL-02: Implement quota reset countdown and 85% warning threshold calculator',
+          'WP-IMPL-02: Kota sıfırlanma sayacı ve 85% uyarı eşiği hesaplayıcısını uygula'
+        );
         kindEl.value = 'implement';
         ambEl.value = 'low';
         blastEl.value = 'module';
@@ -3733,7 +3953,10 @@
         famEl.value = '';
         promptEl.value = 'Implement threshold helper in collectors/ and verify unit tests pass.';
       } else if (preset === 'review_gemini') {
-        taskEl.value = 'WP-REV-03: Gemini tarafından yazılan modülün bağımsız Cross-Family incelemesi';
+        taskEl.value = trText(
+          'WP-REV-03: Independent Cross-Family review of module authored by Gemini',
+          'WP-REV-03: Gemini tarafından yazılan modülün bağımsız Cross-Family incelemesi'
+        );
         kindEl.value = 'review';
         ambEl.value = 'med';
         blastEl.value = 'module';
@@ -3742,7 +3965,10 @@
         famEl.value = 'gemini';
         promptEl.value = 'Independent Cross-Family Review (read-only): verify requirements and edge cases without implementer reasoning.';
       } else if (preset === 'design') {
-        taskEl.value = 'WP-ARCH-04: Çoklu sağlayıcı (Multi-Provider) durum makinesi ve checkpoint mimarisi';
+        taskEl.value = trText(
+          'WP-ARCH-04: Multi-Provider state machine and checkpoint handoff architecture',
+          'WP-ARCH-04: Çoklu sağlayıcı (Multi-Provider) durum makinesi ve checkpoint mimarisi'
+        );
         kindEl.value = 'design';
         ambEl.value = 'high';
         blastEl.value = 'cross-module';
@@ -3786,7 +4012,7 @@
         const rejs = routing.rejected_models || [];
         if (rejBox) {
           rejBox.innerHTML = rejs.length === 0
-            ? 'Elenen model yok.'
+            ? trText('No rejected models.', 'Elenen model yok.')
             : rejs.map(r => `• <strong>${escapeHtml(r.model_id)}</strong> (${escapeHtml(r.pool_id)}): ${escapeHtml(r.reason)}`).join('<br/>');
         }
 
@@ -3804,7 +4030,10 @@
         const pred = rec.predicted_cost || {};
         document.getElementById('res-model').textContent = `${rec.provider.toUpperCase()} · ${rec.model} (${rec.pool_id})`;
         document.getElementById('res-floor').textContent = `${rec.capability_floor} → ${rec.selected_tier} (${rec.reasoning_effort}) [${rec.operating_mode.toUpperCase()}]`;
-        document.getElementById('res-pred-cost').textContent = `%${pred.five_hour_pct_points ?? 0} (5s) / %${pred.weekly_pct_points ?? 0} (7g)`;
+        document.getElementById('res-pred-cost').textContent = trText(
+          `${pred.five_hour_pct_points ?? 0}% (5h) / ${pred.weekly_pct_points ?? 0}% (7d)`,
+          `%${pred.five_hour_pct_points ?? 0} (5s) / %${pred.weekly_pct_points ?? 0} (7g)`
+        );
         document.getElementById('res-fallback').textContent = rec.fallback_model;
         document.getElementById('res-rationale').textContent = rec.routing_rationale;
         document.getElementById('res-cli').textContent = rec.headless_cli;
@@ -3830,7 +4059,7 @@
         });
 
         if (exec) {
-          document.getElementById('res-output').textContent = exec.output || 'Tamamlandı.';
+          document.getElementById('res-output').textContent = exec.output || trText('Completed.', 'Tamamlandı.');
         }
       } catch (err) {
         console.error('Dispatch error:', err);
@@ -4136,19 +4365,20 @@
       const overall = String(data.overall_status || 'PASS').toUpperCase();
       const counts = data.counts || {};
       const comp = data.compaction || {};
-      const rules = (data.active_rules_summary || {}).categories || [];
+      const rulesSummary = data.active_rules_summary || {};
+      const rules = (currentLang === 'tr' && rulesSummary.categories_tr) ? rulesSummary.categories_tr : (rulesSummary.categories || []);
 
       const ovBadge = document.getElementById('pd-overall-badge');
       if (ovBadge) {
         ovBadge.className = overall === 'PASS' ? 'badge badge-healthy' : (overall === 'WARN' ? 'badge badge-warning' : 'badge badge-exhausted');
-        ovBadge.textContent = `${overall} · ${counts.pass ?? 0}/${counts.total ?? 5} KONTROL`;
+        ovBadge.textContent = trText(`${overall} · ${counts.pass ?? 0}/${counts.total ?? 5} CHECKS`, `${overall} · ${counts.pass ?? 0}/${counts.total ?? 5} KONTROL`);
       }
 
       const compBadge = document.getElementById('pd-compaction-badge');
       if (compBadge) {
         const score = comp.compaction_health_score ?? 100;
         compBadge.className = score >= 85 ? 'badge badge-info' : 'badge badge-warning';
-        compBadge.textContent = `KOMPAKTLIK: ${score}/100`;
+        compBadge.textContent = trText(`COMPACTION: ${score}/100`, `KOMPAKTLIK: ${score}/100`);
       }
 
       const l1KpiPd = document.getElementById('l1-kpi-pd');
@@ -4180,7 +4410,7 @@
       if (kvDates) {
         const lastStr = data.last_run_at ? new Date(data.last_run_at).toLocaleString() : '—';
         const nextStr = data.next_scheduled_run_at ? new Date(data.next_scheduled_run_at).toLocaleDateString() : '—';
-        kvDates.textContent = `${lastStr} (Sonraki: ${nextStr})`;
+        kvDates.textContent = trText(`${lastStr} (Next: ${nextStr})`, `${lastStr} (Sonraki: ${nextStr})`);
       }
 
       const rulesGrid = document.getElementById('pd-active-rules-grid');
@@ -4200,16 +4430,18 @@
         checksEl.innerHTML = (data.checks || []).map(chk => {
           const st = String(chk.status || 'PASS').toUpperCase();
           const bCls = st === 'PASS' ? 'badge-healthy' : (st === 'WARN' ? 'badge-warning' : 'badge-exhausted');
+          const cTitle = (currentLang === 'tr' && chk.title_tr) ? chk.title_tr : chk.title;
+          const cSummary = (currentLang === 'tr' && chk.summary_tr) ? chk.summary_tr : chk.summary;
           const detailsHtml = (chk.details || []).length > 0
             ? `<div class="mono" style="margin-top: 0.28rem; font-size: 0.7rem; color: #fca5a5;">${(chk.details || []).map(d => `• ${escapeHtml(d)}`).join('<br/>')}</div>`
             : '';
           return `
             <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem 0.7rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
-                <span style="font-weight: 600; color: var(--text-primary);">${escapeHtml(chk.title)}</span>
+                <span style="font-weight: 600; color: var(--text-primary);">${escapeHtml(cTitle)}</span>
                 <span class="badge ${bCls}">${escapeHtml(st)}</span>
               </div>
-              <div style="font-size: 0.73rem; color: var(--text-secondary); margin-top: 0.18rem;">${escapeHtml(chk.summary)}</div>
+              <div style="font-size: 0.73rem; color: var(--text-secondary); margin-top: 0.18rem;">${escapeHtml(cSummary)}</div>
               ${detailsHtml}
             </div>
           `;
@@ -4220,15 +4452,18 @@
       if (propBox) {
         const props = comp.proposals || [];
         if (props.length === 0) {
-          propBox.innerHTML = `<div style="color: #34d399; font-size: 0.73rem;">✨ Tüm kural dosyaları belirlenen token bütçesi içinde ve tekrarsız.</div>`;
+          propBox.innerHTML = `<div style="color: #34d399; font-size: 0.73rem;">${trText('✨ All rule files are within token budget and free of cross-file redundancy.', '✨ Tüm kural dosyaları belirlenen token bütçesi içinde ve tekrarsız.')}</div>`;
         } else {
-          propBox.innerHTML = props.map(p => `
+          propBox.innerHTML = props.map(p => {
+            const sug = (currentLang === 'tr' && p.suggestion_tr) ? p.suggestion_tr : p.suggestion;
+            return `
             <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 7px; padding: 0.45rem 0.65rem;">
               <span class="badge badge-info" style="margin-right: 0.35rem;">${escapeHtml(p.severity || 'TIP')}</span>
               <strong class="mono" style="color: var(--accent-blue);">${escapeHtml(p.target)}:</strong>
-              <span style="color: var(--text-secondary);">${escapeHtml(p.suggestion)}</span>
+              <span style="color: var(--text-secondary);">${escapeHtml(sug)}</span>
             </div>
-          `).join('');
+          `;
+          }).join('');
         }
       }
 
@@ -4264,7 +4499,7 @@
 
     async function runPolicyDoctorNow() {
       const btn = document.getElementById('btn-run-policy-doctor');
-      if (btn) btn.textContent = '⏳ Denetleniyor...';
+      if (btn) btn.textContent = trText('⏳ Auditing...', '⏳ Denetleniyor...');
       try {
         const res = await fetch('/api/policy-doctor/run', { method: 'POST' });
         if (res.ok) {
@@ -4274,18 +4509,18 @@
       } catch (err) {
         console.error('runPolicyDoctorNow error:', err);
       } finally {
-        if (btn) btn.innerHTML = '<span>🔍</span> Şimdi Denetle &amp; Kompaktlık Analizi Yap';
+        if (btn) btn.innerHTML = trText('<span>🔍</span> Audit Now &amp; Run Compaction Analysis', '<span>🔍</span> Şimdi Denetle &amp; Kompaktlık Analizi Yap');
       }
     }
 
     const SCADA_SCREEN_TITLES = {
-      l1: 'L1: SCADA ANA GENEL BAKIŞ (SINGLE-SCREEN OVERVIEW)',
-      policy: 'L2 [2]: ORKESTRATÖR & ALT AJAN KURALLARI ÖZETİ + POLICY DOCTOR',
-      router: 'L2 [3]: RESET-AWARE İŞ PAKETİ YÖNLENDİRİCİ & ATAMA KAYDI',
-      math: 'L2 [4]: 4 KOTA HAVUZU MATEMATİĞİ (PHI/STRANDED) & CANLI AJAN KARNESİ',
-      reserves: 'L2 [5]: EŞZAMANLILIK LİMİTLERİ, CODEX REZERVİ, BANKED RESETS & OTONOM HEDEF',
-      models: 'L2 [6]: MODEL REVIEW — KEŞİF & FİYAT/PERFORMANS ÖNERİLERİ',
-      json: 'L2 [7]: CANLI GET /API/QUOTAS NORMALİZE JSON ÖZETİ'
+      l1: 'L1: SCADA MAIN OVERVIEW (SINGLE-SCREEN OVERVIEW)',
+      policy: 'L2 [2]: ORCHESTRATOR & SUBAGENT RULES SUMMARY + POLICY DOCTOR',
+      router: 'L2 [3]: RESET-AWARE WORK PACKAGE ROUTER & ASSIGNMENT RECORD',
+      math: 'L2 [4]: 4 QUOTA POOLS MATH (PHI/STRANDED) & LIVE AGENT SCORECARD',
+      reserves: 'L2 [5]: CONCURRENCY LIMITS, CODEX RESERVE, BANKED RESETS & AUTONOMOUS GOAL',
+      models: 'L2 [6]: MODEL REVIEW — DISCOVERY & PRICE/PERFORMANCE PROPOSALS',
+      json: 'L2 [7]: LIVE GET /API/QUOTAS NORMALIZED JSON SUMMARY'
     };
 
     function openScadaFaceplate(sectionId) {
@@ -4329,11 +4564,15 @@
       const isScada = document.body.classList.toggle('scada-mode');
       const lbl = document.getElementById('scada-layout-label');
       if (lbl) {
-        lbl.textContent = isScada ? 'Tek Ekran: AÇIK' : 'Klasik Kaydırma';
+        lbl.textContent = isScada
+          ? trText('Single-Screen: ON', 'Tek Ekran: AÇIK')
+          : trText('Classic Scroll', 'Klasik Kaydırma');
       }
       const pill = document.getElementById('scada-mode-pill');
       if (pill) {
-        pill.textContent = isScada ? 'SCADA HMI' : 'KLASİK GÖRÜNÜM';
+        pill.textContent = isScada
+          ? 'SCADA HMI'
+          : trText('CLASSIC VIEW', 'KLASİK GÖRÜNÜM');
       }
     }
 
@@ -4381,26 +4620,28 @@
         const mode = (q.operating_mode || 'endurance').toUpperCase();
         const bg = q.backlog_settings || {};
         return `
-          <div class="scada-tip-header"><span>⚙️ OPERASYON MODU &amp; KUYRUK TELEMETRİSİ</span><span class="badge ${mode === 'SPRINT' ? 'badge-warning' : 'badge-info'}">${escapeHtml(mode)}</span></div>
+          <div class="scada-tip-header"><span>${trText('⚙️ OPERATING MODE &amp; QUEUE TELEMETRY', '⚙️ OPERASYON MODU &amp; KUYRUK TELEMETRİSİ')}</span><span class="badge ${mode === 'SPRINT' ? 'badge-warning' : 'badge-info'}">${escapeHtml(mode)}</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>Aktif Mod</span><strong>${escapeHtml(mode)}</strong></div>
-            <div class="scada-tip-kv"><span>Kuyruktaki Görev</span><strong>${escapeHtml(bg.unfinished_tasks_count ?? 4)} adet</strong></div>
-            <div class="scada-tip-kv"><span>Bekleyen Review</span><strong>${escapeHtml(bg.pending_reviews_count ?? 2)} adet</strong></div>
-            <div class="scada-tip-kv"><span>Stranded Eşiği</span><strong>%35+ Yanacak Kota</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Active Mode', 'Aktif Mod')}</span><strong>${escapeHtml(mode)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Queued Tasks', 'Kuyruktaki Görev')}</span><strong>${escapeHtml(bg.unfinished_tasks_count ?? 4)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Pending Reviews', 'Bekleyen Review')}</span><strong>${escapeHtml(bg.pending_reviews_count ?? 2)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Stranded Threshold', 'Stranded Eşiği')}</span><strong>${trText('35%+ Expiring Quota', '%35+ Yanacak Kota')}</strong></div>
           </div>
-          <div class="scada-tip-note">${mode === 'SPRINT' ? '⚡ Sprint Modu: Yakın vadeli (5 saat) iş çıkarma hızını maksimize eder; yakında sıfırlanacak kotaları agresif biçimde eritir.' : '🛡️ Endurance Modu: Çok günlü haftalık bütçeyi erken tükenmeye karşı korur; yalnızca sıfırlanmasına az kalan (stranded) kotaları hasat eder.'}</div>
+          <div class="scada-tip-note">${mode === 'SPRINT'
+            ? trText('⚡ Sprint Mode: Maximizes short-term (5-hour) throughput and aggressively harvests expiring quota.', '⚡ Sprint Modu: Yakın vadeli (5 saat) iş çıkarma hızını maksimize eder; yakında sıfırlanacak kotaları agresif biçimde eritir.')
+            : trText('🛡️ Endurance Mode: Protects the multi-day weekly budget from early exhaustion; only harvests expiring (stranded) quota.', '🛡️ Endurance Modu: Çok günlü haftalık bütçeyi erken tükenmeye karşı korur; yalnızca sıfırlanmasına az kalan (stranded) kotaları hasat eder.')}</div>
         `;
       }
 
       if (tipKey === 'orch_active') {
         const orch = q.orchestrator || {};
         return `
-          <div class="scada-tip-header"><span>🎯 AKTİF ORKESTRATÖR MOTORU</span><span class="badge badge-purple">${escapeHtml((orch.preferred || 'auto').toUpperCase())}</span></div>
+          <div class="scada-tip-header"><span>${trText('🎯 ACTIVE ORCHESTRATOR ENGINE', '🎯 AKTİF ORKESTRATÖR MOTORU')}</span><span class="badge badge-purple">${escapeHtml((orch.preferred || 'auto').toUpperCase())}</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>Seçili Motor</span><strong>${escapeHtml(orch.active_label || orch.active || 'auto')}</strong></div>
-            <div class="scada-tip-kv"><span>Tercih Politikası</span><strong>${escapeHtml(orch.preferred || 'auto')}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Selected Engine', 'Seçili Motor')}</span><strong>${escapeHtml(orch.active_label || orch.active || 'auto')}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Preference Policy', 'Tercih Politikası')}</span><strong>${escapeHtml(orch.preferred || 'auto')}</strong></div>
           </div>
-          <div class="scada-tip-note"><strong>Seçim Gerekçesi:</strong> ${escapeHtml(orch.reason || 'En sağlıklı kota havuzuna sahip sağlayıcı otomatik seçildi.')}</div>
+          <div class="scada-tip-note"><strong>${trText('Selection Rationale:', 'Seçim Gerekçesi:')}</strong> ${escapeHtml(orch.reason || trText('Provider with the healthiest quota pool was selected automatically.', 'En sağlıklı kota havuzuna sahip sağlayıcı otomatik seçildi.'))}</div>
         `;
       }
 
@@ -4409,18 +4650,18 @@
         const gPool = pools.agy_gemini || {};
         const cPool = pools.agy_claude_gpt || {};
         return `
-          <div class="scada-tip-header"><span>🚀 ANTIGRAVITY (AGY) ALT MODEL &amp; HAVUZ DETAYI</span><span class="badge ${getBadgeClass(agy.status).replace('badge ', '')}">${escapeHtml((agy.status || 'unknown').toUpperCase())}</span></div>
+          <div class="scada-tip-header"><span>${trText('🚀 ANTIGRAVITY (AGY) SUB-MODELS &amp; POOLS', '🚀 ANTIGRAVITY (AGY) ALT MODEL &amp; HAVUZ DETAYI')}</span><span class="badge ${getBadgeClass(agy.status).replace('badge ', '')}">${escapeHtml((agy.status || 'unknown').toUpperCase())}</span></div>
           <div class="scada-tip-grid">
             <div class="scada-tip-kv"><span>Gemini Flash</span><strong>${formatPct(agy.gemini_flash)}</strong></div>
             <div class="scada-tip-kv"><span>Gemini Pro (Argon)</span><strong>${formatPct(agy.gemini_pro)}</strong></div>
             <div class="scada-tip-kv"><span>Claude Sonnet (AGY)</span><strong>${formatPct(agy.claude_sonnet)}</strong></div>
             <div class="scada-tip-kv"><span>Claude Opus (AGY)</span><strong>${formatPct(agy.claude_opus)}</strong></div>
-            <div class="scada-tip-kv"><span>Gem Usable / Yanacak</span><strong>%${Math.round((gPool.effective_usable ?? 0) * 100)} / %${Math.round((gPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
-            <div class="scada-tip-kv"><span>3P Usable / Yanacak</span><strong>%${Math.round((cPool.effective_usable ?? 0) * 100)} / %${Math.round((cPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
-            <div class="scada-tip-kv"><span>Telemetri Kaynağı</span><strong>${escapeHtml(agy.source || 'language_server.exe')}</strong></div>
-            <div class="scada-tip-kv"><span>En Yakın Reset</span><strong>${formatSeconds(agy.reset_in_sec)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Gem Usable / Stranded', 'Gem Usable / Yanacak')}</span><strong>%${Math.round((gPool.effective_usable ?? 0) * 100)} / %${Math.round((gPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('3P Usable / Stranded', '3P Usable / Yanacak')}</span><strong>%${Math.round((cPool.effective_usable ?? 0) * 100)} / %${Math.round((cPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Telemetry Source', 'Telemetri Kaynağı')}</span><strong>${escapeHtml(agy.source || 'language_server.exe')}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Nearest Reset', 'En Yakın Reset')}</span><strong>${formatSeconds(agy.reset_in_sec)}</strong></div>
           </div>
-          <div class="scada-tip-note">AGY iki bağımsız kota havuzuna sahiptir: <strong>agy_gemini</strong> (Flash/Argon) ve <strong>agy_claude_gpt</strong> (AGY üzerinden sunulan Claude/GPT).</div>
+          <div class="scada-tip-note">${trText('AGY has two independent quota pools: <strong>agy_gemini</strong> (Flash/Argon) and <strong>agy_claude_gpt</strong> (Claude/GPT served via AGY).', 'AGY iki bağımsız kota havuzuna sahiptir: <strong>agy_gemini</strong> (Flash/Argon) ve <strong>agy_claude_gpt</strong> (AGY üzerinden sunulan Claude/GPT).')}</div>
         `;
       }
 
@@ -4429,16 +4670,16 @@
         const cPool = pools.claude_shared || {};
         const acc = claude.accounting || {};
         return `
-          <div class="scada-tip-header"><span>🧠 CLAUDE CODE CLI ALT MODEL &amp; MALİYET DETAYI</span><span class="badge ${getBadgeClass(claude.status).replace('badge ', '')}">${escapeHtml((claude.status || 'offline').toUpperCase())}</span></div>
+          <div class="scada-tip-header"><span>${trText('🧠 CLAUDE CODE CLI SUB-MODELS &amp; COST', '🧠 CLAUDE CODE CLI ALT MODEL &amp; MALİYET DETAYI')}</span><span class="badge ${getBadgeClass(claude.status).replace('badge ', '')}">${escapeHtml((claude.status || 'offline').toUpperCase())}</span></div>
           <div class="scada-tip-grid">
             <div class="scada-tip-kv"><span>Sonnet 5.5</span><strong>${formatPct(claude.sonnet)}</strong></div>
             <div class="scada-tip-kv"><span>Opus 5.5</span><strong>${formatPct(claude.opus)}</strong></div>
             <div class="scada-tip-kv"><span>Haiku 5.5</span><strong>${formatPct(claude.haiku)}</strong></div>
-            <div class="scada-tip-kv"><span>5-Saatlik Harcama</span><strong>$${(acc.cost_5h_usd ?? 0).toFixed(2)} USD</strong></div>
-            <div class="scada-tip-kv"><span>Usable / Yanacak</span><strong>%${Math.round((cPool.effective_usable ?? 0) * 100)} / %${Math.round((cPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
-            <div class="scada-tip-kv"><span>En Yakın Reset</span><strong>${formatSeconds(claude.reset_in_sec)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('5-Hour Spend', '5-Saatlik Harcama')}</span><strong>$${(acc.cost_5h_usd ?? 0).toFixed(2)} USD</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Usable / Stranded', 'Usable / Yanacak')}</span><strong>%${Math.round((cPool.effective_usable ?? 0) * 100)} / %${Math.round((cPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Nearest Reset', 'En Yakın Reset')}</span><strong>${formatSeconds(claude.reset_in_sec)}</strong></div>
           </div>
-          <div class="scada-tip-note">Telemetri kaynağı: <strong>${escapeHtml(claude.source || '~/.claude logs')}</strong> · Güven: <strong>${escapeHtml((claude.confidence || 'UNKNOWN').toUpperCase())}</strong></div>
+          <div class="scada-tip-note">${trText('Telemetry source:', 'Telemetri kaynağı:')} <strong>${escapeHtml(claude.source || '~/.claude logs')}</strong> · ${trText('Confidence:', 'Güven:')} <strong>${escapeHtml((claude.confidence || 'UNKNOWN').toUpperCase())}</strong></div>
         `;
       }
 
@@ -4447,16 +4688,16 @@
         const xPool = pools.codex_shared || {};
         const bObj = codex.banked_resets || {};
         return `
-          <div class="scada-tip-header"><span>⚡ CODEX CLI ALT MODEL &amp; REZERV DETAYI</span><span class="badge ${getBadgeClass(codex.status).replace('badge ', '')}">${escapeHtml((codex.status || 'offline').toUpperCase())}</span></div>
+          <div class="scada-tip-header"><span>${trText('⚡ CODEX CLI SUB-MODELS &amp; RESERVE', '⚡ CODEX CLI ALT MODEL &amp; REZERV DETAYI')}</span><span class="badge ${getBadgeClass(codex.status).replace('badge ', '')}">${escapeHtml((codex.status || 'offline').toUpperCase())}</span></div>
           <div class="scada-tip-grid">
             <div class="scada-tip-kv"><span>gpt-6.1-luna</span><strong>${formatPct(codex.luna)}</strong></div>
             <div class="scada-tip-kv"><span>gpt-6.1-terra</span><strong>${formatPct(codex.terra)}</strong></div>
             <div class="scada-tip-kv"><span>gpt-6.1-sol</span><strong>${formatPct(codex.sol)}</strong></div>
-            <div class="scada-tip-kv"><span>Banked Full Resets</span><strong>${escapeHtml(bObj.applicable_available_count ?? 0)} adet</strong></div>
-            <div class="scada-tip-kv"><span>Usable / Yanacak</span><strong>%${Math.round((xPool.effective_usable ?? 0) * 100)} / %${Math.round((xPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
-            <div class="scada-tip-kv"><span>Orkestratör Rezervi</span><strong>%${cxRes.reserve_5h_pct ?? 0} (5s) / %${cxRes.reserve_weekly_pct ?? 0} (7g)</strong></div>
+            <div class="scada-tip-kv"><span>Banked Full Resets</span><strong>${escapeHtml(bObj.applicable_available_count ?? 0)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Usable / Stranded', 'Usable / Yanacak')}</span><strong>%${Math.round((xPool.effective_usable ?? 0) * 100)} / %${Math.round((xPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Orchestrator Reserve', 'Orkestratör Rezervi')}</span><strong>%${cxRes.reserve_5h_pct ?? 0} (5h) / %${cxRes.reserve_weekly_pct ?? 0} (7d)</strong></div>
           </div>
-          <div class="scada-tip-note">Telemetri kaynağı: <strong>${escapeHtml(codex.source || '~/.codex/sessions')}</strong> · Sıfırlama: <strong>${formatSeconds(codex.reset_in_sec)}</strong></div>
+          <div class="scada-tip-note">${trText('Telemetry source:', 'Telemetri kaynağı:')} <strong>${escapeHtml(codex.source || '~/.codex/sessions')}</strong> · ${trText('Reset:', 'Sıfırlama:')} <strong>${formatSeconds(codex.reset_in_sec)}</strong></div>
         `;
       }
 
@@ -4464,16 +4705,16 @@
         const prov = tipKey.replace('swrr_', '');
         const info = allocProvs[prov] || alloc[prov] || {};
         return `
-          <div class="scada-tip-header"><span>🎚️ SWRR CANLI TAHSİS: ${escapeHtml(prov.toUpperCase())}</span><span class="badge badge-info">${escapeHtml(String(info.band || 'normal').toUpperCase())} BAND</span></div>
+          <div class="scada-tip-header"><span>${trText('🎚️ SWRR LIVE ALLOCATION:', '🎚️ SWRR CANLI TAHSİS:')} ${escapeHtml(prov.toUpperCase())}</span><span class="badge badge-info">${escapeHtml(String(info.band || 'normal').toUpperCase())} BAND</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>Tercih Slider</span><strong>${escapeHtml(info.slider ?? '--')} / 10</strong></div>
-            <div class="scada-tip-kv"><span>Hedef Pay (Target)</span><strong>%${((info.target_share ?? 0) * 100).toFixed(1)}</strong></div>
-            <div class="scada-tip-kv"><span>24s Gerçekleşen</span><strong>%${((info.actual_share_24h ?? 0) * 100).toFixed(1)}</strong></div>
-            <div class="scada-tip-kv"><span>Sürdürülebilirlik (σ)</span><strong>${info.sigma !== undefined && info.sigma !== null ? Number(info.sigma).toFixed(2) : '--'}</strong></div>
-            <div class="scada-tip-kv"><span>Canlı Worker Tavanı</span><strong>${escapeHtml(info.max_workers ?? '--')} / ${escapeHtml(info.ceiling ?? 6)}</strong></div>
-            <div class="scada-tip-kv"><span>Saatlik Kapasite</span><strong>${info.capacity_tasks_per_hour !== undefined ? Number(info.capacity_tasks_per_hour).toFixed(2) : '--'} görev/s</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Preference Slider', 'Tercih Slider')}</span><strong>${escapeHtml(info.slider ?? '--')} / 10</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Target Share', 'Hedef Pay (Target)')}</span><strong>%${((info.target_share ?? 0) * 100).toFixed(1)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('24h Actual Share', '24s Gerçekleşen')}</span><strong>%${((info.actual_share_24h ?? 0) * 100).toFixed(1)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Sustainability (σ)', 'Sürdürülebilirlik (σ)')}</span><strong>${info.sigma !== undefined && info.sigma !== null ? Number(info.sigma).toFixed(2) : '--'}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Live Worker Cap', 'Canlı Worker Tavanı')}</span><strong>${escapeHtml(info.max_workers ?? '--')} / ${escapeHtml(info.ceiling ?? 6)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Hourly Capacity', 'Saatlik Kapasite')}</span><strong>${info.capacity_tasks_per_hour !== undefined ? Number(info.capacity_tasks_per_hour).toFixed(2) : '--'} ${trText('tasks/h', 'görev/s')}</strong></div>
           </div>
-          <div class="scada-tip-note"><strong>Efor Politikası:</strong> ${escapeHtml(info.effort_policy || 'default')} · ${escapeHtml(info.summary || 'SWRR kredisi aktif.')}</div>
+          <div class="scada-tip-note"><strong>${trText('Effort Policy:', 'Efor Politikası:')}</strong> ${escapeHtml(info.effort_policy || 'default')} · ${escapeHtml(info.summary || trText('SWRR credit active.', 'SWRR kredisi aktif.'))}</div>
         `;
       }
 
@@ -4481,16 +4722,16 @@
         const pp = lim.max_per_pool || {};
         const pv = lim.max_per_provider || {};
         return `
-          <div class="scada-tip-header"><span>🚦 EŞZAMANLILIK TAVANLARI (POLICY.JSON)</span><span class="badge badge-info">MAX ${escapeHtml(lim.max_leaves ?? 10)} LEAF</span></div>
+          <div class="scada-tip-header"><span>${trText('🚦 CONCURRENCY CEILINGS (POLICY.JSON)', '🚦 EŞZAMANLILIK TAVANLARI (POLICY.JSON)')}</span><span class="badge badge-info">MAX ${escapeHtml(lim.max_leaves ?? 10)} LEAF</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>Sağlayıcı Tavanları</span><strong>AGY:${escapeHtml(pv.agy ?? 6)} · CL:${escapeHtml(pv.claude ?? 6)} · CX:${escapeHtml(pv.codex ?? 6)}</strong></div>
-            <div class="scada-tip-kv"><span>Havuz: agy_gemini</span><strong>Max ${escapeHtml(pp.agy_gemini ?? 6)} worker</strong></div>
-            <div class="scada-tip-kv"><span>Havuz: agy_claude_gpt</span><strong>Max ${escapeHtml(pp.agy_claude_gpt ?? 6)} worker</strong></div>
-            <div class="scada-tip-kv"><span>Havuz: claude_shared</span><strong>Max ${escapeHtml(pp.claude_shared ?? 6)} worker</strong></div>
-            <div class="scada-tip-kv"><span>Havuz: codex_shared</span><strong>Max ${escapeHtml(pp.codex_shared ?? 6)} worker</strong></div>
-            <div class="scada-tip-kv"><span>Kaynak Dosya</span><strong>~/.agents/policy.json</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Provider Ceilings', 'Sağlayıcı Tavanları')}</span><strong>AGY:${escapeHtml(pv.agy ?? 6)} · CL:${escapeHtml(pv.claude ?? 6)} · CX:${escapeHtml(pv.codex ?? 6)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Pool: agy_gemini', 'Havuz: agy_gemini')}</span><strong>Max ${escapeHtml(pp.agy_gemini ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Pool: agy_claude_gpt', 'Havuz: agy_claude_gpt')}</span><strong>Max ${escapeHtml(pp.agy_claude_gpt ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Pool: claude_shared', 'Havuz: claude_shared')}</span><strong>Max ${escapeHtml(pp.claude_shared ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Pool: codex_shared', 'Havuz: codex_shared')}</span><strong>Max ${escapeHtml(pp.codex_shared ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Source File', 'Kaynak Dosya')}</span><strong>~/.agents/policy.json</strong></div>
           </div>
-          <div class="scada-tip-note">Havuz bazlı limitleri değiştirmek için kart üzerindeki <strong>🔍 Detay</strong> butonuna tıklayın.</div>
+          <div class="scada-tip-note">${trText('Click the <strong>🔍 Details</strong> button on the card to edit per-pool concurrency limits.', 'Havuz bazlı limitleri değiştirmek için kart üzerindeki <strong>🔍 Detay</strong> butonuna tıklayın.')}</div>
         `;
       }
 
@@ -4498,13 +4739,13 @@
         const coords = live.coordinators || [];
         const workers = live.workers || [];
         const goals = q.project_goals || {};
-        const coordRows = coords.slice(0, 4).map(c => `• <strong>[${escapeHtml((c.provider || '').toUpperCase())}]</strong> ${escapeHtml(c.name)} (${escapeHtml(c.model)}) — <em>${escapeHtml(c.status)}</em>`).join('<br/>') || '• Açık oturum yok';
-        const workerRows = workers.slice(0, 4).map(w => `• <strong>${escapeHtml((w.provider || '').toUpperCase())} · ${escapeHtml(w.model)}</strong> (PID ${escapeHtml(w.pid)}): ${escapeHtml(w.task_summary || w.role || '')}`).join('<br/>') || '• Arka planda çalışan subagent/worker yok';
+        const coordRows = coords.slice(0, 4).map(c => `• <strong>[${escapeHtml((c.provider || '').toUpperCase())}]</strong> ${escapeHtml(c.name)} (${escapeHtml(c.model)}) — <em>${escapeHtml(c.status)}</em>`).join('<br/>') || trText('• No open sessions', '• Açık oturum yok');
+        const workerRows = workers.slice(0, 4).map(w => `• <strong>${escapeHtml((w.provider || '').toUpperCase())} · ${escapeHtml(w.model)}</strong> (PID ${escapeHtml(w.pid)}): ${escapeHtml(w.task_summary || w.role || '')}`).join('<br/>') || trText('• No active background subagents/workers', '• Arka planda çalışan subagent/worker yok');
         return `
-          <div class="scada-tip-header"><span>🛰️ CANLI OTURUMLAR, WORKER'LAR &amp; OTONOM HEDEF</span><span class="badge ${goals.active ? 'badge-purple' : 'badge-info'}">${goals.active ? 'OTONOM AKTİF' : 'STANDART'}</span></div>
-          <div class="scada-tip-note" style="margin-bottom:0.35rem;"><strong>Açık Oturumlar (${coords.length}):</strong><br/>${coordRows}</div>
-          <div class="scada-tip-note"><strong>Canlı Headless Worker'lar (${workers.length}):</strong><br/>${workerRows}</div>
-          ${goals.long_term_goal ? `<div class="scada-tip-note" style="border-color:rgba(139,92,246,0.4);"><strong>🎯 Uzun Vadeli Hedef:</strong> ${escapeHtml(goals.long_term_goal)}</div>` : ''}
+          <div class="scada-tip-header"><span>${trText('🛰️ LIVE SESSIONS, WORKERS &amp; AUTONOMOUS GOAL', '🛰️ CANLI OTURUMLAR, WORKER\'LAR &amp; OTONOM HEDEF')}</span><span class="badge ${goals.active ? 'badge-purple' : 'badge-info'}">${goals.active ? trText('AUTONOMOUS ON', 'OTONOM AKTİF') : trText('STANDARD', 'STANDART')}</span></div>
+          <div class="scada-tip-note" style="margin-bottom:0.35rem;"><strong>${trText('Open Sessions', 'Açık Oturumlar')} (${coords.length}):</strong><br/>${coordRows}</div>
+          <div class="scada-tip-note"><strong>${trText('Live Headless Workers', 'Canlı Headless Worker\'lar')} (${workers.length}):</strong><br/>${workerRows}</div>
+          ${goals.long_term_goal ? `<div class="scada-tip-note" style="border-color:rgba(139,92,246,0.4);"><strong>${trText('🎯 Long-Term Goal:', '🎯 Uzun Vadeli Hedef:')}</strong> ${escapeHtml(goals.long_term_goal)}</div>` : ''}
         `;
       }
 
@@ -4513,47 +4754,52 @@
         const rec = routing.assignment_record || {};
         const cands = (routing.ranked_candidates || []).slice(0, 4);
         const rejs = (routing.rejected_models || []).slice(0, 3);
-        const candHtml = cands.map((c, idx) => `${idx === 0 ? '★ ' : '• '}<strong>${escapeHtml((c.provider || '').toUpperCase())}/${escapeHtml(c.model_id)}</strong>: Skor ${Number(c.score || 0).toFixed(3)} (Kalan %${Math.round((c.remaining_quota || 0) * 100)})`).join('<br/>') || 'Henüz simülasyon çalıştırılmadı.';
+        const candHtml = cands.map((c, idx) => `${idx === 0 ? '★ ' : '• '}<strong>${escapeHtml((c.provider || '').toUpperCase())}/${escapeHtml(c.model_id)}</strong>: ${trText('Score', 'Skor')} ${Number(c.score || 0).toFixed(3)} (${trText('Rem', 'Kalan')} %${Math.round((c.remaining_quota || 0) * 100)})`).join('<br/>') || trText('No simulation run yet.', 'Henüz simülasyon çalıştırılmadı.');
         return `
-          <div class="scada-tip-header"><span>🧭 YÖNLENDİRİCİ ATAMA &amp; ADAY SKORLARI</span><span class="badge badge-healthy">${escapeHtml(rec.selected_tier || routing.capability_floor || 'MID')}</span></div>
+          <div class="scada-tip-header"><span>${trText('🧭 ROUTER ASSIGNMENT &amp; CANDIDATE SCORES', '🧭 YÖNLENDİRİCİ ATAMA &amp; ADAY SKORLARI')}</span><span class="badge badge-healthy">${escapeHtml(rec.selected_tier || routing.capability_floor || 'MID')}</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>Seçilen Model</span><strong>${escapeHtml(rec.provider ? `${rec.provider.toUpperCase()} · ${rec.model}` : '—')}</strong></div>
-            <div class="scada-tip-kv"><span>Yedek (Fallback)</span><strong>${escapeHtml(rec.fallback_model || '—')}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Selected Model', 'Seçilen Model')}</span><strong>${escapeHtml(rec.provider ? `${rec.provider.toUpperCase()} · ${rec.model}` : '—')}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Fallback Model', 'Yedek (Fallback)')}</span><strong>${escapeHtml(rec.fallback_model || '—')}</strong></div>
           </div>
-          <div class="scada-tip-note"><strong>En İyi Aday Modeller:</strong><br/>${candHtml}</div>
-          ${rejs.length > 0 ? `<div class="scada-tip-note"><strong>Elenenler (${routing.rejected_models.length}):</strong> ${rejs.map(r => escapeHtml(r.model_id)).join(', ')}</div>` : ''}
-          ${rec.routing_rationale ? `<div class="scada-tip-note"><strong>Gerekçe:</strong> ${escapeHtml(rec.routing_rationale)}</div>` : ''}
+          <div class="scada-tip-note"><strong>${trText('Top Ranked Candidates:', 'En İyi Aday Modeller:')}</strong><br/>${candHtml}</div>
+          ${rejs.length > 0 ? `<div class="scada-tip-note"><strong>${trText('Rejected', 'Elenenler')} (${routing.rejected_models.length}):</strong> ${rejs.map(r => escapeHtml(r.model_id)).join(', ')}</div>` : ''}
+          ${rec.routing_rationale ? `<div class="scada-tip-note"><strong>${trText('Rationale:', 'Gerekçe:')}</strong> ${escapeHtml(rec.routing_rationale)}</div>` : ''}
         `;
       }
 
       if (tipKey === 'reserve_status' || tipKey === 'banked_status') {
         const items = br.items || [];
         const ho = br.harvest_overlay || {};
-        const itemsTxt = items.map(it => `• ${escapeHtml(it.credit_type)}: Son kullanma <strong>${formatSeconds(it.expires_in_sec)}</strong>`).join('<br/>') || '• Kayıtlı kupon yok.';
+        const itemsTxt = items.map(it => `• ${escapeHtml(it.credit_type)}: ${trText('Expires in', 'Son kullanma')} <strong>${formatSeconds(it.expires_in_sec)}</strong>`).join('<br/>') || trText('• No registered vouchers.', '• Kayıtlı kupon yok.');
         return `
           <div class="scada-tip-header"><span>🛡️ CODEX CONTINUITY RESERVE &amp; BANKED RESETS</span><span class="badge ${cxRes.routine_coding_allowed_on_codex ? 'badge-healthy' : 'badge-warning'}">${cxRes.routine_coding_allowed_on_codex ? 'SURPLUS' : 'GUARDED'}</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>5-Saatlik Rezerv</span><strong>%${escapeHtml(cxRes.reserve_5h_pct ?? 0)}</strong></div>
-            <div class="scada-tip-kv"><span>Haftalık Rezerv</span><strong>%${escapeHtml(cxRes.reserve_weekly_pct ?? 0)}</strong></div>
-            <div class="scada-tip-kv"><span>Banked Reset Kuponu</span><strong>${escapeHtml(br.available_full_resets ?? 0)} adet</strong></div>
-            <div class="scada-tip-kv"><span>Takvim Kayması</span><strong>+${escapeHtml(br.schedule_shift_days_lost ?? 0)} gün</strong></div>
+            <div class="scada-tip-kv"><span>${trText('5-Hour Reserve', '5-Saatlik Rezerv')}</span><strong>%${escapeHtml(cxRes.reserve_5h_pct ?? 0)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Weekly Reserve', 'Haftalık Rezerv')}</span><strong>%${escapeHtml(cxRes.reserve_weekly_pct ?? 0)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Banked Reset Vouchers', 'Banked Reset Kuponu')}</span><strong>${escapeHtml(br.available_full_resets ?? 0)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Schedule Shift Drift', 'Takvim Kayması')}</span><strong>+${escapeHtml(br.schedule_shift_days_lost ?? 0)}d</strong></div>
           </div>
-          <div class="scada-tip-note"><strong>Kupon Envanteri:</strong><br/>${itemsTxt}</div>
-          <div class="scada-tip-note">${escapeHtml(br.recommendation || cxRes.continuity_policy || 'Orkestratör sürekliliği için dinamik rezerv aktif.')} ${ho.active ? ' <strong>(🌾 Pre-Expiry Harvest Aktif)</strong>' : ''}</div>
+          <div class="scada-tip-note"><strong>${trText('Voucher Inventory:', 'Kupon Envanteri:')}</strong><br/>${itemsTxt}</div>
+          <div class="scada-tip-note">${escapeHtml(br.recommendation || cxRes.continuity_policy || trText('Dynamic continuity reserve active for orchestrator.', 'Orkestratör sürekliliği için dinamik rezerv aktif.'))} ${ho.active ? ` <strong>${trText('(🌾 Pre-Expiry Harvest Active)', '(🌾 Pre-Expiry Harvest Aktif)')}</strong>` : ''}</div>
         `;
       }
 
       if (tipKey === 'pd_checks' || tipKey === 'pd_tokens' || tipKey === 'pd_rules') {
         const checks = pd.checks || [];
         const comp = pd.compaction || {};
-        const cats = (pd.active_rules_summary || {}).categories || [];
-        const chkHtml = checks.map(c => `• <strong>[${escapeHtml(c.status)}]</strong> ${escapeHtml(c.title)}: ${escapeHtml(c.summary)}`).join('<br/>') || '• Denetim verisi yükleniyor...';
+        const rulesSum = pd.active_rules_summary || {};
+        const cats = (currentLang === 'tr' && rulesSum.categories_tr) ? rulesSum.categories_tr : (rulesSum.categories || []);
+        const chkHtml = checks.map(c => {
+          const ct = (currentLang === 'tr' && c.title_tr) ? c.title_tr : c.title;
+          const cs = (currentLang === 'tr' && c.summary_tr) ? c.summary_tr : c.summary;
+          return `• <strong>[${escapeHtml(c.status)}]</strong> ${escapeHtml(ct)}: ${escapeHtml(cs)}`;
+        }).join('<br/>') || trText('• Loading audit data...', '• Denetim verisi yükleniyor...');
         const fileHtml = (comp.file_metrics || []).map(m => `• <strong>${escapeHtml(m.file)}</strong>: ~${escapeHtml(m.est_tokens)}/${escapeHtml(m.token_budget)} tok (%${escapeHtml(m.utilization_pct)})`).join('<br/>');
         return `
-          <div class="scada-tip-header"><span>🩺 POLICY DOCTOR &amp; KURAL KOMPAKTLIK ANALİZİ</span><span class="badge badge-healthy">SKOR: ${escapeHtml(comp.compaction_health_score ?? 100)}/100</span></div>
-          <div class="scada-tip-note"><strong>5 Otomatik Tutarlılık Kontrolü:</strong><br/>${chkHtml}</div>
-          ${fileHtml ? `<div class="scada-tip-note"><strong>Dosya Bazlı Token Bütçesi:</strong><br/>${fileHtml}</div>` : ''}
-          ${cats.length > 0 ? `<div class="scada-tip-note"><strong>Aktif Kural Kategorileri (${cats.length}):</strong> ${cats.map(c => escapeHtml(c.title)).join(' · ')}</div>` : ''}
+          <div class="scada-tip-header"><span>${trText('🩺 POLICY DOCTOR &amp; RULE COMPACTION ANALYSIS', '🩺 POLICY DOCTOR &amp; KURAL KOMPAKTLIK ANALİZİ')}</span><span class="badge badge-healthy">${trText('SCORE:', 'SKOR:')} ${escapeHtml(comp.compaction_health_score ?? 100)}/100</span></div>
+          <div class="scada-tip-note"><strong>${trText('5 Automated Consistency Checks:', '5 Otomatik Tutarlılık Kontrolü:')}</strong><br/>${chkHtml}</div>
+          ${fileHtml ? `<div class="scada-tip-note"><strong>${trText('Per-File Token Budget:', 'Dosya Bazlı Token Bütçesi:')}</strong><br/>${fileHtml}</div>` : ''}
+          ${cats.length > 0 ? `<div class="scada-tip-note"><strong>${trText('Active Rule Categories', 'Aktif Kural Kategorileri')} (${cats.length}):</strong> ${cats.map(c => escapeHtml(c.title)).join(' · ')}</div>` : ''}
         `;
       }
 
@@ -4563,29 +4809,29 @@
         const fh = ps.five_hour || {};
         const wk = ps.weekly || {};
         const profs = (cl.cost_profiles || []).filter(pr => pr.pool_id === pid && (pr.kind === 'implement' || pr.kind === 'review'));
-        const profHtml = profs.map(pr => `• <strong>${escapeHtml(pr.tier)}/${escapeHtml(pr.kind)}</strong>: 5s %${(pr.five_hour_mean * 100).toFixed(1)} (üst %${(pr.five_hour_upper * 100).toFixed(1)}) · 7g %${(pr.weekly_mean * 100).toFixed(1)}`).join('<br/>') || '• Maliyet profili varsayılan (prior) değerde.';
+        const profHtml = profs.map(pr => `• <strong>${escapeHtml(pr.tier)}/${escapeHtml(pr.kind)}</strong>: 5h %${(pr.five_hour_mean * 100).toFixed(1)} (upper %${(pr.five_hour_upper * 100).toFixed(1)}) · 7d %${(pr.weekly_mean * 100).toFixed(1)}`).join('<br/>') || trText('• Cost profile at default prior.', '• Maliyet profili varsayılan (prior) değerde.');
         return `
-          <div class="scada-tip-header"><span>🧮 HAVUZ MATEMATİĞİ: ${escapeHtml(pid)}</span><span class="badge ${getConfidenceBadgeClass(ps.confidence).replace('badge ', '')}">${escapeHtml(ps.confidence || 'OK')}</span></div>
+          <div class="scada-tip-header"><span>${trText('🧮 POOL MATHEMATICS:', '🧮 HAVUZ MATEMATİĞİ:')} ${escapeHtml(pid)}</span><span class="badge ${getConfidenceBadgeClass(ps.confidence).replace('badge ', '')}">${escapeHtml(ps.confidence || 'OK')}</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>5s Usable / Yanacak</span><strong>%${Math.round((fh.usable_before_reset || 0) * 100)} / %${Math.round((fh.stranded_quota_fraction || 0) * 100)}</strong></div>
-            <div class="scada-tip-kv"><span>5s Reset Süresi</span><strong>${formatSeconds(fh.time_until_reset_sec)} (Φ=${(fh.opportunity_cost_phi ?? 0).toFixed(2)})</strong></div>
-            <div class="scada-tip-kv"><span>7g Usable / Yanacak</span><strong>%${Math.round((wk.usable_before_reset || 0) * 100)} / %${Math.round((wk.stranded_quota_fraction || 0) * 100)}</strong></div>
-            <div class="scada-tip-kv"><span>7g Reset Süresi</span><strong>${formatSeconds(wk.time_until_reset_sec)} (Φ=${(wk.opportunity_cost_phi ?? 0).toFixed(2)})</strong></div>
+            <div class="scada-tip-kv"><span>${trText('5h Usable / Stranded', '5s Usable / Yanacak')}</span><strong>%${Math.round((fh.usable_before_reset || 0) * 100)} / %${Math.round((fh.stranded_quota_fraction || 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('5h Reset Time', '5s Reset Süresi')}</span><strong>${formatSeconds(fh.time_until_reset_sec)} (Φ=${(fh.opportunity_cost_phi ?? 0).toFixed(2)})</strong></div>
+            <div class="scada-tip-kv"><span>${trText('7d Usable / Stranded', '7g Usable / Stranded')}</span><strong>%${Math.round((wk.usable_before_reset || 0) * 100)} / %${Math.round((wk.stranded_quota_fraction || 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('7d Reset Time', '7g Reset Süresi')}</span><strong>${formatSeconds(wk.time_until_reset_sec)} (Φ=${(wk.opportunity_cost_phi ?? 0).toFixed(2)})</strong></div>
           </div>
-          <div class="scada-tip-note"><strong>Ampirik Huber Maliyet Profilleri:</strong><br/>${profHtml}</div>
+          <div class="scada-tip-note"><strong>${trText('Empirical Huber Cost Profiles:', 'Ampirik Huber Maliyet Profilleri:')}</strong><br/>${profHtml}</div>
         `;
       }
 
       if (tipKey === 'scorecard_obs') {
         const profs = (cl.cost_profiles || []).filter(pr => pr.kind === 'implement').slice(0, 4);
-        const profHtml = profs.map(pr => `• <strong>${escapeHtml(pr.pool_id)} (${escapeHtml(pr.tier)})</strong>: 5s %${(pr.five_hour_mean * 100).toFixed(1)} · 7g %${(pr.weekly_mean * 100).toFixed(1)} [${escapeHtml(pr.prediction_source)}]`).join('<br/>');
+        const profHtml = profs.map(pr => `• <strong>${escapeHtml(pr.pool_id)} (${escapeHtml(pr.tier)})</strong>: 5h %${(pr.five_hour_mean * 100).toFixed(1)} · 7d %${(pr.weekly_mean * 100).toFixed(1)} [${escapeHtml(pr.prediction_source)}]`).join('<br/>');
         return `
-          <div class="scada-tip-header"><span>📊 AMPİRİK MALİYET ÖĞRENİCİ &amp; AJAN KARNESİ</span><span class="badge badge-info">${escapeHtml(cl.measured_single_job_count ?? 0)} ÖLÇÜM</span></div>
+          <div class="scada-tip-header"><span>${trText('📊 EMPIRICAL COST LEARNER &amp; AGENT SCORECARD', '📊 AMPİRİK MALİYET ÖĞRENİCİ &amp; AJAN KARNESİ')}</span><span class="badge badge-info">${escapeHtml(cl.measured_single_job_count ?? 0)} ${trText('OBS', 'ÖLÇÜM')}</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>Tekil Görev Ölçümü</span><strong>${escapeHtml(cl.measured_single_job_count ?? 0)} adet</strong></div>
-            <div class="scada-tip-kv"><span>Son Gözlem Kaydı</span><strong>${escapeHtml((cl.recent_observations || []).length)} adet</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Single-Job Observations', 'Tekil Görev Ölçümü')}</span><strong>${escapeHtml(cl.measured_single_job_count ?? 0)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Recent Observation Log', 'Son Gözlem Kaydı')}</span><strong>${escapeHtml((cl.recent_observations || []).length)}</strong></div>
           </div>
-          <div class="scada-tip-note"><strong>Implement Görev Maliyet Ortalamaları:</strong><br/>${profHtml || 'Henüz kayıt yok.'}</div>
+          <div class="scada-tip-note"><strong>${trText('Implement Task Mean Costs:', 'Implement Görev Maliyet Ortalamaları:')}</strong><br/>${profHtml || trText('No records yet.', 'Henüz kayıt yok.')}</div>
         `;
       }
 
@@ -4593,22 +4839,126 @@
         const props = mr.proposals || [];
         const excl = mr.excluded_too_expensive || [];
         const settings = mr.settings || {};
-        const propHtml = props.slice(0, 4).map(p => `• <strong>${escapeHtml(p.model_id)}</strong> (${escapeHtml((p.provider || '').toUpperCase())}) — Önerilen: ${escapeHtml(p.suggested_tier || 'MID')}`).join('<br/>') || '• Bekleyen yeni model önerisi yok.';
-        const exclHtml = excl.slice(0, 4).map(e => `• <strong>${escapeHtml(e.model_id)}</strong>: ${escapeHtml(e.reason || 'fiyat tavanı aşıldı')}`).join('<br/>') || '• Hariç tutulan pahalı model yok.';
+        const propHtml = props.slice(0, 4).map(p => `• <strong>${escapeHtml(p.model_id)}</strong> (${escapeHtml((p.provider || '').toUpperCase())}) — ${trText('Suggested:', 'Önerilen:')} ${escapeHtml(p.suggested_tier || 'MID')}`).join('<br/>') || trText('• No pending new model proposals.', '• Bekleyen yeni model önerisi yok.');
+        const exclHtml = excl.slice(0, 4).map(e => `• <strong>${escapeHtml(e.model_id)}</strong>: ${escapeHtml(e.reason || trText('price cap exceeded', 'fiyat tavanı aşıldı'))}`).join('<br/>') || trText('• No expensive models excluded.', '• Hariç tutulan pahalı model yok.');
         return `
-          <div class="scada-tip-header"><span>🔬 MODEL REVIEW KEŞİF &amp; FİYAT FİLTRESİ</span><span class="badge ${mr.stale ? 'badge-warning' : 'badge-healthy'}">${mr.stale ? 'STALE' : 'FRESH'}</span></div>
+          <div class="scada-tip-header"><span>${trText('🔬 MODEL REVIEW DISCOVERY &amp; PRICE FILTER', '🔬 MODEL REVIEW KEŞİF &amp; FİYAT FİLTRESİ')}</span><span class="badge ${mr.stale ? 'badge-warning' : 'badge-healthy'}">${mr.stale ? 'STALE' : 'FRESH'}</span></div>
           <div class="scada-tip-grid">
-            <div class="scada-tip-kv"><span>Max Fiyat Çarpanı</span><strong>${escapeHtml(settings.max_price_ratio ?? 2.0)}x HIGH ref</strong></div>
-            <div class="scada-tip-kv"><span>Deneme (Probation) Payı</span><strong>%${Math.round((settings.probation_share ?? 0.1) * 100)}</strong></div>
-            <div class="scada-tip-kv"><span>Bekleyen Öneri</span><strong>${props.length} model</strong></div>
-            <div class="scada-tip-kv"><span>Elendi (Çok Pahalı)</span><strong>${excl.length} model</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Max Price Ratio', 'Max Fiyat Çarpanı')}</span><strong>${escapeHtml(settings.max_price_ratio ?? 2.0)}x HIGH ref</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Probation Share', 'Deneme (Probation) Payı')}</span><strong>%${Math.round((settings.probation_share ?? 0.1) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Pending Proposals', 'Bekleyen Öneri')}</span><strong>${props.length}</strong></div>
+            <div class="scada-tip-kv"><span>${trText('Excluded (Too Expensive)', 'Elendi (Çok Pahalı)')}</span><strong>${excl.length}</strong></div>
           </div>
-          <div class="scada-tip-note"><strong>Bekleyen Öneriler:</strong><br/>${propHtml}</div>
-          <div class="scada-tip-note"><strong>Anti-Spike Filtresiyle Elenenler:</strong><br/>${exclHtml}</div>
+          <div class="scada-tip-note"><strong>${trText('Pending Proposals:', 'Bekleyen Öneriler:')}</strong><br/>${propHtml}</div>
+          <div class="scada-tip-note"><strong>${trText('Excluded by Anti-Spike Filter:', 'Anti-Spike Filtresiyle Elenenler:')}</strong><br/>${exclHtml}</div>
         `;
       }
 
       return '';
+    }
+
+    const STATIC_EN_TO_TR = {
+      'AI Quota & Subagent Orchestration Hub': 'AI Kota & Alt Ajan Orkestrasyon Merkezi',
+      '1. OPERATING MODE & ORCHESTRATOR': '1. OPERASYON MODU & ORKESTRATÖR',
+      '🛡️ Endurance': '🛡️ Endurance (Süreklilik)',
+      '⚡ Sprint': '⚡ Sprint (Hız)',
+      'Queue:': 'Kuyruk:',
+      'Review:': 'Review:',
+      'Orch:': 'Ork:',
+      'Auto': 'Otomatik',
+      '2. LIVE QUOTAS (5H & 7D)': '2. CANLI KOTALAR (5S & 7G)',
+      '5H WINDOW': '5S PENCERE',
+      '7D WEEKLY': '7G HAFTALIK',
+      '3. PROVIDER MIX (SWRR 0–10)': '3. SAĞLAYICI PAYI (SWRR 0–10)',
+      'Target --% · Now --% · σ=-- · Cap --': 'Hedef --% · Şu an --% · σ=-- · Tavan --',
+      '4. CONCURRENCY LIMITS': '4. EŞZAMANLILIK LİMİTLERİ',
+      '🔍 Details': '🔍 Detay',
+      'Total Leaf': 'Toplam Leaf',
+      'Pool Caps': 'Havuz Tavanı',
+      '5. LIVE PROCESSES & AUTONOMOUS GOAL': '5. CANLI SÜREÇLER & OTONOM HEDEF',
+      'Open Sessions': 'Açık Oturumlar',
+      'Live Workers': 'Canlı Worker',
+      'Autonomous Goal': 'Otonom Hedef',
+      'Passive': 'Pasif',
+      '🎯 Autonomous On': '🎯 Otonom Aç',
+      '6. WORK PACKAGE ROUTER (QUICK TEST)': '6. İŞ PAKETİ YÖNLENDİRİCİ (HIZLI TEST)',
+      '🔍 Matrix': '🔍 Matris',
+      '🚀 Route': '🚀 Yönlendir',
+      'Selected:': 'Seçilen:',
+      'Cost (5h/7d):': 'Maliyet (5s/7g):',
+      '7. RESERVES & BANKED RESETS': '7. REZERV & BANKED RESETS',
+      '🔍 Manage': '🔍 Yönet',
+      'Codex Reserve': 'Codex Rezervi',
+      'Banked Vouchers': 'Banked Kupon',
+      '➕ +1 Voucher': '➕ +1 Kupon',
+      '🌾 Harvest': '🌾 Harvest',
+      '8. POLICY DOCTOR & RULES': '8. POLICY DOCTOR & KURALLAR',
+      '🔍 Rules': '🔍 Kurallar',
+      '5 Checks': '5 Kontrol',
+      'Always-Loaded': 'Always-Loaded',
+      'Active Rules': 'Aktif Kural',
+      '6 Categories': '6 Kategori',
+      '🔍 Audit Now': '🔍 Şimdi Denetle',
+      '9. 4 POOLS MATH & SCORECARD': '9. 4 HAVUZ MATEMATİĞİ & KARNE',
+      '🔍 Tables': '🔍 Tablolar',
+      'Empiric Obs': 'Ampirik Ölçüm',
+      '10. MODEL REVIEW & API': '10. MODEL REVIEW & API',
+      '🔍 Models': '🔍 Modeller',
+      'Model Review': 'Model Review',
+      '0 Proposals': '0 Öneri',
+      '🔬 Scan': '🔬 Tara',
+      '🧪 Sim:': '🧪 Sim:',
+      '🟢 Healthy': '🟢 Sağlıklı',
+      '🌾 AGY Stranded (85% Rem / 35m)': '🌾 AGY Yanacak (%85 Kalan / 35dk)',
+      '🔥 Claude Tight (15% Rem)': '🔥 Claude Sıkışık (%15 Kalan)',
+      '🛑 All Critical (3% Rem)': '🛑 Tüm Havuzlar Kritik (%3 Kalan)',
+      '🔄 Real Telemetry': '🔄 Gerçek Telemetri',
+      'Poll:': 'Yenileme:',
+      'Single-Screen: ON': 'Tek Ekran: AÇIK',
+      'Classic Scroll': 'Klasik Kaydırma',
+      '🧪 Sim': '🧪 Sim',
+      '🔄 Refresh': '🔄 Yenile',
+      '❓ Guide': '❓ Rehber',
+      '✕ Close (ESC)': '✕ Kapat (ESC)'
+    };
+    const STATIC_TR_TO_EN = Object.fromEntries(Object.entries(STATIC_EN_TO_TR).map(([k, v]) => [v, k]));
+
+    function applyLanguage() {
+      document.documentElement.lang = currentLang;
+      const langLabel = document.getElementById('lang-toggle-label');
+      if (langLabel) {
+        langLabel.textContent = currentLang === 'en' ? 'EN | TR' : 'TR | EN';
+      }
+      const dict = currentLang === 'tr' ? STATIC_EN_TO_TR : STATIC_TR_TO_EN;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+      let node;
+      while ((node = walker.nextNode())) {
+        const parentTag = node.parentElement ? node.parentElement.tagName.toLowerCase() : '';
+        if (parentTag === 'script' || parentTag === 'style') continue;
+        const trimmed = node.nodeValue.trim();
+        if (trimmed && dict[trimmed]) {
+          node.nodeValue = node.nodeValue.replace(trimmed, dict[trimmed]);
+        }
+      }
+      const wpTask = document.getElementById('wp-task');
+      if (wpTask) {
+        if (currentLang === 'tr' && wpTask.value.startsWith('WP-IMPL-02: Implement quota reset')) {
+          wpTask.value = 'WP-IMPL-02: Kota sıfırlanma sayacı ve 85% uyarı eşiği hesaplayıcısını uygula';
+        } else if (currentLang === 'en' && wpTask.value.startsWith('WP-IMPL-02: Kota sıfırlanma')) {
+          wpTask.value = 'WP-IMPL-02: Implement quota reset countdown and 85% warning threshold calculator';
+        }
+      }
+      if (latestQuotas) renderQuotas(latestQuotas);
+      if (latestPolicyDoctor) renderPolicyDoctor(latestPolicyDoctor);
+      if (latestDispatch) dispatchWorkPackage();
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'tr' : 'en';
+      try {
+        localStorage.setItem('hub_lang', currentLang);
+      } catch (e) {}
+      applyLanguage();
     }
 
     (function initScadaHoverPopover() {
@@ -4678,6 +5028,7 @@
     })();
 
     window.addEventListener('DOMContentLoaded', async () => {
+      if (currentLang === 'tr') applyLanguage();
       await refreshQuotas();
       await fetchPolicyDoctor();
       await fetchModelReview();

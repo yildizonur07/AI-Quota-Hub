@@ -100,9 +100,11 @@ def check_sync_parity(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
     if not sync_script.exists():
         return {
             "id": "sync_parity",
-            "title": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
+            "title": "Sync Parity (sync.ps1 -Check)",
+            "title_tr": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
             "status": "WARN",
-            "summary": f"{sync_script} bulunamadı.",
+            "summary": f"{sync_script} not found.",
+            "summary_tr": f"{sync_script} bulunamadı.",
             "details": [],
         }
 
@@ -120,26 +122,32 @@ def check_sync_parity(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
         if proc.returncode == 0 and "SYNC OK" in out:
             return {
                 "id": "sync_parity",
-                "title": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
+                "title": "Sync Parity (sync.ps1 -Check)",
+                "title_tr": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
                 "status": "PASS",
-                "summary": "Tüm sağlayıcı hedef dosyaları (.claude, .codex, .gemini, .config/opencode) canonical kaynaklarla birebir senkronize (SYNC OK).",
+                "summary": "All provider target files (.claude, .codex, .gemini, .config/opencode) are in 1:1 sync with canonical sources (SYNC OK).",
+                "summary_tr": "Tüm sağlayıcı hedef dosyaları (.claude, .codex, .gemini, .config/opencode) canonical kaynaklarla birebir senkronize (SYNC OK).",
                 "details": [],
             }
         drift_lines = [ln.strip() for ln in (out + "\n" + err).splitlines() if ln.strip()]
         return {
             "id": "sync_parity",
-            "title": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
+            "title": "Sync Parity (sync.ps1 -Check)",
+            "title_tr": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
             "status": "FAIL",
-            "summary": "Canonical dosyalar ile sağlayıcı hedefleri arasında senkron kayması (DRIFT) tespit edildi.",
+            "summary": "Sync drift detected between canonical files and provider targets.",
+            "summary_tr": "Canonical dosyalar ile sağlayıcı hedefleri arasında senkron kayması (DRIFT) tespit edildi.",
             "details": drift_lines[:10],
-            "remediation": "powershell -NoProfile -ExecutionPolicy Bypass -File ~/.agents/sync.ps1 komutunu çalıştırın.",
+            "remediation": "Run: powershell -NoProfile -ExecutionPolicy Bypass -File ~/.agents/sync.ps1",
         }
     except Exception as exc:
         return {
             "id": "sync_parity",
-            "title": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
+            "title": "Sync Parity (sync.ps1 -Check)",
+            "title_tr": "Senkronizasyon Tutarlılığı (sync.ps1 -Check)",
             "status": "WARN",
-            "summary": f"sync.ps1 çalıştırılamadı: {exc}",
+            "summary": f"Failed to execute sync.ps1: {exc}",
+            "summary_tr": f"sync.ps1 çalıştırılamadı: {exc}",
             "details": [],
         }
 
@@ -175,7 +183,7 @@ def check_model_gates_and_opus_contradictions(root: Path = AGENTS_ROOT) -> Dict[
     ):
         if txt and ban_pattern.search(txt):
             issues.append(
-                f"Çelişki: {label} içinde 'Claude Opus' otomatik seçim yasağı cümlesinde, ancak ROUTING.md tablosunda 'Opus 5.5 medium' aktif güçlü model olarak tanımlı."
+                f"Contradiction: 'Claude Opus' appears in an auto-selection ban in {label}, while ROUTING.md lists 'Opus 5.5 medium' as an active strong model."
             )
 
     # Check that the Anti-Spike / Ultra-Burn intention & examples (e.g. > 2x, Fable, Carbon, xhigh) exist
@@ -185,23 +193,30 @@ def check_model_gates_and_opus_contradictions(root: Path = AGENTS_ROOT) -> Dict[
         for marker in ("Fable", "Carbon", "xhigh", "> 2x"):
             if marker.lower() not in txt.lower():
                 issues.append(
-                    f"Eksik Koruma İlkesi: {label} içinde Anti-Spike / Ultra-Burn kriteri veya örneği ('{marker}') bulunamadı."
+                    f"Missing Protection Guard: Anti-Spike / Ultra-Burn criterion or example ('{marker}') missing in {label}."
                 )
 
     if not opus_in_routing_table:
-        issues.append("ROUTING.md Machine Tier Map tablosunda 'Opus 5.5 medium' tanımı bulunamadı.")
+        issues.append("'Opus 5.5 medium' definition missing in ROUTING.md Machine Tier Map.")
 
     status = "PASS" if not issues else "FAIL"
     summary = (
+        "Anti-Spike / Ultra-Burn Quota Protection Principle (>2x cost/quota weight, >25% 5h / >10% 7d single-dispatch burn, and >high/xhigh effort cap; e.g. Fable, Carbon) is active; standard strong models (Opus 5.5, Argon, GPT-6.1-Sol) are enabled and contradiction-free."
+        if not issues
+        else f"{len(issues)} model authorization/rule contradiction(s) detected."
+    )
+    summary_tr = (
         "Anti-Spike / Ultra-Burn Kota Koruma İlkesi (>2x maliyet/kota ağırlığı, >%25 5s / >%10 7g tekil tüketim ve >high/xhigh efor sınırı; ör. Fable, Carbon) aktif; standart güçlü modeller (Opus 5.5, Argon, GPT-6.1-Sol) serbest ve çelişkisiz."
         if not issues
         else f"{len(issues)} model yetki/kural çelişkisi bulundu."
     )
     return {
         "id": "model_gates_consistency",
-        "title": "Anti-Spike Kota Koruma İlkesi & Model Tutarlılığı",
+        "title": "Anti-Spike Quota Protection & Model Consistency",
+        "title_tr": "Anti-Spike Kota Koruma İlkesi & Model Tutarlılığı",
         "status": status,
         "summary": summary,
+        "summary_tr": summary_tr,
         "details": issues,
     }
 
@@ -302,15 +317,22 @@ def check_subagent_definitions(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
 
     status = "PASS" if not issues else "FAIL"
     summary = (
+        f"Verified {len(roster_summary)} subagent definitions: maxTurns, effort, model, and read-only tool bounds match providers/claude.md."
+        if not issues
+        else f"Detected {len(issues)} mismatch(es) in subagent definitions."
+    )
+    summary_tr = (
         f"{len(roster_summary)} alt ajan tanımı doğrulandı: tümünde maxTurns, effort, model ve read-only araç sınırları providers/claude.md ile uyumlu."
         if not issues
         else f"Alt ajan tanımlarında {len(issues)} uyumsuzluk tespit edildi."
     )
     return {
         "id": "subagent_bounds",
-        "title": "Alt Ajan (Subagent) Sınırları & Read-Only İzinleri",
+        "title": "Subagent Bounds & Read-Only Permissions",
+        "title_tr": "Alt Ajan (Subagent) Sınırları & Read-Only İzinleri",
         "status": status,
         "summary": summary,
+        "summary_tr": summary_tr,
         "details": issues,
         "roster": roster_summary,
     }
@@ -338,7 +360,7 @@ def check_skill_override_parity(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
                 o_headings = len(re.findall(r"^##\s+", o_txt, flags=re.MULTILINE))
                 if b_headings != o_headings:
                     drifts.append(
-                        f"skills/{skill_name}/SKILL.md ({b_headings} bölüm) ile owner-overrides/skills/{skill_name}/SKILL.md ({o_headings} bölüm) arasında bölüm sayısı farkı var."
+                        f"Section count mismatch between skills/{skill_name}/SKILL.md ({b_headings}) and owner-overrides/skills/{skill_name}/SKILL.md ({o_headings})."
                     )
                 # Ensure all `brain.py <subcmd>` or script references in base exist in override
                 b_cmds = set(re.findall(r"brain\.py\s+([a-z\-]+)", b_txt))
@@ -346,20 +368,27 @@ def check_skill_override_parity(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
                 missing_cmds = sorted(b_cmds - o_cmds - {"command"})
                 if missing_cmds:
                     drifts.append(
-                        f"owner-overrides/skills/{skill_name}/SKILL.md içinde eksik alt komutlar: {', '.join(missing_cmds)}"
+                        f"Missing subcommands in owner-overrides/skills/{skill_name}/SKILL.md: {', '.join(missing_cmds)}"
                     )
 
     status = "PASS" if not drifts else "WARN"
     summary = (
+        f"Canonical and override skill files ({checked} shared skill(s)) are in full section and command parity."
+        if not drifts
+        else f"Detected canonical vs. override drift in {len(drifts)} skill file(s)."
+    )
+    summary_tr = (
         f"Canonical ve override skill dosyaları ({checked} ortak skill) bölüm ve komut düzeyinde tam uyumlu."
         if not drifts
         else f"{len(drifts)} skill dosyasında canonical vs. override farkı var."
     )
     return {
         "id": "skill_override_parity",
-        "title": "Skill & Owner-Override Senkronu",
+        "title": "Skill & Owner-Override Parity",
+        "title_tr": "Skill & Owner-Override Senkronu",
         "status": status,
         "summary": summary,
+        "summary_tr": summary_tr,
         "details": drifts,
     }
 
@@ -416,15 +445,22 @@ def check_policy_and_v2_invariants(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
 
     status = "PASS" if not issues else "FAIL"
     summary = (
+        "policy.json ceilings and Orchestration v2 safety barriers (Thin Waist, Fresh-Session, 2-Attempt Breaker, Anti-Pileup) are complete and consistent."
+        if not issues
+        else f"Detected {len(issues)} core rule/limit mismatch(es)."
+    )
+    summary_tr = (
         "policy.json limitleri ve Orchestration v2 güvenlik bariyerleri (Thin Waist, Fresh-Session, 2-Attempt Breaker, Anti-Pileup) tam ve tutarlı."
         if not issues
         else f"{len(issues)} temel kural/limit uyumsuzluğu tespit edildi."
     )
     return {
         "id": "policy_v2_invariants",
-        "title": "Orchestration v2 Koruma Bariyerleri & policy.json",
+        "title": "Orchestration v2 Safety Barriers & policy.json",
+        "title_tr": "Orchestration v2 Koruma Bariyerleri & policy.json",
         "status": status,
         "summary": summary,
+        "summary_tr": summary_tr,
         "details": issues,
     }
 
@@ -498,6 +534,10 @@ def analyze_bloat_and_compaction(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
                     "target": rel_path,
                     "estimated_token_saving": max(50, est_tokens - budget),
                     "suggestion": (
+                        f"{rel_path} is ~{est_tokens} tokens (budget: {budget}). "
+                        "Move explanatory examples to an on-demand skill reference and keep only hard rules here."
+                    ),
+                    "suggestion_tr": (
                         f"{rel_path} tahmini {est_tokens} token (bütçe: {budget}). "
                         "Açıklayıcı örnekleri on-demand skill referansına taşıyıp bu dosyada yalnız sert kuralları tutun."
                     ),
@@ -510,6 +550,10 @@ def analyze_bloat_and_compaction(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
                     "target": f"{rel_path}:{line_no}",
                     "estimated_token_saving": max(20, int((w_cnt - 70) * 1.3)),
                     "suggestion": (
+                        f"Line {line_no} contains {w_cnt} words in a single bullet ({preview}). "
+                        "Condense into a compact rule statement and move details to a reference doc."
+                    ),
+                    "suggestion_tr": (
                         f"Satır {line_no} tek maddede {w_cnt} kelime içeriyor ({preview}). "
                         "Maddeyi kısa kural ifadesine indirgeyip detayları alt referansa ayırabilirsiniz."
                     ),
@@ -526,6 +570,10 @@ def analyze_bloat_and_compaction(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
                     "target": " + ".join(locs[:3]),
                     "estimated_token_saving": 35 * (len(distinct_files) - 1),
                     "suggestion": (
+                        f"Identical rule clause is duplicated across multiple files ({', '.join(distinct_files)}). "
+                        "Keep one canonical definition in the always-loaded file and reference its heading elsewhere."
+                    ),
+                    "suggestion_tr": (
                         f"Aynı kural cümlesi birden fazla dosyada ({', '.join(distinct_files)}) birebir tekrar ediyor. "
                         "Her zaman yüklenen (always-loaded) dosyada tek özlü tanım bırakıp diğerlerinde başlığa referans verin."
                     ),
@@ -543,6 +591,10 @@ def analyze_bloat_and_compaction(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
                     "target": "owner-overrides/skills/orchestrator/SKILL.md",
                     "estimated_token_saving": 0,
                     "suggestion": (
+                        "owner-overrides/skills/orchestrator/SKILL.md is identical to canonical skills/orchestrator/SKILL.md. "
+                        "Remove the duplicate override copy to halve maintenance overhead (sync.ps1 falls back to canonical)."
+                    ),
+                    "suggestion_tr": (
                         "owner-overrides/skills/orchestrator/SKILL.md ile canonical skills/orchestrator/SKILL.md birebir aynı. "
                         "Kişisel fark eklemeyecekseniz override kopyasını silip bakım yükünü yarıya indirebilirsiniz (sync.ps1 otomatik canonical dosyayı kullanır)."
                     ),
@@ -581,6 +633,52 @@ def build_active_rules_summary(root: Path = AGENTS_ROOT) -> Dict[str, Any]:
     return {
         "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "categories": [
+            {
+                "id": "coordinator_and_pools",
+                "icon": "🎯",
+                "title": "1. Coordinator & Quota Pool Rules (Pre-Dispatch)",
+                "rules": [
+                    f"Live Quota Gate: Query Quota Hub (`GET /api/quotas`) before every launch; never launch on pools >={int(float(quota_cfg.get('exclude_at_used', 0.95))*100)}% used, and prefer another healthy pool above {int(float(quota_cfg.get('prefer_other_above', 0.80))*100)}%.",
+                    "CoordinatorPool != ImplementerPool (Anti-Pileup): Avoid stacking an active coordinator and multi-turn implementers onto the same quota pool when another eligible pool is healthy.",
+                    "Coordinator Thin Waist (Zero Source Edits): During multi-worker orchestration, the coordinator writes contracts/ledgers and runs deterministic git/build gates; it makes zero direct application source-code edits.",
+                    f"Concurrency Ceilings: Up to {max_leaves} total leaf workers (AGY: {max_per_prov.get('agy', 6)}, Claude: {max_per_prov.get('claude', 6)}, Codex: {max_per_prov.get('codex', 6)}). `MAX_WRITERS = 1` without a disjoint `edit_scope` contract.",
+                ],
+            },
+            {
+                "id": "subagent_limits",
+                "icon": "🛡️",
+                "title": "2. Subagent Turn, Context & Resume Bounds",
+                "rules": [
+                    "DELEGATION_DEPTH_MAX = 1: Workers are leaves; a subagent never spawns another subagent.",
+                    "Fresh-Session Default (Anti-Cache-Blowout): Start a fresh session passing disk checkpoint/handoff paths (never bloated transcripts) for repairs, re-reviews, provider handoffs, and post-reset continuations.",
+                    "Bounded Resume (<120k Context): `resume` / `SendMessage` on an active worker is allowed at most once for a brief clarification on the same unfinished task while input context is <120k tokens.",
+                    "Hard Role Caps: Implementer (sonnet, <=40 turns / 32k output) · Reviewer (opus, <=20 turns / 12k output, read-only) · Advisor (opus, <=12 turns / 12k output, read-only) · Scout & Extractor (haiku, <=12 turns / 6k output, read-only).",
+                ],
+            },
+            {
+                "id": "review_and_escalation",
+                "icon": "⚖️",
+                "title": "3. Independent Cross-Family Review & 2-Attempt Breaker",
+                "rules": [
+                    "Independent Reviewer: An implementer never reviews its own work. Give the reviewer requirements, diffs, and frozen constraints as facts — never the implementer's reasoning.",
+                    "Cross-Family / Distinct Pool Rule: When another eligible pool is healthy (or author pool is >60% used), select the reviewer from a model family and quota pool distinct from all surviving authors.",
+                    "Persistent 2-Attempt Breaker: The 2-failed-attempt counter persists across fresh sessions and provider handoffs. At 2 failed attempts, quarantine the task and run 1 bounded read-only RCA with a changed approach before retrying.",
+                    "2nd-Strike -> Deterministic Gate: If the same failure mode recurs twice, convert it into an automated unit test, lint rule, or Refinery check rather than adding prose warnings.",
+                ],
+            },
+            {
+                "id": "model_gates",
+                "icon": "🚀",
+                "title": "4. Anti-Spike Quota Protection & Model Eligibility",
+                "rules": [
+                    "Core Intent (Anti-Spike Principle): No single task or subagent loop may abruptly drain a 5h or weekly quota pool.",
+                    "Model-Agnostic Guard + Examples: Never auto-route routine work to ultra-burn models costing >2x standard HIGH-tier weight (e.g. Fable, Carbon), effort above `high` (e.g. `xhigh`, `max`), or a single dispatch predicted to burn >25% 5h / >10% 7d quota.",
+                    "Standard Strong Models Enabled: `Claude Opus 5.5` (`opus` medium), `Gemini 4 Argon`, and `GPT-6.1-Sol` are freely eligible for architecture, difficult debugging, `reviewer`, and `advisor` roles on healthy pools.",
+                    "Capability Floor: Never downgrade `HIGH`-floor architectural/critical work to weak models for quota savings; reasoning effort (`low` / `medium` / `high`) is chosen independently of model tier.",
+                ],
+            },
+        ],
+        "categories_tr": [
             {
                 "id": "coordinator_and_pools",
                 "icon": "🎯",
@@ -732,7 +830,7 @@ def get_latest_policy_doctor_report(
     if state_file.exists():
         try:
             data = json.loads(_read_utf8(state_file))
-            if isinstance(data, dict) and "checks" in data:
+            if isinstance(data, dict) and "checks" in data and data["checks"] and "title_tr" in data["checks"][0]:
                 # Always refresh active_rules_summary so live edits are reflected immediately
                 data["active_rules_summary"] = build_active_rules_summary(root)
                 return data
