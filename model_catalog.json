@@ -1,0 +1,385 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "provider": "agy",
+      "model_id": "gemini-4-hydrogen-low",
+      "cli_model": "gemini-4-hydrogen-low",
+      "quota_key": "gemini_flash",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "LOW",
+      "tier_rank": 1,
+      "effort": "low",
+      "default_preferred": true,
+      "context_window": 1000000,
+      "latency_score": 0.96,
+      "cost_weight": 0.95,
+      "label": "AGY \u00b7 Gemini 4 Hydrogen (Low)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-3.8-flash-low",
+      "cli_model": "gemini-3.8-flash-low",
+      "quota_key": "gemini_flash",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "LOW",
+      "tier_rank": 1,
+      "effort": "low",
+      "default_preferred": false,
+      "context_window": 1000000,
+      "latency_score": 0.95,
+      "cost_weight": 0.94,
+      "label": "AGY \u00b7 Gemini 3.8 Flash (Low - Fallback)"
+    },
+    {
+      "provider": "codex",
+      "model_id": "gpt-6.1-sol-low",
+      "cli_model": "gpt-6.1-sol",
+      "quota_key": "luna",
+      "pool_id": "codex_shared",
+      "pool_windows": [
+        "five_hour",
+        "weekly"
+      ],
+      "family": "openai",
+      "tier": "LOW",
+      "tier_rank": 1,
+      "effort": "low",
+      "default_preferred": true,
+      "context_window": 475000,
+      "latency_score": 0.92,
+      "cost_weight": 0.88,
+      "label": "Codex \u00b7 GPT-6.1-Sol (Low)"
+    },
+    {
+      "provider": "claude",
+      "model_id": "claude-haiku-5-5",
+      "cli_model": "claude-haiku-5-5",
+      "quota_key": "haiku",
+      "pool_id": "claude_shared",
+      "pool_windows": [
+        "five_hour",
+        "weekly"
+      ],
+      "family": "claude",
+      "tier": "LOW",
+      "tier_rank": 1,
+      "effort": "low",
+      "default_preferred": true,
+      "context_window": 200000,
+      "latency_score": 0.94,
+      "cost_weight": 0.9,
+      "label": "Claude Code \u00b7 Haiku 5.5 (Low)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-4-hydrogen-medium",
+      "cli_model": "gemini-4-hydrogen-medium",
+      "quota_key": "gemini_flash",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "MID",
+      "tier_rank": 2,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 1000000,
+      "latency_score": 0.93,
+      "cost_weight": 0.94,
+      "label": "AGY \u00b7 Gemini 4 Hydrogen (Medium)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-4-hydrogen-high",
+      "cli_model": "gemini-4-hydrogen-high",
+      "quota_key": "gemini_flash",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "MID",
+      "tier_rank": 2,
+      "effort": "high",
+      "default_preferred": true,
+      "context_window": 1000000,
+      "latency_score": 0.9,
+      "cost_weight": 0.92,
+      "label": "AGY \u00b7 Gemini 4 Hydrogen (High)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-3.8-flash-medium",
+      "cli_model": "gemini-3.8-flash-medium",
+      "quota_key": "gemini_flash",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "MID",
+      "tier_rank": 2,
+      "effort": "medium",
+      "default_preferred": false,
+      "context_window": 1000000,
+      "latency_score": 0.92,
+      "cost_weight": 0.93,
+      "label": "AGY \u00b7 Gemini 3.8 Flash (Medium - Fallback)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-3.8-flash-high",
+      "cli_model": "gemini-3.8-flash-high",
+      "quota_key": "gemini_flash",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "MID",
+      "tier_rank": 2,
+      "effort": "high",
+      "default_preferred": false,
+      "context_window": 1000000,
+      "latency_score": 0.89,
+      "cost_weight": 0.91,
+      "label": "AGY \u00b7 Gemini 3.8 Flash (High - Fallback)"
+    },
+    {
+      "provider": "claude",
+      "model_id": "claude-sonnet-5-5",
+      "cli_model": "claude-sonnet-5-5",
+      "quota_key": "sonnet",
+      "pool_id": "claude_shared",
+      "pool_windows": [
+        "five_hour",
+        "weekly"
+      ],
+      "family": "claude",
+      "tier": "MID",
+      "tier_rank": 2,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 200000,
+      "latency_score": 0.86,
+      "cost_weight": 0.86,
+      "label": "Claude Code \u00b7 Sonnet 5.5"
+    },
+    {
+      "provider": "agy",
+      "model_id": "claude-sonnet-5-5-medium",
+      "cli_model": "claude-sonnet-5-5-medium",
+      "quota_key": "claude_sonnet",
+      "pool_id": "agy_claude_gpt",
+      "pool_windows": [
+        "claude_gpt_5h",
+        "claude_gpt_weekly"
+      ],
+      "family": "claude",
+      "tier": "MID",
+      "tier_rank": 2,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 200000,
+      "latency_score": 0.85,
+      "cost_weight": 0.85,
+      "label": "AGY \u00b7 Claude Sonnet 5.5 (Medium)"
+    },
+    {
+      "provider": "codex",
+      "model_id": "gpt-6.1-sol-medium",
+      "cli_model": "gpt-6.1-sol",
+      "quota_key": "terra",
+      "pool_id": "codex_shared",
+      "pool_windows": [
+        "five_hour",
+        "weekly"
+      ],
+      "family": "openai",
+      "tier": "MID",
+      "tier_rank": 2,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 475000,
+      "latency_score": 0.84,
+      "cost_weight": 0.82,
+      "label": "Codex \u00b7 GPT-6.1-Sol (Medium)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-4-argon-medium",
+      "cli_model": "gemini-4-argon-medium",
+      "quota_key": "gemini_pro",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 1000000,
+      "latency_score": 0.82,
+      "cost_weight": 0.9,
+      "label": "AGY \u00b7 Gemini 4 Argon (Medium)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-4-argon-low",
+      "cli_model": "gemini-4-argon-low",
+      "quota_key": "gemini_pro",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "low",
+      "default_preferred": true,
+      "context_window": 1000000,
+      "latency_score": 0.86,
+      "cost_weight": 0.92,
+      "label": "AGY \u00b7 Gemini 4 Argon (Low)"
+    },
+    {
+      "provider": "claude",
+      "model_id": "claude-opus-5-5",
+      "cli_model": "claude-opus-5-5",
+      "quota_key": "opus",
+      "pool_id": "claude_shared",
+      "pool_windows": [
+        "five_hour",
+        "weekly"
+      ],
+      "family": "claude",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 1000000,
+      "latency_score": 0.78,
+      "cost_weight": 0.8,
+      "label": "Claude Code \u00b7 Opus 5.5"
+    },
+    {
+      "provider": "codex",
+      "model_id": "gpt-6.1-sol",
+      "cli_model": "gpt-6.1-sol",
+      "quota_key": "sol",
+      "pool_id": "codex_shared",
+      "pool_windows": [
+        "five_hour",
+        "weekly"
+      ],
+      "family": "openai",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 475000,
+      "latency_score": 0.8,
+      "cost_weight": 0.8,
+      "label": "Codex \u00b7 GPT-6.1-Sol"
+    },
+    {
+      "provider": "agy",
+      "model_id": "claude-opus-5-5-medium",
+      "cli_model": "claude-opus-5-5-medium",
+      "quota_key": "claude_opus",
+      "pool_id": "agy_claude_gpt",
+      "pool_windows": [
+        "claude_gpt_5h",
+        "claude_gpt_weekly"
+      ],
+      "family": "claude",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "medium",
+      "default_preferred": true,
+      "context_window": 200000,
+      "latency_score": 0.76,
+      "cost_weight": 0.84,
+      "label": "AGY \u00b7 Claude Opus 5.5 (Medium)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "gemini-4-argon-high",
+      "cli_model": "gemini-4-argon-high",
+      "quota_key": "gemini_pro",
+      "pool_id": "agy_gemini",
+      "pool_windows": [
+        "gemini_5h",
+        "gemini_weekly"
+      ],
+      "family": "gemini",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "high",
+      "default_preferred": false,
+      "context_window": 1000000,
+      "latency_score": 0.74,
+      "cost_weight": 0.82,
+      "label": "AGY \u00b7 Gemini 4 Argon (High - Exception Only)"
+    },
+    {
+      "provider": "agy",
+      "model_id": "claude-opus-5-5-high",
+      "cli_model": "claude-opus-5-5-high",
+      "quota_key": "claude_opus",
+      "pool_id": "agy_claude_gpt",
+      "pool_windows": [
+        "claude_gpt_5h",
+        "claude_gpt_weekly"
+      ],
+      "family": "claude",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "high",
+      "default_preferred": false,
+      "context_window": 200000,
+      "latency_score": 0.72,
+      "cost_weight": 0.78,
+      "label": "AGY \u00b7 Claude Opus 5.5 (High)"
+    },
+    {
+      "provider": "codex",
+      "model_id": "gpt-6.1-sol-high",
+      "cli_model": "gpt-6.1-sol",
+      "quota_key": "sol",
+      "pool_id": "codex_shared",
+      "pool_windows": [
+        "five_hour",
+        "weekly"
+      ],
+      "family": "openai",
+      "tier": "HIGH",
+      "tier_rank": 3,
+      "effort": "high",
+      "default_preferred": false,
+      "context_window": 475000,
+      "latency_score": 0.75,
+      "cost_weight": 0.76,
+      "label": "Codex \u00b7 GPT-6.1-Sol (High)"
+    }
+  ]
+}
