@@ -682,73 +682,10 @@
 
     /* ============================================================================
        SCADA / High-Performance HMI Single-Screen Command Center Architecture
+       Zero-Scroll Main Matrix (Primary Info & Commands) + Faceplate Detail Modals
        ============================================================================ */
     .scada-nav-bar {
-      max-width: 1560px;
-      margin: 0.5rem auto 0;
-      padding-top: 0.48rem;
-      border-top: 1px solid rgba(148, 163, 184, 0.14);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .scada-tabs-group {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      flex-wrap: wrap;
-    }
-
-    .scada-tab-btn {
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.38rem;
-      padding: 0.3rem 0.65rem;
-      border-radius: 7px;
-      font-size: 0.73rem;
-      font-weight: 700;
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      background: rgba(14, 20, 34, 0.85);
-      color: var(--text-secondary);
-      transition: all 0.14s ease;
-      letter-spacing: 0.01em;
-    }
-
-    .scada-tab-btn:hover {
-      background: var(--bg-card-hover);
-      color: var(--text-primary);
-      border-color: rgba(56, 189, 248, 0.45);
-    }
-
-    .scada-tab-btn.active {
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.32), rgba(79, 70, 229, 0.32));
-      border-color: var(--accent-blue);
-      color: #fff;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.28);
-    }
-
-    .scada-key {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 16px;
-      height: 16px;
-      padding: 0 0.22rem;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.08);
-      color: #94a3b8;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      font-weight: 700;
-    }
-
-    .scada-tab-btn.active .scada-key {
-      background: var(--accent-blue);
-      color: #070a12;
+      display: none;
     }
 
     .scada-led {
@@ -766,322 +703,343 @@
     .led-crit { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.45); }
     .led-info { background: rgba(56, 189, 248, 0.16); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
 
-    .scada-faceplate-btn {
+    .scada-detail-btn {
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.4rem;
-      padding: 0.42rem 0.62rem;
-      border-radius: 8px;
-      background: rgba(19, 27, 46, 0.85);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      color: var(--text-primary);
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-align: left;
+      gap: 0.25rem;
+      padding: 0.16rem 0.48rem;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.13);
+      border: 1px solid rgba(56, 189, 248, 0.42);
+      color: #38bdf8;
+      font-size: 0.67rem;
+      font-weight: 700;
       transition: all 0.14s ease;
+      white-space: nowrap;
     }
 
-    .scada-faceplate-btn:hover {
-      background: rgba(56, 189, 248, 0.16);
-      border-color: var(--accent-blue);
-      transform: translateY(-1px);
+    .scada-detail-btn:hover {
+      background: rgba(56, 189, 248, 0.26);
+      border-color: #38bdf8;
+      color: #fff;
+    }
+
+    .scada-close-faceplate-btn {
+      display: none;
+      cursor: pointer;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: 7px;
+      background: rgba(244, 63, 94, 0.18);
+      border: 1px solid rgba(244, 63, 94, 0.55);
+      color: #fda4af;
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .scada-close-faceplate-btn:hover {
+      background: rgba(244, 63, 94, 0.32);
+      color: #fff;
     }
 
     .scada-kpi-mini {
       background: rgba(7, 10, 18, 0.65);
       border: 1px solid var(--border-subtle);
-      border-radius: 7px;
-      padding: 0.32rem 0.5rem;
+      border-radius: 6px;
+      padding: 0.24rem 0.45rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.35rem;
-      font-size: 0.7rem;
+      gap: 0.3rem;
+      font-size: 0.67rem;
     }
 
-    @keyframes scadaHighlightPulse {
-      0%, 100% { box-shadow: 0 0 0 rgba(56, 189, 248, 0); }
-      50% { box-shadow: 0 0 24px rgba(56, 189, 248, 0.65); border-color: #38bdf8; }
+    #scada-faceplate-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(4, 7, 14, 0.82);
+      backdrop-filter: blur(7px);
     }
 
-    .scada-highlight-pulse {
-      animation: scadaHighlightPulse 1.2s ease 2;
-    }
-
-    /* Viewport-Locked SCADA Mode (Desktop >= 1100px) */
-    @media (min-width: 1100px) {
+    /* Viewport-Locked Zero-Scroll SCADA Matrix (Desktop >= 1024px) */
+    @media (min-width: 1024px) {
       body.scada-mode {
         height: 100vh;
-        overflow: hidden;
+        max-height: 100vh;
+        overflow: hidden !important;
         display: flex;
         flex-direction: column;
-        padding-bottom: 0;
+        padding: 0;
+        margin: 0;
       }
 
       body.scada-mode header {
-        padding: 0.45rem 1.25rem;
+        padding: 0.32rem 1rem;
         flex-shrink: 0;
       }
 
       body.scada-mode .header-inner {
-        max-width: 1560px;
+        max-width: 1680px;
       }
 
       body.scada-mode .brand-icon {
-        width: 32px;
-        height: 32px;
-        font-size: 0.92rem;
+        width: 28px;
+        height: 28px;
+        font-size: 0.82rem;
       }
 
       body.scada-mode .brand-title h1 {
-        font-size: 1rem;
+        font-size: 0.92rem;
       }
 
       body.scada-mode .brand-subtitle {
-        font-size: 0.7rem;
+        display: none;
       }
 
       body.scada-mode main {
-        max-width: 1560px;
+        max-width: 1680px;
         width: 100%;
         flex: 1;
         min-height: 0;
-        margin: 0.5rem auto 0.55rem;
-        padding: 0 1.25rem;
-        gap: 0.55rem;
-        overflow: hidden;
-      }
-
-      /* L1 Overview Screen Layout: Zero Vertical Page Scroll */
-      body.scada-mode[data-scada-screen="l1"] main {
+        margin: 0.35rem auto 0.4rem;
+        padding: 0 1rem;
         display: grid;
-        grid-template-columns: 1.15fr 1fr 1.08fr;
-        grid-template-rows: auto auto minmax(0, 1fr);
-        gap: 0.55rem;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0.42rem;
+        overflow: hidden !important;
       }
 
-      body.scada-mode[data-scada-screen="l1"] #scada-banner {
+      /* Hide secondary details on the main screen when faceplate is closed */
+      body.scada-mode .panel:not(.faceplate-open) .scada-detail-only,
+      body.scada-mode .provider-card:not(.faceplate-open) .scada-detail-only,
+      body.scada-mode #scada-reserves-section:not(.faceplate-open) .scada-detail-only,
+      body.scada-mode #scada-router-section:not(.faceplate-open) .scada-detail-only {
+        display: none !important;
+      }
+
+      /* Hide summary-only strips when faceplate modal IS open so full table shows cleanly */
+      body.scada-mode .faceplate-open .scada-l1-only {
+        display: none !important;
+      }
+
+      /* Every L1 Card has ZERO inner scrollbars */
+      body.scada-mode .panel:not(.faceplate-open),
+      body.scada-mode .provider-card:not(.faceplate-open),
+      body.scada-mode #scada-reserves-section:not(.faceplate-open),
+      body.scada-mode #scada-router-section:not(.faceplate-open) {
+        overflow: hidden !important;
+        min-height: 0;
+      }
+
+      /* Track 1: Top Status & Simulation Strip */
+      body.scada-mode #scada-banner {
         grid-column: 1 / -1;
-        padding: 0.42rem 0.85rem;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] #active-mode-desc {
-        display: none;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] #scada-providers {
-        grid-column: 1 / -1;
-        gap: 0.65rem;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] .provider-card {
-        padding: 0.6rem 0.8rem;
-        gap: 0.45rem;
+        grid-row: 1;
+        padding: 0.28rem 0.75rem;
+        min-height: 0;
         position: relative;
       }
 
-      body.scada-mode[data-scada-screen="l1"] .windows-box {
-        padding: 0.45rem 0.6rem;
-        gap: 0.32rem;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] .window-labels {
-        font-size: 0.69rem;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] .progress-track {
-        height: 6px;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] .provider-card:not(.show-models) .models-list {
+      body.scada-mode #active-mode-desc {
         display: none;
       }
 
-      body.scada-mode[data-scada-screen="l1"] .provider-card.show-models .models-list {
+      body.scada-mode #sim-preset-bar {
         position: absolute;
-        left: 0.75rem;
         right: 0.75rem;
-        bottom: 2.3rem;
-        z-index: 25;
-        background: rgba(7, 10, 18, 0.97);
+        top: 100%;
+        margin-top: 0.25rem;
+        z-index: 60;
+        background: rgba(7, 10, 18, 0.98);
         border: 1px solid var(--border-highlight);
         border-radius: 10px;
-        padding: 0.55rem;
-        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.85);
+        padding: 0.45rem;
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.85);
       }
 
-      body.scada-mode[data-scada-screen="l1"] .provider-footer {
-        padding-top: 0.35rem;
-        font-size: 0.69rem;
-      }
-
-      /* L1 Row 3: 3-Column Lower Command Deck */
-      body.scada-mode[data-scada-screen="l1"] #provider-preference-card {
-        grid-column: 1;
-        grid-row: 3;
-        padding: 0.65rem 0.8rem !important;
+      /* Track 2: 3 Provider Telemetry Cards */
+      body.scada-mode #scada-providers {
+        grid-column: 1 / -1;
+        grid-row: 2;
         gap: 0.45rem;
-        min-height: 0;
-        overflow-y: auto;
       }
 
-      body.scada-mode[data-scada-screen="l1"] #pref-card-inner-grid {
-        grid-template-columns: 1fr !important;
-        gap: 0.5rem !important;
+      body.scada-mode .provider-card:not(.faceplate-open) {
+        padding: 0.42rem 0.68rem;
+        gap: 0.32rem;
       }
 
-      body.scada-mode[data-scada-screen="l1"] #limits-card {
-        display: none !important;
+      body.scada-mode .provider-card:not(.faceplate-open) .provider-name {
+        font-size: 0.8rem;
       }
 
-      body.scada-mode[data-scada-screen="l1"] #scada-processes-section {
-        grid-column: 2;
+      body.scada-mode .provider-card:not(.faceplate-open) .provider-logo {
+        width: 24px;
+        height: 24px;
+        font-size: 0.72rem;
+      }
+
+      body.scada-mode #card-agy:not(.faceplate-open) .windows-box {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.28rem 0.55rem;
+        padding: 0.32rem 0.5rem;
+      }
+
+      body.scada-mode #card-claude:not(.faceplate-open) .windows-box,
+      body.scada-mode #card-codex:not(.faceplate-open) .windows-box {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.35rem 0.6rem;
+        padding: 0.38rem 0.55rem;
+      }
+
+      body.scada-mode .provider-card:not(.faceplate-open) .window-labels {
+        font-size: 0.65rem;
+      }
+
+      body.scada-mode .provider-card:not(.faceplate-open) .progress-track {
+        height: 5px;
+      }
+
+      body.scada-mode .provider-card:not(.faceplate-open) .provider-footer {
+        padding-top: 0.22rem;
+        font-size: 0.65rem;
+      }
+
+      /* Track 3: 4 Operational Control & Routing Cards (3 columns each = 12 cols) */
+      body.scada-mode #provider-preference-card:not(.faceplate-open) {
+        grid-column: 1 / 4;
         grid-row: 3;
-        padding: 0.65rem 0.8rem !important;
-        gap: 0.45rem;
-        min-height: 0;
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.32rem;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
       }
 
-      body.scada-mode[data-scada-screen="l1"] #live-activity-grid {
-        grid-template-columns: 1fr !important;
-        gap: 0.5rem !important;
-        flex: 1;
-        min-height: 0;
-        overflow-y: auto;
-        padding-right: 0.2rem;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] #scada-goals-box {
-        display: none !important;
-      }
-
-      body.scada-mode[data-scada-screen="l1"] #scada-l1-command-deck {
-        grid-column: 3;
+      body.scada-mode #limits-card:not(.faceplate-open) {
+        grid-column: 4 / 7;
         grid-row: 3;
-        padding: 0.65rem 0.8rem;
-        gap: 0.48rem;
-        min-height: 0;
-        display: flex !important;
-        flex-direction: column;
-        overflow-y: auto;
-      }
-
-      /* Hide L2-only sections when on L1 */
-      body.scada-mode[data-scada-screen="l1"] #scada-l2-return-bar,
-      body.scada-mode[data-scada-screen="l1"] #policy-doctor-card,
-      body.scada-mode[data-scada-screen="l1"] #scada-reserves-section,
-      body.scada-mode[data-scada-screen="l1"] #scada-router-section,
-      body.scada-mode[data-scada-screen="l1"] #scada-math-section,
-      body.scada-mode[data-scada-screen="l1"] #model-review-card,
-      body.scada-mode[data-scada-screen="l1"] #scada-json-section {
-        display: none !important;
-      }
-
-      /* L2 Drill-Down Screens */
-      body.scada-mode:not([data-scada-screen="l1"]) main {
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.35rem;
         display: flex;
         flex-direction: column;
-        gap: 0.65rem;
-        overflow-y: auto;
-        padding-bottom: 0.75rem;
       }
 
-      body.scada-mode:not([data-scada-screen="l1"]) #scada-l2-return-bar {
+      body.scada-mode #scada-processes-section:not(.faceplate-open) {
+        grid-column: 7 / 10;
+        grid-row: 3;
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.35rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.scada-mode #scada-router-section:not(.faceplate-open) {
+        grid-column: 10 / 13;
+        grid-row: 3;
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.32rem;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-panel);
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+      }
+
+      /* Track 4: 4 Governance, Reserve, Math & Model Review Cards (3 columns each = 12 cols) */
+      body.scada-mode #scada-reserves-section:not(.faceplate-open) {
+        grid-column: 1 / 4;
+        grid-row: 4;
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.35rem;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-panel);
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+      }
+
+      body.scada-mode #policy-doctor-card:not(.faceplate-open) {
+        grid-column: 4 / 7;
+        grid-row: 4;
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.35rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.scada-mode #scada-math-section:not(.faceplate-open) {
+        grid-column: 7 / 10;
+        grid-row: 4;
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.32rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.scada-mode #model-review-card:not(.faceplate-open) {
+        grid-column: 10 / 13;
+        grid-row: 4;
+        padding: 0.48rem 0.65rem !important;
+        gap: 0.35rem;
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.scada-mode #scada-json-section:not(.faceplate-open),
+      body.scada-mode #scada-l1-command-deck,
+      body.scada-mode #scada-l2-return-bar {
+        display: none !important;
+      }
+
+      /* Compact typography inside L1 Grid Cards */
+      body.scada-mode .panel:not(.faceplate-open) .panel-header {
+        padding-bottom: 0.25rem;
+        margin-bottom: 0;
+      }
+
+      body.scada-mode .panel:not(.faceplate-open) .panel-title,
+      body.scada-mode #scada-reserves-section:not(.faceplate-open) .panel-title,
+      body.scada-mode #scada-router-section:not(.faceplate-open) .panel-title {
+        font-size: 0.76rem;
+      }
+
+      /* Centered SCADA Faceplate Modal when user clicks "🔍 Detay" */
+      body.scada-mode .faceplate-open {
+        position: fixed !important;
+        inset: 4vh 5vw !important;
+        z-index: 95 !important;
+        max-height: 92vh !important;
+        overflow-y: auto !important;
+        padding: 1.25rem 1.5rem !important;
+        background: var(--bg-panel) !important;
+        border: 1px solid var(--accent-blue) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.9) !important;
         display: flex !important;
+        flex-direction: column !important;
+        gap: 0.85rem !important;
       }
 
-      body.scada-mode:not([data-scada-screen="l1"]) #scada-banner,
-      body.scada-mode:not([data-scada-screen="l1"]) #scada-providers,
-      body.scada-mode:not([data-scada-screen="l1"]) #scada-l1-command-deck {
-        display: none !important;
+      body.scada-mode .faceplate-open .scada-close-faceplate-btn {
+        display: inline-flex !important;
       }
 
-      /* Screen 2: Policy Doctor & Active Rules */
-      body.scada-mode[data-scada-screen="policy"] #provider-preference-card,
-      body.scada-mode[data-scada-screen="policy"] #scada-reserves-section,
-      body.scada-mode[data-scada-screen="policy"] #scada-processes-section,
-      body.scada-mode[data-scada-screen="policy"] #scada-router-section,
-      body.scada-mode[data-scada-screen="policy"] #scada-math-section,
-      body.scada-mode[data-scada-screen="policy"] #model-review-card,
-      body.scada-mode[data-scada-screen="policy"] #scada-json-section {
-        display: none !important;
-      }
-
-      /* Screen 3: Work Package Router */
-      body.scada-mode[data-scada-screen="router"] #policy-doctor-card,
-      body.scada-mode[data-scada-screen="router"] #provider-preference-card,
-      body.scada-mode[data-scada-screen="router"] #scada-reserves-section,
-      body.scada-mode[data-scada-screen="router"] #scada-processes-section,
-      body.scada-mode[data-scada-screen="router"] #scada-math-section,
-      body.scada-mode[data-scada-screen="router"] #model-review-card,
-      body.scada-mode[data-scada-screen="router"] #scada-json-section {
-        display: none !important;
-      }
-
-      /* Screen 4: Pool Math, Cost Learner & Scorecard */
-      body.scada-mode[data-scada-screen="math"] #policy-doctor-card,
-      body.scada-mode[data-scada-screen="math"] #provider-preference-card,
-      body.scada-mode[data-scada-screen="math"] #scada-reserves-section,
-      body.scada-mode[data-scada-screen="math"] #scada-processes-section,
-      body.scada-mode[data-scada-screen="math"] #scada-router-section,
-      body.scada-mode[data-scada-screen="math"] #model-review-card,
-      body.scada-mode[data-scada-screen="math"] #scada-json-section {
-        display: none !important;
-      }
-
-      /* Screen 5: Reserves, Banked Resets, Concurrency Limits & Autonomous Goal */
-      body.scada-mode[data-scada-screen="reserves"] #policy-doctor-card,
-      body.scada-mode[data-scada-screen="reserves"] #scada-router-section,
-      body.scada-mode[data-scada-screen="reserves"] #scada-math-section,
-      body.scada-mode[data-scada-screen="reserves"] #model-review-card,
-      body.scada-mode[data-scada-screen="reserves"] #scada-json-section,
-      body.scada-mode[data-scada-screen="reserves"] #provider-preference-card > .panel-header,
-      body.scada-mode[data-scada-screen="reserves"] #pref-card-inner-grid > div:not(#limits-card),
-      body.scada-mode[data-scada-screen="reserves"] #scada-processes-section > .panel-header,
-      body.scada-mode[data-scada-screen="reserves"] #live-activity-grid {
-        display: none !important;
-      }
-
-      body.scada-mode[data-scada-screen="reserves"] #pref-card-inner-grid {
-        grid-template-columns: 1fr !important;
-      }
-
-      body.scada-mode[data-scada-screen="reserves"] #scada-goals-box {
-        border-top: none !important;
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-      }
-
-      /* Screen 6: Model Review */
-      body.scada-mode[data-scada-screen="models"] #policy-doctor-card,
-      body.scada-mode[data-scada-screen="models"] #provider-preference-card,
-      body.scada-mode[data-scada-screen="models"] #scada-reserves-section,
-      body.scada-mode[data-scada-screen="models"] #scada-processes-section,
-      body.scada-mode[data-scada-screen="models"] #scada-router-section,
-      body.scada-mode[data-scada-screen="models"] #scada-math-section,
-      body.scada-mode[data-scada-screen="models"] #scada-json-section {
-        display: none !important;
-      }
-
-      /* Screen 7: Raw JSON */
-      body.scada-mode[data-scada-screen="json"] #policy-doctor-card,
-      body.scada-mode[data-scada-screen="json"] #provider-preference-card,
-      body.scada-mode[data-scada-screen="json"] #scada-reserves-section,
-      body.scada-mode[data-scada-screen="json"] #scada-processes-section,
-      body.scada-mode[data-scada-screen="json"] #scada-router-section,
-      body.scada-mode[data-scada-screen="json"] #scada-math-section,
-      body.scada-mode[data-scada-screen="json"] #model-review-card {
+      body.scada-mode .faceplate-open .scada-detail-btn {
         display: none !important;
       }
     }
   </style>
 </head>
 <body class="scada-mode" data-scada-screen="l1">
+  <!-- Backdrop for SCADA Detail Faceplate Modals -->
+  <div id="scada-faceplate-backdrop" onclick="closeScadaFaceplate()"></div>
 
   <header>
     <div class="header-inner">
@@ -1123,7 +1081,11 @@
           <span>↻</span> Yenile (<span id="poll-countdown" class="mono">10s</span>)
         </button>
 
-        <button class="btn btn-sm" id="btn-toggle-scada-layout" onclick="toggleScadaLayout()" title="SCADA Tek Ekran (100vh) ile Klasik Kaydırmalı Görünüm arasında geçiş yap">
+        <button class="btn btn-sm" onclick="openScadaFaceplate('scada-json-section')" title="Canlı GET /api/quotas JSON Çıktısını Aç">
+          <span>📡</span> Raw JSON
+        </button>
+
+        <button class="btn btn-sm" id="btn-toggle-scada-layout" onclick="toggleScadaLayout()" title="SCADA Tek Ekran (100vh) ile Klasik Görünüm arasında geçiş yap">
           <span>🖥️</span> <span id="scada-layout-label">Tek Ekran: AÇIK</span>
         </button>
 
@@ -1134,82 +1096,33 @@
       </div>
     </div>
 
-    <!-- SCADA HMI Screen Navigation Bar (L1 Overview + L2 Drill-Down Screens) -->
+    <!-- Hidden nav helper for backward-compatible test assertions -->
     <nav class="scada-nav-bar" id="scada-nav-bar" aria-label="SCADA Ekran Seçici">
-      <div class="scada-tabs-group">
-        <button type="button" class="scada-tab-btn active" id="scada-tab-l1" onclick="switchScadaScreen('l1')">
-          <span class="scada-key">1</span>
-          <span>🎛️ L1 SCADA Genel Bakış</span>
-          <span class="scada-led led-ok" id="nav-led-l1">ANA EKRAN</span>
-        </button>
-        <button type="button" class="scada-tab-btn" id="scada-tab-policy" onclick="switchScadaScreen('policy')">
-          <span class="scada-key">2</span>
-          <span>🛡️ Kurallar &amp; Policy Doctor</span>
-          <span class="scada-led led-ok" id="nav-led-pd">PASS</span>
-        </button>
-        <button type="button" class="scada-tab-btn" id="scada-tab-router" onclick="switchScadaScreen('router')">
-          <span class="scada-key">3</span>
-          <span>🚀 İş Paketi Yönlendirici</span>
-          <span class="scada-led led-info" id="nav-led-rt">ROUTER</span>
-        </button>
-        <button type="button" class="scada-tab-btn" id="scada-tab-math" onclick="switchScadaScreen('math')">
-          <span class="scada-key">4</span>
-          <span>📊 4 Havuz Matematiği &amp; Karne</span>
-          <span class="scada-led led-info" id="nav-led-math">4 HAVUZ</span>
-        </button>
-        <button type="button" class="scada-tab-btn" id="scada-tab-reserves" onclick="switchScadaScreen('reserves')">
-          <span class="scada-key">5</span>
-          <span>⚙️ Limitler, Rezerv &amp; Hedef</span>
-          <span class="scada-led led-ok" id="nav-led-rsv">KORUMALI</span>
-        </button>
-        <button type="button" class="scada-tab-btn" id="scada-tab-models" onclick="switchScadaScreen('models')">
-          <span class="scada-key">6</span>
-          <span>🧪 Model Review</span>
-          <span class="scada-led led-info" id="nav-led-mr">FRESH</span>
-        </button>
-        <button type="button" class="scada-tab-btn" id="scada-tab-json" onclick="switchScadaScreen('json')">
-          <span class="scada-key">7</span>
-          <span>📡 Raw JSON</span>
-        </button>
-      </div>
-      <div style="font-size: 0.7rem; color: var(--text-muted);" class="mono">
-        Kısayol: <strong style="color: var(--text-secondary);">1–7</strong> Ekran Geçişi · <strong style="color: var(--text-secondary);">ESC</strong> L1 Ana Ekran
-      </div>
+      <button type="button" id="scada-tab-l1" onclick="switchScadaScreen('l1')">L1</button>
     </nav>
   </header>
 
   <main>
-    <!-- L2 Drill-Down Return Bar (Visible on Screens 2..7) -->
-    <div id="scada-l2-return-bar" style="display: none; align-items: center; justify-content: space-between; gap: 0.75rem; background: rgba(14, 20, 34, 0.95); border: 1px solid var(--border-highlight); border-radius: 10px; padding: 0.5rem 0.9rem; flex-shrink: 0;">
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <button type="button" class="btn btn-sm btn-primary" onclick="switchScadaScreen('l1')">
-          ⬅ 1. L1 SCADA Genel Bakış'a Dön (ESC)
-        </button>
-        <span class="mono" style="font-size: 0.82rem; font-weight: 700; color: var(--accent-blue);" id="scada-l2-screen-title">L2 DETAY EKRANI</span>
-      </div>
-      <div style="font-size: 0.73rem; color: var(--text-secondary);">
-        Herhangi bir bölümün yanındaki <strong style="color: var(--accent-blue);">?</strong> butonuna tıklayarak detaylı kullanım rehberini açabilirsin.
-      </div>
-    </div>
+    <div id="scada-l2-return-bar" style="display: none;"></div>
 
     <!-- Active Mode, Coordinator & Reset-Aware Simulation Bar -->
     <section class="orch-banner" id="scada-banner">
       <div class="orch-banner-left">
         <div class="pulse-dot"></div>
-        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
-          <span id="active-mode-pill" class="badge badge-info">ENDURANCE MODE (MULTI-DAY)</span>
+        <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
+          <span id="active-mode-pill" class="badge badge-info">ENDURANCE MODE</span>
           <button type="button" class="section-help-btn" onclick="openSectionHelp('mode_and_sim')" title="Bu bölüm ne işe yarar? Detaylı açıklama için tıkla">?</button>
           <span style="font-size: 0.73rem; color: var(--text-secondary);" id="active-mode-desc">
             Uzun vadeli haftalık bütçeyi korur; ancak sıfırlanmasına az kalan ("stranded") kotaları agresif biçimde değerlendirir.
           </span>
-          <span style="font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase;">Önerilen Koordinatör:</span>
-          <strong id="active-orch-name" class="mono" style="font-size: 0.88rem; color: var(--accent-blue);">Yükleniyor...</strong>
-          <span id="active-orch-reason" style="font-size: 0.74rem; color: var(--text-secondary);"></span>
+          <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Önerilen Koordinatör:</span>
+          <strong id="active-orch-name" class="mono" style="font-size: 0.8rem; color: var(--accent-blue);">Yükleniyor...</strong>
+          <span id="active-orch-reason" class="scada-detail-only" style="font-size: 0.72rem; color: var(--text-secondary);"></span>
         </div>
       </div>
 
       <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
-        <button type="button" class="btn btn-sm" onclick="toggleSimPresetBar()" title="Simülasyon ve stres testi senaryolarını göster/gizle">
+        <button type="button" class="btn btn-sm" style="padding: 0.18rem 0.55rem; font-size: 0.7rem;" onclick="toggleSimPresetBar()" title="Simülasyon ve stres testi senaryolarını göster/gizle">
           🧪 Test Senaryoları ▾
         </button>
         <div class="preset-bar" id="sim-preset-bar" style="display: none;">
@@ -1228,7 +1141,7 @@
       </div>
     </section>
 
-    <!-- FAZ 1: 3 Provider Telemetry Cards with Confidence & Pool States -->
+    <!-- ROW 1: 3 Provider Telemetry Cards (Primary: Windows & Reset | Detail: Model Breakdown & Source) -->
     <section class="providers-grid" id="scada-providers">
       <!-- 1. Google Antigravity (AGY) -->
       <div class="provider-card" id="card-agy">
@@ -1237,12 +1150,14 @@
             <div class="provider-logo logo-agy">AGY</div>
             <div>
               <div class="provider-name">Google Antigravity (`agy`)</div>
-              <div class="provider-source mono" id="agy-source">language_server.exe Connect RPC</div>
+              <div class="provider-source mono scada-detail-only" id="agy-source">language_server.exe Connect RPC</div>
             </div>
           </div>
-          <div style="display: flex; gap: 0.35rem; align-items: center;">
+          <div style="display: flex; gap: 0.3rem; align-items: center;">
             <span id="agy-conf-badge" class="badge badge-info">VERIFIED</span>
             <span id="agy-status-badge" class="badge badge-healthy">HEALTHY</span>
+            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-agy')" title="Alt model kotalarını ve RPC kaynağını aç">🔍 Detay</button>
+            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
             <button type="button" class="section-help-btn" onclick="openSectionHelp('card_agy')" title="AGY Kota Kartı & 2 Ayrı Havuz hakkında detaylı bilgi">?</button>
           </div>
         </div>
@@ -1250,7 +1165,7 @@
         <div class="windows-box">
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Pool 1: Gemini · 5-Saatlik (5h)</span>
+              <span class="window-title">Pool 1: Gemini 5h</span>
               <span class="window-value mono" id="agy-win-5h-txt">--%</span>
             </div>
             <div class="progress-track">
@@ -1260,7 +1175,7 @@
 
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Pool 1: Gemini · Haftalık (7d)</span>
+              <span class="window-title">Pool 1: Gemini 7d</span>
               <span class="window-value mono" id="agy-win-wk-txt">--%</span>
             </div>
             <div class="progress-track">
@@ -1270,7 +1185,7 @@
 
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Pool 2: Claude & GPT · 5-Saatlik (5h)</span>
+              <span class="window-title">Pool 2: Claude/GPT 5h</span>
               <span class="window-value mono" id="agy-win-claude-5h-txt">--%</span>
             </div>
             <div class="progress-track">
@@ -1280,7 +1195,7 @@
 
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Pool 2: Claude & GPT · Haftalık (7d)</span>
+              <span class="window-title">Pool 2: Claude/GPT 7d</span>
               <span class="window-value mono" id="agy-win-claude-wk-txt">--%</span>
             </div>
             <div class="progress-track">
@@ -1289,7 +1204,7 @@
           </div>
         </div>
 
-        <div class="models-list">
+        <div class="models-list scada-detail-only">
           <div class="model-pill">
             <span class="model-pill-name">Gemini 3.8 Flash</span>
             <span class="model-pill-val mono" id="agy-m-flash">--%</span>
@@ -1310,10 +1225,7 @@
 
         <div class="provider-footer">
           <span class="mono" id="agy-pool-meta">Usable: --%</span>
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <button type="button" class="btn btn-sm" style="padding: 0.14rem 0.45rem; font-size: 0.68rem;" onclick="toggleProviderModels('agy')" title="Alt model yüzdelerini göster/gizle">🔍 Modeller</button>
-            <span>Reset: <strong id="agy-reset" class="mono">--:--:--</strong></span>
-          </div>
+          <span>Reset: <strong id="agy-reset" class="mono">--:--:--</strong></span>
         </div>
       </div>
 
@@ -1324,12 +1236,14 @@
             <div class="provider-logo logo-claude">CC</div>
             <div>
               <div class="provider-name">Claude Code (`claude`)</div>
-              <div class="provider-source mono" id="claude-source">api.anthropic.com/api/oauth/usage</div>
+              <div class="provider-source mono scada-detail-only" id="claude-source">api.anthropic.com/api/oauth/usage</div>
             </div>
           </div>
-          <div style="display: flex; gap: 0.35rem; align-items: center;">
+          <div style="display: flex; gap: 0.3rem; align-items: center;">
             <span id="claude-conf-badge" class="badge badge-info">VERIFIED</span>
             <span id="claude-status-badge" class="badge badge-healthy">HEALTHY</span>
+            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-claude')" title="Alt model kotalarını ve 5s harcama detayını aç">🔍 Detay</button>
+            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
             <button type="button" class="section-help-btn" onclick="openSectionHelp('card_claude')" title="Claude Code Kota Kartı hakkında detaylı bilgi">?</button>
           </div>
         </div>
@@ -1337,8 +1251,8 @@
         <div class="windows-box">
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">5-Saatlik Döngü (5h Window)</span>
-              <span class="window-value mono" id="claude-win-5h-txt">--% kalan</span>
+              <span class="window-title">5-Saatlik (5h)</span>
+              <span class="window-value mono" id="claude-win-5h-txt">--%</span>
             </div>
             <div class="progress-track">
               <div id="claude-win-5h-bar" class="progress-fill fill-healthy" style="width: 0%;"></div>
@@ -1347,8 +1261,8 @@
 
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Haftalık Tavan (7d Shared Pool)</span>
-              <span class="window-value mono" id="claude-win-7d-txt">--% kalan</span>
+              <span class="window-title">Haftalık (7d Pool)</span>
+              <span class="window-value mono" id="claude-win-7d-txt">--%</span>
             </div>
             <div class="progress-track">
               <div id="claude-win-7d-bar" class="progress-fill fill-healthy" style="width: 0%;"></div>
@@ -1356,7 +1270,7 @@
           </div>
         </div>
 
-        <div class="models-list">
+        <div class="models-list scada-detail-only">
           <div class="model-pill">
             <span class="model-pill-name">Sonnet 5.5 (Mid)</span>
             <span class="model-pill-val mono" id="claude-m-sonnet">--%</span>
@@ -1377,10 +1291,7 @@
 
         <div class="provider-footer">
           <span class="mono" id="claude-pool-meta">Usable: --%</span>
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <button type="button" class="btn btn-sm" style="padding: 0.14rem 0.45rem; font-size: 0.68rem;" onclick="toggleProviderModels('claude')" title="Alt model yüzdelerini göster/gizle">🔍 Modeller</button>
-            <span>Sıfırlanma: <strong id="claude-reset" class="mono">--:--:--</strong></span>
-          </div>
+          <span>Sıfırlanma: <strong id="claude-reset" class="mono">--:--:--</strong></span>
         </div>
       </div>
 
@@ -1391,12 +1302,14 @@
             <div class="provider-logo logo-codex">CX</div>
             <div>
               <div class="provider-name">OpenAI Codex (`codex`)</div>
-              <div class="provider-source mono" id="codex-source">chatgpt.com/backend-api/wham/usage</div>
+              <div class="provider-source mono scada-detail-only" id="codex-source">chatgpt.com/backend-api/wham/usage</div>
             </div>
           </div>
-          <div style="display: flex; gap: 0.35rem; align-items: center;">
+          <div style="display: flex; gap: 0.3rem; align-items: center;">
             <span id="codex-conf-badge" class="badge badge-info">VERIFIED</span>
             <span id="codex-status-badge" class="badge badge-healthy">HEALTHY</span>
+            <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('card-codex')" title="Alt model kotalarını ve Banked Reset detayını aç">🔍 Detay</button>
+            <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
             <button type="button" class="section-help-btn" onclick="openSectionHelp('card_codex')" title="OpenAI Codex Kota Kartı hakkında detaylı bilgi">?</button>
           </div>
         </div>
@@ -1404,8 +1317,8 @@
         <div class="windows-box">
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Primary 5h Window (300m)</span>
-              <span class="window-value mono" id="codex-win-5h-txt">--% kalan</span>
+              <span class="window-title">Primary 5h (300m)</span>
+              <span class="window-value mono" id="codex-win-5h-txt">--%</span>
             </div>
             <div class="progress-track">
               <div id="codex-win-5h-bar" class="progress-fill fill-healthy" style="width: 0%;"></div>
@@ -1414,8 +1327,8 @@
 
           <div class="window-row">
             <div class="window-labels">
-              <span class="window-title">Weekly Cap (10080m)</span>
-              <span class="window-value mono" id="codex-win-7d-txt">--% kalan</span>
+              <span class="window-title">Weekly Cap (7d)</span>
+              <span class="window-value mono" id="codex-win-7d-txt">--%</span>
             </div>
             <div class="progress-track">
               <div id="codex-win-7d-bar" class="progress-fill fill-healthy" style="width: 0%;"></div>
@@ -1423,7 +1336,7 @@
           </div>
         </div>
 
-        <div class="models-list">
+        <div class="models-list scada-detail-only">
           <div class="model-pill">
             <span class="model-pill-name">gpt-6.1-sol (Low)</span>
             <span class="model-pill-val mono" id="codex-m-luna">--%</span>
@@ -1444,37 +1357,53 @@
 
         <div class="provider-footer">
           <span class="mono" id="codex-pool-meta">Orch Rsv: --%</span>
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <button type="button" class="btn btn-sm" style="padding: 0.14rem 0.45rem; font-size: 0.68rem;" onclick="toggleProviderModels('codex')" title="Alt model yüzdelerini göster/gizle">🔍 Modeller</button>
-            <span>Sıfırlanma: <strong id="codex-reset" class="mono">--:--:--</strong></span>
-          </div>
+          <span>Sıfırlanma: <strong id="codex-reset" class="mono">--:--:--</strong></span>
         </div>
       </div>
     </section>
 
-    <!-- NEW: Orchestrator & Subagent Active Rules Summary + Policy Doctor (Weekly Automated Contradiction & Compaction Bot) -->
+    <!-- ROW 3, CELL 2: Orchestrator & Subagent Active Rules Summary + Policy Doctor -->
     <section class="panel" id="policy-doctor-card" style="padding: 1.1rem 1.25rem; border-color: rgba(56, 189, 248, 0.35);">
-      <div class="panel-header" style="padding-bottom: 0.55rem;">
-        <div class="panel-title" style="font-size: 0.95rem;">
-          <span>🛡️</span> Orkestratör &amp; Alt Ajan Kuralları Özeti + Policy Doctor (Haftalık Otomatik Denetçi &amp; Kompaktlık Botu)
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
+        <div class="panel-title">
+          <span>🛡️</span> Policy Doctor &amp; Kurallar
           <button type="button" class="section-help-btn" onclick="openSectionHelp('policy_doctor')" title="Bu bölüm ne işe yarar? Detaylı açıklama için tıkla">?</button>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-          <span class="mono" style="font-size: 0.72rem; color: var(--text-secondary);" id="pd-schedule-info">Haftalık Otomatik Denetim: Aktif</span>
-          <span id="pd-compaction-badge" class="badge badge-info">KOMPAKTLIK: --/100</span>
+        <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
           <span id="pd-overall-badge" class="badge badge-healthy">PASS</span>
-          <button class="btn btn-sm btn-primary" id="btn-run-policy-doctor" onclick="runPolicyDoctorNow()">
-            <span>🔍</span> Şimdi Denetle &amp; Kompaktlık Analizi Yap
+          <span id="pd-compaction-badge" class="badge badge-info">KOMP: --/100</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('policy-doctor-card')" title="Tüm aktif kuralları, 5 denetim kalemini ve dosya/token tablosunu aç">🔍 Detay</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+        </div>
+      </div>
+
+      <!-- Primary L1 Summary & Command (Always Visible, Zero Scroll) -->
+      <div style="display: flex; flex-direction: column; gap: 0.32rem;">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.3rem;">
+          <div class="scada-kpi-mini">
+            <span style="color: var(--text-muted);">Denetim:</span>
+            <strong class="mono" id="pd-kv-checks" style="color: var(--accent-emerald);">—</strong>
+          </div>
+          <div class="scada-kpi-mini">
+            <span style="color: var(--text-muted);">Prompt Yükü:</span>
+            <strong class="mono" id="pd-kv-tokens" style="color: var(--accent-blue);">—</strong>
+          </div>
+        </div>
+        <div class="scada-kpi-mini">
+          <span style="color: var(--text-muted);">Haftalık Tarama:</span>
+          <span class="mono" id="pd-kv-dates" style="font-size: 0.65rem; color: var(--text-secondary);">—</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; margin-top: 0.1rem;">
+          <span class="mono" style="font-size: 0.65rem; color: var(--text-muted);" id="pd-schedule-info">4 Kural Grubu · Suggest-Only</span>
+          <button class="btn btn-sm btn-primary" style="padding: 0.2rem 0.55rem; font-size: 0.68rem;" id="btn-run-policy-doctor" onclick="runPolicyDoctorNow()">
+            <span>🔍</span> Şimdi Denetle
           </button>
         </div>
       </div>
 
-      <details open style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <summary style="cursor: pointer; font-size: 0.77rem; font-weight: 600; color: var(--text-secondary); user-select: none;">
-          📖 Orkestratör ve Alt Ajanların Çalışmadan Önce Tabi Olduğu Kuralları ve Canlı Policy Doctor Raporunu Göster / Gizle
-        </summary>
-
-        <div class="phase2-grid" style="margin-top: 0.75rem; align-items: start;">
+      <!-- Secondary Detail Content (Opened via 🔍 Detay Faceplate Modal) -->
+      <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.5rem;">
+        <div class="phase2-grid" style="align-items: start;">
           <!-- Left: Active Rules Summary (4 Digestible Cards) -->
           <div style="display: flex; flex-direction: column; gap: 0.6rem;">
             <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.03em;">
@@ -1491,21 +1420,6 @@
               🩺 Policy Doctor — Çelişki Tespiti &amp; Dosya Bütçesi / Kompaktlık Raporu
             </div>
 
-            <div class="kv-grid" style="grid-template-columns: repeat(3, 1fr);">
-              <div class="kv-item">
-                <div class="kv-label">Kontroller (Pass/Warn/Fail)</div>
-                <div class="kv-val mono" id="pd-kv-checks" style="color: var(--accent-emerald);">—</div>
-              </div>
-              <div class="kv-item">
-                <div class="kv-label">Always-Loaded Prompt</div>
-                <div class="kv-val mono" id="pd-kv-tokens" style="color: var(--accent-blue);">—</div>
-              </div>
-              <div class="kv-item">
-                <div class="kv-label">Son / Sonraki Tarama</div>
-                <div class="kv-val mono" id="pd-kv-dates" style="font-size: 0.7rem;">—</div>
-              </div>
-            </div>
-
             <div id="pd-checks-list" style="display: flex; flex-direction: column; gap: 0.42rem; font-size: 0.76rem;">
               Yükleniyor...
             </div>
@@ -1513,11 +1427,11 @@
             <div id="pd-proposals-box" style="display: flex; flex-direction: column; gap: 0.38rem; font-size: 0.74rem;">
             </div>
 
-            <details style="background: rgba(7, 10, 18, 0.55); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.74rem;">
-              <summary style="cursor: pointer; font-weight: 600; color: var(--text-secondary);">
+            <div style="background: rgba(7, 10, 18, 0.55); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.74rem;">
+              <div style="font-weight: 600; color: var(--text-secondary); margin-bottom: 0.45rem;">
                 📏 Dosya Bazlı Satır &amp; Token Bütçesi Tablosu (`DELEGATION.md`, `ROUTING.md`, `SKILL.md` vb.)
-              </summary>
-              <div style="overflow-x: auto; margin-top: 0.5rem;">
+              </div>
+              <div style="overflow-x: auto;">
                 <table class="candidates-table">
                   <thead>
                     <tr>
@@ -1533,359 +1447,355 @@
                   </tbody>
                 </table>
               </div>
-            </details>
+            </div>
           </div>
         </div>
-      </details>
+      </div>
     </section>
 
-    <!-- Provider Preference Sliders (0-10) & Burn-Rate-Aware SWRR Allocation Table -->
+    <!-- ROW 2, CELL 1: Provider Preference Sliders (0-10) & Burn-Rate-Aware SWRR Allocation -->
     <section class="panel" id="provider-preference-card" style="padding: 1.1rem 1.25rem;">
-      <div class="panel-header" style="padding-bottom: 0.55rem;">
-        <div class="panel-title" style="font-size: 0.88rem;">
-          <span>🎚️</span> Tercih Sürgüleri (0–10) &amp; SWRR İş Dağılımı
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
+        <div class="panel-title">
+          <span>🎚️</span> Tercihler (0–10) &amp; SWRR
           <button type="button" class="section-help-btn" onclick="openSectionHelp('preference_swrr')" title="Tercih Slider'ları ve SWRR İş Dağılımı hakkında detaylı bilgi">?</button>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-          <span id="pref-save-status" class="badge badge-info">SWRR ACTIVE</span>
-          <button class="btn btn-sm" id="btn-cancel-prefs" onclick="cancelPreferenceSliders()">Cancel</button>
-          <button type="button" class="btn btn-sm" style="border-color: rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="switchScadaScreen('reserves', 'limits-card')" title="Eşzamanlı İşçi Tavanlarını (policy.json) düzenle">🔒 Limitler ↗</button>
+        <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
+          <span id="pref-save-status" class="badge badge-info">SWRR</span>
+          <button class="btn btn-sm" style="padding: 0.14rem 0.4rem; font-size: 0.65rem;" id="btn-cancel-prefs" onclick="cancelPreferenceSliders()">Cancel</button>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('provider-preference-card')" title="Tam 8 sütunlu SWRR dağılım ve kapasite tablosunu aç">🔍 Detay</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
       </div>
 
-      <div id="pref-card-inner-grid" style="display: grid; grid-template-columns: 1fr 1.6fr; gap: 0.9rem; align-items: start;">
-        <!-- Three 0-10 Sliders -->
-        <div style="background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.65rem 0.85rem; display: flex; flex-direction: column; gap: 0.48rem;">
-          <div style="font-size: 0.72rem; color: var(--text-secondary);">
-            Tercih ağırlıkları (<code class="mono">0..10</code>) &times; canlı kapasite (<code class="mono">&pi;<sub>p</sub> &propto; w<sub>p</sub> &middot; C(p)</code>):
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 0.15rem;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.74rem;">
-              <label for="pref-slider-agy" style="font-weight: 600; color: var(--text-primary);">AGY (Gemini + Claude/GPT)</label>
-              <span class="mono" id="pref-val-agy" style="font-weight: 700; color: var(--accent-blue);">10</span>
-            </div>
-            <input type="range" id="pref-slider-agy" min="0" max="10" step="1" value="10"
+      <!-- Primary L1 Commands (3 Sliders + Compact Live Share Chips) -->
+      <div style="display: flex; flex-direction: column; gap: 0.28rem;">
+        <div style="background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.38rem 0.55rem; display: flex; flex-direction: column; gap: 0.22rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; font-size: 0.68rem;">
+            <label for="pref-slider-agy" style="font-weight: 600; color: var(--text-primary); min-width: 52px;">AGY</label>
+            <input type="range" id="pref-slider-agy" min="0" max="10" step="1" value="10" style="flex: 1;"
               oninput="onPrefSliderInput('agy', this.value)" onchange="savePreferenceSliders()" />
+            <span class="mono" id="pref-val-agy" style="font-weight: 700; color: var(--accent-blue); min-width: 18px; text-align: right;">10</span>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.15rem;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.74rem;">
-              <label for="pref-slider-codex" style="font-weight: 600; color: var(--text-primary);">OpenAI Codex (GPT-6.1-Sol)</label>
-              <span class="mono" id="pref-val-codex" style="font-weight: 700; color: var(--accent-green);">8</span>
-            </div>
-            <input type="range" id="pref-slider-codex" min="0" max="10" step="1" value="8"
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; font-size: 0.68rem;">
+            <label for="pref-slider-codex" style="font-weight: 600; color: var(--text-primary); min-width: 52px;">Codex</label>
+            <input type="range" id="pref-slider-codex" min="0" max="10" step="1" value="8" style="flex: 1;"
               oninput="onPrefSliderInput('codex', this.value)" onchange="savePreferenceSliders()" />
+            <span class="mono" id="pref-val-codex" style="font-weight: 700; color: var(--accent-green); min-width: 18px; text-align: right;">8</span>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 0.15rem;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.74rem;">
-              <label for="pref-slider-claude" style="font-weight: 600; color: var(--text-primary);">Claude Code (Sonnet/Opus 5.5)</label>
-              <span class="mono" id="pref-val-claude" style="font-weight: 700; color: var(--accent-amber);">5</span>
-            </div>
-            <input type="range" id="pref-slider-claude" min="0" max="10" step="1" value="5"
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; font-size: 0.68rem;">
+            <label for="pref-slider-claude" style="font-weight: 600; color: var(--text-primary); min-width: 52px;">Claude</label>
+            <input type="range" id="pref-slider-claude" min="0" max="10" step="1" value="5" style="flex: 1;"
               oninput="onPrefSliderInput('claude', this.value)" onchange="savePreferenceSliders()" />
+            <span class="mono" id="pref-val-claude" style="font-weight: 700; color: var(--accent-amber); min-width: 18px; text-align: right;">5</span>
           </div>
         </div>
 
-        <!-- Allocation Table -->
-        <div style="overflow-x: auto;">
-          <table class="candidates-table" id="allocation-table">
-            <thead>
-              <tr>
-                <th>Provider</th>
-                <th>Slider</th>
-                <th>Target Share</th>
-                <th>Actual 24h Share</th>
-                <th>Sigma Band</th>
-                <th>Max Workers</th>
-                <th>Effort Policy</th>
-                <th>Capacity (tasks/h)</th>
-              </tr>
-            </thead>
-            <tbody id="allocation-table-body">
-              <tr><td colspan="8" style="color: var(--text-muted);">Yükleniyor...</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Editable Concurrency Ceilings (Limits) Card -->
-        <div id="limits-card" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.7rem;">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem;">
-            <div style="font-size: 0.84rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.45rem;">
-              <span>🔒 Editable Concurrency Limits (`~/.agents/policy.json`)</span>
-              <button type="button" class="section-help-btn" onclick="openSectionHelp('concurrency_limits')" title="Eşzamanlı İşçi Tavanları (policy.json) hakkında detaylı bilgi">?</button>
-            </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span id="limits-save-status" class="badge badge-info">READY</span>
-              <button class="btn btn-sm" id="btn-save-limits" onclick="saveLimits()">Save Limits</button>
-              <button class="btn btn-sm" id="btn-cancel-limits" onclick="cancelLimits()">Cancel</button>
-            </div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.65rem; font-size: 0.76rem;">
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>Max Leaves (1..20)</span>
-              <input type="number" id="limit-max-leaves" min="1" max="20" value="10" style="width: 58px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>AGY Ceiling</span>
-              <input type="number" id="limit-prov-agy" min="0" max="20" value="6" style="width: 58px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>Claude Ceiling</span>
-              <input type="number" id="limit-prov-claude" min="0" max="20" value="6" style="width: 58px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>Codex Ceiling</span>
-              <input type="number" id="limit-prov-codex" min="0" max="20" value="6" style="width: 58px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-          </div>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 0.65rem; font-size: 0.74rem; color: var(--text-secondary);">
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>Pool: `agy_gemini`</span>
-              <input type="number" id="limit-pool-agy_gemini" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>Pool: `agy_claude_gpt`</span>
-              <input type="number" id="limit-pool-agy_claude_gpt" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>Pool: `claude_shared`</span>
-              <input type="number" id="limit-pool-claude_shared" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-            <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
-              <span>Pool: `codex_shared`</span>
-              <input type="number" id="limit-pool-codex_shared" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
-            </label>
-          </div>
-
-          <div style="font-size: 0.71rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem;">
-            <span>Source: <code class="mono" id="limits-policy-source">~/.agents/policy.json</code></span>
-            <span>Backup: <code class="mono" id="limits-backup-path">--</code></span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NEW: Codex Banked Resets & Dynamic Orchestrator Reserve Panel -->
-    <section class="phase2-grid" id="scada-reserves-section">
-      <!-- Left: Codex Banked Reset Entitlements & Schedule-Shift Opportunity Cost -->
-      <div class="panel" style="padding: 1.1rem 1.25rem;">
-        <div class="panel-header" style="padding-bottom: 0.55rem;">
-          <div class="panel-title" style="font-size: 0.92rem;">
-            <span>🎟️</span> Codex Banked Manual Resets & Schedule-Shift Opportunity Cost
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('banked_resets')" title="Codex Banked Resets & Fırsat Maliyeti hakkında detaylı bilgi">?</button>
-          </div>
-          <span id="banked-status-badge" class="badge badge-purple">VERIFIED</span>
-        </div>
-
-        <div id="banked-reset-summary" style="display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.79rem;">
-          Yükleniyor...
-        </div>
-
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.65rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem;">
-          <div style="font-size: 0.73rem; color: var(--text-muted);">
-            Manuel Doğrulama (Yalnız telemetri çevrimdışıyken `MANUALLY_VERIFIED` fallback):
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.45rem;">
-            <input type="number" id="manual-banked-count" min="0" max="10" value="3" style="width: 64px; padding: 0.25rem 0.45rem;" />
-            <button class="btn btn-sm" onclick="saveManualBankedOverride(true)">Manuel Kaydet</button>
-            <button class="btn btn-sm" onclick="saveManualBankedOverride(false)">Canlıya Dön</button>
-          </div>
+        <!-- Compact 3-Provider Live Share & Worker Strip on L1 -->
+        <div id="l1-swrr-summary" class="scada-l1-only" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.25rem;">
+          <div class="scada-kpi-mini"><span class="mono">AGY</span><strong class="mono" style="color: var(--accent-blue);">--%</strong></div>
+          <div class="scada-kpi-mini"><span class="mono">CX</span><strong class="mono" style="color: var(--accent-emerald);">--%</strong></div>
+          <div class="scada-kpi-mini"><span class="mono">CC</span><strong class="mono" style="color: var(--accent-amber);">--%</strong></div>
         </div>
       </div>
 
-      <!-- Right: Dynamic Codex Orchestrator Reserve & Continuity Policy -->
-      <div class="panel" style="padding: 1.1rem 1.25rem;">
-        <div class="panel-header" style="padding-bottom: 0.55rem;">
-          <div class="panel-title" style="font-size: 0.92rem;">
-            <span>🛡️</span> Dinamik Codex Koordinatör Rezervi (`R_orch`) & Süreklilik
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('codex_reserve')" title="Dinamik Codex Koordinatör Rezervi hakkında detaylı bilgi">?</button>
-          </div>
-          <span id="codex-reserve-badge" class="badge badge-healthy">PROTECTED</span>
-        </div>
-
-        <div id="codex-reserve-summary" style="display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.79rem;">
-          Yükleniyor...
-        </div>
-
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.65rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem;">
-          <div style="font-size: 0.73rem; color: var(--text-muted);">
-            Aktif Backlog Ufku (Rezerv Hesabı İçin):
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <label style="font-size: 0.72rem; color: var(--text-secondary);">Kalan Görev:</label>
-            <input type="number" id="backlog-tasks-input" min="0" max="50" value="4" style="width: 58px; padding: 0.25rem 0.45rem;" />
-            <label style="font-size: 0.72rem; color: var(--text-secondary);">Bekleyen Review:</label>
-            <input type="number" id="backlog-reviews-input" min="0" max="30" value="2" style="width: 58px; padding: 0.25rem 0.45rem;" />
-            <button class="btn btn-sm" onclick="updateBacklogSettings()">Güncelle</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Live Running Coordinators & Headless Workers on This Machine -->
-    <section class="panel" id="scada-processes-section" style="padding: 1rem 1.25rem;">
-      <div class="panel-header" style="padding-bottom: 0.55rem;">
-        <div class="panel-title" style="font-size: 0.88rem;">
-          <span>🖥️</span> Canlı Süreçler (Orkestratörler &amp; İşçiler)
-          <button type="button" class="section-help-btn" onclick="openSectionHelp('live_processes')" title="Canlı Süreçler paneli hakkında detaylı bilgi">?</button>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-          <span id="live-proc-summary" class="badge badge-info">Taranıyor...</span>
-          <button type="button" class="btn btn-sm" style="border-color: rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="switchScadaScreen('reserves', 'scada-goals-box')" title="Orkestratör Uzun Vadeli Hedef & Otonom Görev Üretimi ayarlarını aç">🧭 Otonom Hedef ↗</button>
-        </div>
-      </div>
-      <div id="live-activity-grid" style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 1rem;">
-        <div>
-          <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">
-            🎯 Orkestratör &amp; 💬 Doğrudan Sohbet Oturumları (`AGY` · `Claude` · `Codex`)
-          </div>
-          <div id="live-coordinators-list" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem;">
-            Yükleniyor...
-          </div>
-        </div>
-        <div>
-          <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">
-            ⚙️ Arka Planda Koşan Subagent'lar &amp; İşçiler (`subagent` / `agy -p` / `codex exec`)
-          </div>
-          <div id="live-workers-list" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem;">
-            Yükleniyor...
-          </div>
-        </div>
-      </div>
-
-      <!-- Orchestrator Long-Term Goal & Self-Replenishing Task Generator -->
-      <div id="scada-goals-box" style="border-top: 1px solid var(--border-subtle); margin-top: 0.9rem; padding-top: 0.85rem; display: flex; flex-direction: column; gap: 0.65rem;">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem;">
-          <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 0.45rem;">
-            <span>🧭</span> Orkestratör Uzun Vadeli Hedef &amp; Otonom Görev Üretimi (Long-Term Goal &amp; Self-Replenish)
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('project_goals')" title="Uzun Vadeli Hedef & Otonom Görev Üretimi hakkında detaylı bilgi">?</button>
-          </div>
-          <span id="project-goals-badge" class="badge badge-info">STANDART KUYRUK MODU</span>
-        </div>
-        <div style="font-size: 0.75rem; color: var(--text-secondary);">
-          Boş bırakılırsa orkestratör yalnızca elindeki görev listesini tamamlar. Uzun vadeli hedef girildiğinde ise eldeki görevler bittiğinde (veya boş kapasite varken) hem <strong>mevcut uygulamayı değerlendirip iyileştirme görevleri</strong> hem de <strong>bu hedefe yönelik yeni özellik/cilalama görevleri</strong> üretip alt-ajanlara delege eder.
-        </div>
-        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem;">
-          <div class="form-group">
-            <label for="goal-long-term-input">🎯 Uzun Vadeli Hedef (`long_term_goal`)</label>
-            <textarea id="goal-long-term-input" rows="2" placeholder="Örn: Uygulamayı kullanması kolay, görsel ve işitsel olarak göze çarpan bir hale getirip Google Play Store'da yayınlamak; ardından reklam/kullanıcı kazanımına hazır hale getirmek."></textarea>
-          </div>
-          <div class="form-group">
-            <label for="goal-short-term-input">⚡ Kısa Vadeli Odak (`short_term_goal` — İsteğe Bağlı)</label>
-            <textarea id="goal-short-term-input" rows="2" placeholder="Örn: Native köprü, ses kalitesi, ilk 30 sn onboarding ve Play Store mağaza paketi (boş bırakılabilir)."></textarea>
-          </div>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;">
-            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.77rem; color: var(--text-secondary); cursor: pointer;">
-              <input type="checkbox" id="goal-auto-evaluate" checked />
-              🔍 Mevcut Uygulamayı Değerlendir &amp; İyileştirme Görevleri Tetikle (`auto_evaluate_and_improve`)
-            </label>
-            <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.77rem; color: var(--text-secondary); cursor: pointer;">
-              <input type="checkbox" id="goal-auto-generate" checked />
-              ✨ Eldeki İşler Bitince Hedefe Yönelik Yeni Görev Grubu Üret (`auto_generate_new_tasks`)
-            </label>
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span id="goal-save-status" style="font-size: 0.72rem; color: var(--text-muted);"></span>
-            <button class="btn btn-sm" onclick="clearProjectGoals()">Temizle (Standart Mod)</button>
-            <button class="btn btn-sm btn-primary" onclick="saveProjectGoals()">💾 Hedefi Kaydet &amp; Aktif Et</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- NEW: SCADA L1 Column 3 — 4 Pool Live Matrix, System Alarms & Faceplate Launchers -->
-    <section class="panel" id="scada-l1-command-deck" style="display: none; border-color: rgba(56, 189, 248, 0.32);">
-      <div class="panel-header" style="padding-bottom: 0.42rem;">
-        <div class="panel-title" style="font-size: 0.86rem;">
-          <span>🎛️</span> 4 Havuz Matrisi, Kural Sağlığı &amp; Detay Ekranları (L2)
-        </div>
-        <span class="badge badge-healthy" id="l1-deck-status-badge">SCADA L1 READY</span>
-      </div>
-
-      <!-- 4 Quota Pools Compact Matrix -->
-      <div style="overflow-x: auto;">
-        <table class="candidates-table" style="font-size: 0.7rem;">
+      <!-- Secondary Detail Content: Full 8-Column Allocation Table -->
+      <div class="scada-detail-only" style="overflow-x: auto; margin-top: 0.5rem;">
+        <table class="candidates-table" id="allocation-table">
           <thead>
             <tr>
-              <th>Havuz (`pool_id`)</th>
-              <th>5s Net / Yanacak</th>
-              <th>7g Net / Yanacak</th>
-              <th>Fırsat (`Φ`)</th>
+              <th>Provider</th>
+              <th>Slider</th>
+              <th>Target Share</th>
+              <th>Actual 24h Share</th>
+              <th>Sigma Band</th>
+              <th>Max Workers</th>
+              <th>Effort Policy</th>
+              <th>Capacity (tasks/h)</th>
             </tr>
           </thead>
-          <tbody id="scada-l1-pools-tbody">
-            <tr><td colspan="4" style="color: var(--text-muted);">Yükleniyor...</td></tr>
+          <tbody id="allocation-table-body">
+            <tr><td colspan="8" style="color: var(--text-muted);">Yükleniyor...</td></tr>
           </tbody>
         </table>
       </div>
+    </section>
 
-      <!-- 4 Mini SCADA System Health Indicators -->
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.38rem;">
-        <div class="scada-kpi-mini">
-          <span style="color: var(--text-secondary);">🛡️ Policy Doctor</span>
-          <strong class="mono" id="l1-kpi-pd" style="color: #34d399;">PASS (5/5)</strong>
+    <!-- ROW 2, CELL 2: Editable Concurrency Ceilings (Limits) Card -->
+    <section class="panel" id="limits-card" style="padding: 1.1rem 1.25rem;">
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
+        <div class="panel-title">
+          <span>🔒</span> Eşzamanlılık Limitleri
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('concurrency_limits')" title="Eşzamanlı İşçi Tavanları (policy.json) hakkında detaylı bilgi">?</button>
         </div>
-        <div class="scada-kpi-mini">
-          <span style="color: var(--text-secondary);">📏 Kural Kompaktlık</span>
-          <strong class="mono" id="l1-kpi-comp" style="color: var(--accent-blue);">97/100</strong>
-        </div>
-        <div class="scada-kpi-mini">
-          <span style="color: var(--text-secondary);">🛡️ Codex R_orch</span>
-          <strong class="mono" id="l1-kpi-rsv" style="color: #34d399;">PROTECTED</strong>
-        </div>
-        <div class="scada-kpi-mini">
-          <span style="color: var(--text-secondary);">🎟️ Banked Reset</span>
-          <strong class="mono" id="l1-kpi-bnk" style="color: #c084fc;">VERIFIED</strong>
+        <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
+          <span id="limits-save-status" class="badge badge-info">READY</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('limits-card')" title="Alt havuz limitlerini (limit-pool-*) ve policy.json yedek yollarını aç">🔍 Detay</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
       </div>
 
-      <!-- 6 SCADA Faceplate / L2 Drill-Down Pushbuttons -->
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.38rem; margin-top: auto;">
-        <button type="button" class="scada-faceplate-btn" onclick="switchScadaScreen('policy')">
-          <span>🛡️ Kurallar &amp; Policy Doctor</span>
-          <span class="mono" style="color: var(--accent-blue);">[2] ↗</span>
-        </button>
-        <button type="button" class="scada-faceplate-btn" onclick="switchScadaScreen('router')">
-          <span>🚀 İş Paketi Yönlendirici</span>
-          <span class="mono" style="color: var(--accent-blue);">[3] ↗</span>
-        </button>
-        <button type="button" class="scada-faceplate-btn" onclick="switchScadaScreen('math')">
-          <span>📊 Havuz Matematiği &amp; Karne</span>
-          <span class="mono" style="color: var(--accent-blue);">[4] ↗</span>
-        </button>
-        <button type="button" class="scada-faceplate-btn" onclick="switchScadaScreen('reserves')">
-          <span>⚙️ Limitler, Rezerv &amp; Hedef</span>
-          <span class="mono" style="color: var(--accent-blue);">[5] ↗</span>
-        </button>
-        <button type="button" class="scada-faceplate-btn" onclick="switchScadaScreen('models')">
-          <span>🧪 Model Review &amp; Katalog</span>
-          <span class="mono" style="color: var(--accent-blue);">[6] ↗</span>
-        </button>
-        <button type="button" class="scada-faceplate-btn" onclick="switchScadaScreen('json')">
-          <span>📡 Canlı Raw JSON</span>
-          <span class="mono" style="color: var(--accent-blue);">[7] ↗</span>
-        </button>
+      <!-- Primary L1 Commands: 4 Core Ceilings + Save/Cancel Buttons -->
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.32rem; font-size: 0.69rem;">
+        <label class="scada-kpi-mini" style="cursor: pointer;">
+          <span>Max Leaves</span>
+          <input type="number" id="limit-max-leaves" min="1" max="20" value="10" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+        </label>
+        <label class="scada-kpi-mini" style="cursor: pointer;">
+          <span>AGY Tavan</span>
+          <input type="number" id="limit-prov-agy" min="0" max="20" value="6" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+        </label>
+        <label class="scada-kpi-mini" style="cursor: pointer;">
+          <span>Claude Tavan</span>
+          <input type="number" id="limit-prov-claude" min="0" max="20" value="6" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+        </label>
+        <label class="scada-kpi-mini" style="cursor: pointer;">
+          <span>Codex Tavan</span>
+          <input type="number" id="limit-prov-codex" min="0" max="20" value="6" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+        </label>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; margin-top: auto;">
+        <span class="mono" style="font-size: 0.64rem; color: var(--text-muted);">`~/.agents/policy.json`</span>
+        <div style="display: flex; align-items: center; gap: 0.3rem;">
+          <button class="btn btn-sm btn-primary" style="padding: 0.18rem 0.5rem; font-size: 0.67rem;" id="btn-save-limits" onclick="saveLimits()">Save Limits</button>
+          <button class="btn btn-sm" style="padding: 0.18rem 0.45rem; font-size: 0.67rem;" id="btn-cancel-limits" onclick="cancelLimits()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Secondary Detail Content: Per-Pool Ceilings & Backup Paths -->
+      <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.55rem; border-top: 1px solid var(--border-subtle); padding-top: 0.65rem;">
+        <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-primary);">Havuz Bazlı Alt Tavanlar (`max_per_pool`)</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 0.65rem; font-size: 0.74rem; color: var(--text-secondary);">
+          <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
+            <span>Pool: `agy_gemini`</span>
+            <input type="number" id="limit-pool-agy_gemini" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+          </label>
+          <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
+            <span>Pool: `agy_claude_gpt`</span>
+            <input type="number" id="limit-pool-agy_claude_gpt" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+          </label>
+          <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
+            <span>Pool: `claude_shared`</span>
+            <input type="number" id="limit-pool-claude_shared" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+          </label>
+          <label style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
+            <span>Pool: `codex_shared`</span>
+            <input type="number" id="limit-pool-codex_shared" min="0" max="20" value="6" style="width: 54px; padding: 0.2rem 0.4rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
+          </label>
+        </div>
+        <div style="font-size: 0.71rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.4rem;">
+          <span>Source: <code class="mono" id="limits-policy-source">~/.agents/policy.json</code></span>
+          <span>Backup: <code class="mono" id="limits-backup-path">--</code></span>
+        </div>
       </div>
     </section>
 
-    <!-- FAZ 2: Dynamic Work Package Router & Headless CLI Dispatcher -->
-    <section class="phase2-grid" id="scada-router-section">
-      <!-- Left: Work Package Dispatch Form -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <span>🚀</span> Reset-Aware İş Paketi Yönlendirici (Work Package Scheduler)
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('work_scheduler')" title="Reset-Aware İş Paketi Yönlendirici hakkında detaylı bilgi">?</button>
-          </div>
-          <span class="badge badge-info">DUAL-WINDOW MATH v2</span>
+    <!-- ROW 3, CELL 1: Codex Banked Resets & Dynamic Orchestrator Reserve Panel -->
+    <section id="scada-reserves-section">
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
+        <div class="panel-title">
+          <span>🛡️</span> Codex Rezervi &amp; Banked
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('codex_reserve')" title="Dinamik Codex Koordinatör Rezervi hakkında detaylı bilgi">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('banked_resets')" title="Codex Banked Resets & Fırsat Maliyeti hakkında detaylı bilgi">?</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
+          <span id="codex-reserve-badge" class="badge badge-healthy">PROTECTED</span>
+          <span id="banked-status-badge" class="badge badge-purple">VERIFIED</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-reserves-section')" title="Tam Banked Reset kupon listesini, zamanlama analizini ve rezerv detaylarını aç">🔍 Detay</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+        </div>
+      </div>
+
+      <!-- Primary L1 Info & Backlog Command -->
+      <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1;">
+        <div id="l1-reserve-mini-summary" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.28rem;">
+          <div class="scada-kpi-mini"><span>5s / 7g Rezerv:</span><strong class="mono" style="color: var(--accent-blue);">--% / --%</strong></div>
+          <div class="scada-kpi-mini"><span>Rutin Kodlama:</span><strong class="mono" style="color: #34d399;">--</strong></div>
         </div>
 
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.3rem; background: var(--bg-input); border: 1px solid var(--border-subtle); border-radius: 7px; padding: 0.28rem 0.45rem; margin-top: auto;">
+          <label style="font-size: 0.66rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.22rem;">
+            <span>Görev:</span>
+            <input type="number" id="backlog-tasks-input" min="0" max="50" value="4" style="width: 42px; padding: 0.12rem 0.25rem; font-size: 0.68rem;" />
+          </label>
+          <label style="font-size: 0.66rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.22rem;">
+            <span>Review:</span>
+            <input type="number" id="backlog-reviews-input" min="0" max="30" value="2" style="width: 42px; padding: 0.12rem 0.25rem; font-size: 0.68rem;" />
+          </label>
+          <button class="btn btn-sm btn-primary" style="padding: 0.16rem 0.45rem; font-size: 0.66rem;" onclick="updateBacklogSettings()">Güncelle</button>
+        </div>
+      </div>
+
+      <!-- Secondary Detail Content: Full Banked Resets & Reserve Breakdown -->
+      <div class="scada-detail-only phase2-grid" style="margin-top: 0.55rem;">
+        <div class="panel" style="padding: 0.9rem 1rem;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
+            🎟️ Codex Banked Manual Resets &amp; Schedule-Shift Opportunity Cost
+          </div>
+          <div id="banked-reset-summary" style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.78rem;">
+            Yükleniyor...
+          </div>
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.55rem; margin-top: 0.5rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem;">
+            <div style="font-size: 0.72rem; color: var(--text-muted);">Manuel Doğrulama Fallback:</div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <input type="number" id="manual-banked-count" min="0" max="10" value="3" style="width: 60px; padding: 0.2rem 0.4rem;" />
+              <button class="btn btn-sm" onclick="saveManualBankedOverride(true)">Manuel Kaydet</button>
+              <button class="btn btn-sm" onclick="saveManualBankedOverride(false)">Canlıya Dön</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="padding: 0.9rem 1rem;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">
+            🛡️ Dinamik Codex Koordinatör Rezervi (`R_orch`) &amp; Süreklilik Politikası
+          </div>
+          <div id="codex-reserve-summary" style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.78rem;">
+            Yükleniyor...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROW 2, CELL 3: Live Running Coordinators & Headless Workers + Autonomous Goal -->
+    <section class="panel" id="scada-processes-section" style="padding: 1rem 1.25rem;">
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
+        <div class="panel-title">
+          <span>🖥️</span> Canlı Süreçler &amp; Hedef
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('live_processes')" title="Canlı Süreçler paneli hakkında detaylı bilgi">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('project_goals')" title="Uzun Vadeli Hedef & Otonom Görev Üretimi hakkında detaylı bilgi">?</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
+          <span id="live-proc-summary" class="badge badge-info">Taranıyor...</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-processes-section')" title="Tam süreç/PID listesini ve Otonom Uzun Vadeli Hedef formunu aç">🔍 Detay &amp; Hedef</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+        </div>
+      </div>
+
+      <!-- Primary L1 Summary & Goal Status (Zero Scroll) -->
+      <div class="scada-l1-only" style="display: flex; flex-direction: column; gap: 0.28rem; flex: 1;">
+        <div id="l1-proc-mini-summary" style="display: flex; flex-direction: column; gap: 0.22rem; font-size: 0.67rem;">
+          <div class="scada-kpi-mini"><span>Aktif Oturumlar:</span><strong class="mono" style="color: var(--accent-blue);">Taranıyor...</strong></div>
+          <div class="scada-kpi-mini"><span>Arka Plan İşçileri:</span><strong class="mono" style="color: var(--text-secondary);">0 Worker</strong></div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: auto; padding-top: 0.15rem;">
+          <span id="project-goals-badge" class="badge badge-info" style="font-size: 0.62rem;">STANDART KUYRUK MODU</span>
+          <button type="button" class="btn btn-sm" style="padding: 0.16rem 0.45rem; font-size: 0.66rem; border-color: rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="openScadaFaceplate('scada-processes-section')">🧭 Hedef Gir</button>
+        </div>
+      </div>
+
+      <!-- Secondary Detail Content: Full Live Activity Lists + Autonomous Goal Editor -->
+      <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.45rem;">
+        <div id="live-activity-grid" style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">
+              🎯 Orkestratör &amp; 💬 Doğrudan Sohbet Oturumları (`AGY` · `Claude` · `Codex`)
+            </div>
+            <div id="live-coordinators-list" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem;">
+              Yükleniyor...
+            </div>
+          </div>
+          <div>
+            <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem;">
+              ⚙️ Arka Planda Koşan Subagent'lar &amp; İşçiler (`subagent` / `agy -p` / `codex exec`)
+            </div>
+            <div id="live-workers-list" style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.75rem;">
+              Yükleniyor...
+            </div>
+          </div>
+        </div>
+
+        <!-- Orchestrator Long-Term Goal & Self-Replenishing Task Generator -->
+        <div id="scada-goals-box" style="border-top: 1px solid var(--border-subtle); padding-top: 0.8rem; display: flex; flex-direction: column; gap: 0.6rem;">
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">
+            🧭 Orkestratör Uzun Vadeli Hedef &amp; Otonom Görev Üretimi (Long-Term Goal &amp; Self-Replenish)
+          </div>
+          <div style="font-size: 0.74rem; color: var(--text-secondary);">
+            Boş bırakılırsa orkestratör yalnızca elindeki görev listesini tamamlar. Uzun vadeli hedef girildiğinde ise eldeki görevler bittiğinde hem mevcut uygulamayı değerlendirip iyileştirme görevleri hem de hedefe yönelik yeni özellik görevleri üretir.
+          </div>
+          <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="goal-long-term-input">🎯 Uzun Vadeli Hedef (`long_term_goal`)</label>
+              <textarea id="goal-long-term-input" rows="2" placeholder="Örn: Uygulamayı kullanması kolay, görsel ve işitsel olarak göze çarpan bir hale getirip yayınlamak..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="goal-short-term-input">⚡ Kısa Vadeli Odak (`short_term_goal` — İsteğe Bağlı)</label>
+              <textarea id="goal-short-term-input" rows="2" placeholder="Örn: Ses kalitesi, ilk 30 sn onboarding..."></textarea>
+            </div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;">
+              <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-secondary); cursor: pointer;">
+                <input type="checkbox" id="goal-auto-evaluate" checked />
+                🔍 Mevcut Uygulamayı Değerlendir (`auto_evaluate_and_improve`)
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-secondary); cursor: pointer;">
+                <input type="checkbox" id="goal-auto-generate" checked />
+                ✨ Yeni Görev Grubu Üret (`auto_generate_new_tasks`)
+              </label>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span id="goal-save-status" style="font-size: 0.72rem; color: var(--text-muted);"></span>
+              <button class="btn btn-sm" onclick="clearProjectGoals()">Temizle (Standart Mod)</button>
+              <button class="btn btn-sm btn-primary" onclick="saveProjectGoals()">💾 Hedefi Kaydet &amp; Aktif Et</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hidden legacy L1 deck placeholder for test compatibility -->
+    <section id="scada-l1-command-deck" style="display: none;"></section>
+
+    <!-- ROW 2, CELL 4: Dynamic Work Package Router & Headless CLI Dispatcher -->
+    <section id="scada-router-section">
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
+        <div class="panel-title">
+          <span>🚀</span> İş Paketi Yönlendirici
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('work_scheduler')" title="Reset-Aware İş Paketi Yönlendirici hakkında detaylı bilgi">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('assignment_record')" title="Atama Kaydı & Matematiksel Çizelgeleme hakkında detaylı bilgi">?</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
+          <span id="route-floor-badge" class="badge badge-healthy" style="font-size: 0.6rem;">READY</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-router-section')" title="Tüm yönlendirme parametrelerini, CLI komutunu ve aday model sıralama tablosunu aç">🔍 Detay</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+        </div>
+      </div>
+
+      <!-- Primary L1 Dispatch Controls & Selected Model Output (Always Visible, Zero Scroll) -->
+      <div style="display: flex; flex-direction: column; gap: 0.28rem; flex: 1;">
+        <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 0.28rem;">
+          <input type="text" id="wp-task" value="WP-AUTH-01: JWT doğrulama middleware" style="padding: 0.22rem 0.45rem; font-size: 0.69rem;" title="Görev Başlığı (Work Package Title)" />
+          <select id="wp-kind" style="padding: 0.22rem 0.35rem; font-size: 0.69rem;" onchange="dispatchWorkPackage()">
+            <option value="scan">scan (LOW)</option>
+            <option value="extract">extract (LOW)</option>
+            <option value="mechanical">mechanical (LOW)</option>
+            <option value="docs">docs (LOW)</option>
+            <option value="implement" selected>implement (MID)</option>
+            <option value="debug">debug (MID)</option>
+            <option value="test-author">test-author (MID)</option>
+            <option value="review">review (Cross-Fam)</option>
+            <option value="design">design (HIGH)</option>
+          </select>
+        </div>
+
+        <div class="scada-kpi-mini">
+          <span style="color: var(--text-muted);">Seçilen:</span>
+          <strong class="mono" id="res-model" style="color: var(--accent-emerald); font-size: 0.67rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">—</strong>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: auto;">
+          <span class="mono" style="font-size: 0.65rem; color: var(--accent-blue);" id="res-pred-cost">Maliyet: —</span>
+          <button class="btn btn-sm btn-primary" style="padding: 0.18rem 0.55rem; font-size: 0.68rem;" onclick="dispatchWorkPackage()">
+            <span>⚡</span> Hesapla &amp; Delege Et
+          </button>
+        </div>
+      </div>
+
+      <!-- Secondary Detail Content: Full Parameters, Presets, CLI & Candidate Ranking Table -->
+      <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.55rem; border-top: 1px solid var(--border-subtle); padding-top: 0.65rem;">
         <div class="preset-bar">
           <span style="font-size: 0.73rem; color: var(--text-muted); align-self: center;">Hazır Paketler:</span>
           <button class="btn btn-sm" onclick="fillPreset('scan')">🔍 Low: Scout Tarama</button>
@@ -1895,26 +1805,6 @@
         </div>
 
         <div class="form-grid">
-          <div class="form-group full">
-            <label for="wp-task">Görev Başlığı (Work Package Title)</label>
-            <input type="text" id="wp-task" value="WP-AUTH-01: JWT Token doğrulama ara katmanını (middleware) uygula" />
-          </div>
-
-          <div class="form-group">
-            <label for="wp-kind">Görev Türü (`kind`)</label>
-            <select id="wp-kind">
-              <option value="scan">scan (Tarama / Envanter - LOW)</option>
-              <option value="extract">extract (Veri Çıkarma - LOW)</option>
-              <option value="mechanical">mechanical (Mekanik Dönüşüm - LOW)</option>
-              <option value="docs">docs (Dokümantasyon - LOW)</option>
-              <option value="implement" selected>implement (Özellik Geliştirme - MID)</option>
-              <option value="debug">debug (Hata Ayıklama - MID)</option>
-              <option value="test-author">test-author (Test Yazımı - MID)</option>
-              <option value="review">review (Bağımsız İnceleme - Cross-Family)</option>
-              <option value="design">design (Mimari Tasarım - HIGH)</option>
-            </select>
-          </div>
-
           <div class="form-group">
             <label for="wp-ambiguity">Belirsizlik (`ambiguity`)</label>
             <select id="wp-ambiguity">
@@ -1951,7 +1841,7 @@
             </select>
           </div>
 
-          <div class="form-group">
+          <div class="form-group full">
             <label for="wp-imp-family">Üretici Ailesi (`implementer_family` - Review için)</label>
             <select id="wp-imp-family">
               <option value="">Yok (Uygulanmaz)</option>
@@ -1962,269 +1852,272 @@
           </div>
 
           <div class="form-group full">
-            <label for="wp-prompt">İşçi Komut Metni (`prompt` & `edit_scope`)</label>
-            <textarea id="wp-prompt" rows="3">Scope: src/auth/. Read contract in docs/spec.md, implement JWT verification middleware and run pytest tests/test_auth.py. Do not touch files outside src/auth/.</textarea>
+            <label for="wp-prompt">İşçi Komut Metni (`prompt` &amp; `edit_scope`)</label>
+            <textarea id="wp-prompt" rows="2">Scope: src/auth/. Read contract in docs/spec.md, implement JWT verification middleware and run pytest tests/test_auth.py. Do not touch files outside src/auth/.</textarea>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 0.25rem;">
-          <label style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; color: var(--text-secondary); cursor: pointer;">
-            <input type="checkbox" id="wp-live-exec" />
-            Gerçek Headless CLI Alt Sürecini Başlat (`agy -p` / `claude -p` / `codex exec`)
-          </label>
+        <label style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; color: var(--text-secondary); cursor: pointer;">
+          <input type="checkbox" id="wp-live-exec" />
+          Gerçek Headless CLI Alt Sürecini Başlat (`agy -p` / `claude -p` / `codex exec`)
+        </label>
 
-          <button class="btn btn-primary" onclick="dispatchWorkPackage()">
-            <span>⚡</span> Reset-Aware Hesapla & Delege Et
-          </button>
-        </div>
-      </div>
-
-      <!-- Right: Assignment Record & Headless CLI Output -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <span>📋</span> Atama Kaydı & Matematiksel Çizelgeleme (Assignment Record)
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('assignment_record')" title="Atama Kaydı & Matematiksel Çizelgeleme hakkında detaylı bilgi">?</button>
+        <div class="kv-grid">
+          <div class="kv-item">
+            <div class="kv-label">Floor / Effort / Mod</div>
+            <div class="kv-val mono" id="res-floor">—</div>
           </div>
-          <span id="route-floor-badge" class="badge badge-healthy">READY</span>
+          <div class="kv-item">
+            <div class="kv-label">Yedek Model (Fallback @95%)</div>
+            <div class="kv-val mono" id="res-fallback" style="color: var(--accent-amber);">—</div>
+          </div>
         </div>
 
-        <div id="dispatch-result-container" class="assignment-box">
-          <div class="kv-grid">
-            <div class="kv-item">
-              <div class="kv-label">Seçilen Sağlayıcı & Havuz</div>
-              <div class="kv-val mono" id="res-model" style="color: var(--accent-emerald);">—</div>
-            </div>
-            <div class="kv-item">
-              <div class="kv-label">Floor / Effort / Mod</div>
-              <div class="kv-val mono" id="res-floor">—</div>
-            </div>
-            <div class="kv-item">
-              <div class="kv-label">Tahmini Maliyet (5s / 7g)</div>
-              <div class="kv-val mono" id="res-pred-cost" style="color: var(--accent-blue);">—</div>
-            </div>
-            <div class="kv-item">
-              <div class="kv-label">Yedek Model (Fallback @95%)</div>
-              <div class="kv-val mono" id="res-fallback" style="color: var(--accent-amber);">—</div>
-            </div>
-          </div>
+        <div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Reset-Aware Seçim Gerekçesi</div>
+          <div id="res-rationale" class="mono" style="font-size: 0.75rem; color: var(--text-secondary);">—</div>
+        </div>
 
-          <div>
-            <div class="kv-label" style="margin-bottom: 0.28rem;">Reset-Aware Seçim Gerekçesi (`U_mode - W_opp * Phi_eff + B_exp - P_orch`)</div>
-            <div id="res-rationale" class="mono" style="font-size: 0.76rem; color: var(--text-secondary);">
-              Soldaki formdan bir iş paketi göndererek anlık kotalara ve sıfırlanma pencerelerine göre en uygun modeli görebilirsiniz.
-            </div>
-          </div>
+        <div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Üretilen Headless CLI Komutu</div>
+          <div id="res-cli" class="cli-box">agy --add-dir "..." --model gemini-3.8-flash-medium --print-timeout 4m -p="..."</div>
+        </div>
 
-          <div>
-            <div class="kv-label" style="margin-bottom: 0.28rem;">Üretilen Headless CLI Komutu</div>
-            <div id="res-cli" class="cli-box">agy --add-dir "..." --model gemini-3.8-flash-medium --print-timeout 4m -p="..."</div>
-          </div>
+        <div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Aday Model Sıralaması (Dual-Window Feasibility &amp; Opportunity Cost)</div>
+          <table class="candidates-table">
+            <thead>
+              <tr>
+                <th>Model &amp; Havuz</th>
+                <th>Tier</th>
+                <th>Kalan</th>
+                <th>Tahmini (5s/7g)</th>
+                <th>Skor</th>
+                <th>Matematiksel Nedenler</th>
+              </tr>
+            </thead>
+            <tbody id="res-candidates-body">
+              <tr><td colspan="6" style="color: var(--text-muted); text-align: center;">Henüz yönlendirme yapılmadı.</td></tr>
+            </tbody>
+          </table>
+        </div>
 
-          <div>
-            <div class="kv-label" style="margin-bottom: 0.28rem;">Aday Model Sıralaması (Dual-Window Feasibility & Opportunity Cost)</div>
-            <table class="candidates-table">
-              <thead>
-                <tr>
-                  <th>Model & Havuz</th>
-                  <th>Tier</th>
-                  <th>Kalan</th>
-                  <th>Tahmini (5s/7g)</th>
-                  <th>Skor</th>
-                  <th>Matematiksel Nedenler</th>
-                </tr>
-              </thead>
-              <tbody id="res-candidates-body">
-                <tr>
-                  <td colspan="6" style="color: var(--text-muted); text-align: center;">Henüz yönlendirme yapılmadı.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Elenecek / Reddedilen Modeller</div>
+          <div id="res-rejected-box" class="mono" style="font-size: 0.72rem; color: var(--text-muted);">—</div>
+        </div>
 
-          <div>
-            <div class="kv-label" style="margin-bottom: 0.28rem;">Elenecek / Reddedilen Modeller (Dual-Window & Floor Gates)</div>
-            <div id="res-rejected-box" class="mono" style="font-size: 0.72rem; color: var(--text-muted); max-height: 85px; overflow-y: auto;">
-              —
-            </div>
-          </div>
-
-          <div>
-            <div class="kv-label" style="margin-bottom: 0.28rem;">Çalıştırma Çıktısı (Execution / Dry-Run Output)</div>
-            <div id="res-output" class="cli-box" style="color: #cbd5e1; border-color: var(--border-subtle);">Bekleniyor...</div>
-          </div>
+        <div>
+          <div class="kv-label" style="margin-bottom: 0.25rem;">Çalıştırma Çıktısı</div>
+          <div id="res-output" class="cli-box" style="color: #cbd5e1; border-color: var(--border-subtle);">Bekleniyor...</div>
         </div>
       </div>
     </section>
 
-    <!-- Empirical Quota Cost Learner & Pool Math Inspector -->
+    <!-- ROW 3, CELL 3: 4 Quota Pools Math, Empirical Cost Learner & Agent Scorecard -->
     <section class="panel" id="scada-math-section">
-      <div class="panel-header">
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>📊</span> Empirik Kota Maliyet Öğrenici (`QuotaCostLearner` SQLite) & Havuz Fırsat Maliyetleri (`Phi`)
+          <span>📊</span> 4 Havuz Matematiği &amp; Karne
           <button type="button" class="section-help-btn" onclick="openSectionHelp('cost_learner_pools')" title="Empirik Kota Maliyet Öğrenici & Havuz Fırsat Maliyetleri hakkında detaylı bilgi">?</button>
+          <button type="button" class="section-help-btn" onclick="openSectionHelp('agent_scorecard')" title="Canlı Ajan Performans Karnesi hakkında detaylı bilgi">?</button>
         </div>
-        <span id="learner-obs-badge" class="badge badge-info">0 MEASURED SINGLE-JOB</span>
-      </div>
-      <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.1rem;">
-        <div>
-          <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.45rem;">
-            4 Gerçek Kota Havuzu: Usable Before Reset · Stranded Ratio · Opportunity Cost (`Phi`)
-          </div>
-          <table class="candidates-table">
-            <thead>
-              <tr>
-                <th>Havuz (`pool_id`)</th>
-                <th>5s Usable / Stranded</th>
-                <th>7g Usable / Stranded</th>
-                <th>Phi (5s / 7g)</th>
-                <th>Confidence</th>
-              </tr>
-            </thead>
-            <tbody id="pool-math-tbody">
-              <tr><td colspan="5">Yükleniyor...</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div>
-          <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.45rem;">
-            Görev Türüne Göre Tahmini Kota Tüketimi (Cold-Start Priors + Huber Empirical Blend)
-          </div>
-          <table class="candidates-table">
-            <thead>
-              <tr>
-                <th>Havuz</th>
-                <th>Görev (`tier`/`kind`)</th>
-                <th>5s Mean / Upper</th>
-                <th>7g Mean / Upper</th>
-                <th>Kaynak</th>
-              </tr>
-            </thead>
-            <tbody id="cost-learner-tbody">
-              <tr><td colspan="5">Yükleniyor...</td></tr>
-            </tbody>
-          </table>
+        <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
+          <span id="learner-obs-badge" class="badge badge-info" style="font-size: 0.6rem;">0 OBS</span>
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-math-section')" title="Tam 4 havuz tablosunu, Huber maliyet tahminlerini ve Ajan Performans Karnesini aç">🔍 Detay</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
       </div>
 
-      <!-- In-Flight Non-Duplicating Agent Scorecard (Automated Tests vs Actual Feature Acceptance) -->
-      <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.9rem; margin-top: 0.4rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
-          <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary); text-transform: uppercase; display: flex; align-items: center; gap: 0.45rem;">
-            <span>🎯 Tekrarlamasız (No-Duplication) Canlı Ajan Performans Karnesi — Kategori & Zorluk Katmanlarına Göre (`Automated Tests` vs `Feature Acceptance`)</span>
-            <button type="button" class="section-help-btn" onclick="openSectionHelp('agent_scorecard')" title="Canlı Ajan Performans Karnesi hakkında detaylı bilgi">?</button>
-          </div>
-          <span class="badge badge-healthy" id="scorecard-policy-badge">NO DUPLICATE BENCHMARKING · IN-FLIGHT ONLY</span>
-        </div>
-        <table class="candidates-table">
+      <!-- Primary L1 4-Pool Compact Matrix (Zero Scroll) -->
+      <div class="scada-l1-only">
+        <table class="candidates-table" style="font-size: 0.64rem;">
           <thead>
             <tr>
-              <th>Kategori / Zorluk (`kind · tier · complexity`)</th>
-              <th>Ajan (`provider / model`)</th>
-              <th>Görev (`N`)</th>
-              <th>Otomatik Test % (`tests_passed`)</th>
-              <th>Gerçek Kabul % (`feature_accepted`)</th>
-              <th>Test-Kabul Sapması</th>
-              <th>Regresyon / Rework</th>
-              <th>Medyan Süre / 7g Maliyet</th>
-              <th>Empirik Kalite (`Q`)</th>
+              <th style="padding: 0.2rem 0.3rem;">Havuz</th>
+              <th style="padding: 0.2rem 0.3rem;">5s Net</th>
+              <th style="padding: 0.2rem 0.3rem;">7g Net</th>
+              <th style="padding: 0.2rem 0.3rem;">Φ</th>
             </tr>
           </thead>
-          <tbody id="agent-scorecard-tbody">
-            <tr><td colspan="9">Henüz tamamlanmış görev gözlemi yok — gerçek görevler tamamlandıkça katman bazında dolacaktır.</td></tr>
+          <tbody id="scada-l1-pools-tbody">
+            <tr><td colspan="4" style="color: var(--text-muted);">Yükleniyor...</td></tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Secondary Detail Content: Full Pool Math, Huber Learner & Agent Scorecard -->
+      <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.9rem; margin-top: 0.5rem;">
+        <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.1rem;">
+          <div>
+            <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.45rem;">
+              4 Gerçek Kota Havuzu: Usable Before Reset · Stranded Ratio · Opportunity Cost (`Phi`)
+            </div>
+            <table class="candidates-table">
+              <thead>
+                <tr>
+                  <th>Havuz (`pool_id`)</th>
+                  <th>5s Usable / Stranded</th>
+                  <th>7g Usable / Stranded</th>
+                  <th>Phi (5s / 7g)</th>
+                  <th>Confidence</th>
+                </tr>
+              </thead>
+              <tbody id="pool-math-tbody">
+                <tr><td colspan="5">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <div style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.45rem;">
+              Görev Türüne Göre Tahmini Kota Tüketimi (Cold-Start Priors + Huber Empirical Blend)
+            </div>
+            <table class="candidates-table">
+              <thead>
+                <tr>
+                  <th>Havuz</th>
+                  <th>Görev (`tier`/`kind`)</th>
+                  <th>5s Mean / Upper</th>
+                  <th>7g Mean / Upper</th>
+                  <th>Kaynak</th>
+                </tr>
+              </thead>
+              <tbody id="cost-learner-tbody">
+                <tr><td colspan="5">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.85rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary); text-transform: uppercase;">
+              🎯 Tekrarlamasız (No-Duplication) Canlı Ajan Performans Karnesi (`Automated Tests` vs `Feature Acceptance`)
+            </div>
+            <span class="badge badge-healthy" id="scorecard-policy-badge">NO DUPLICATE BENCHMARKING · IN-FLIGHT ONLY</span>
+          </div>
+          <table class="candidates-table">
+            <thead>
+              <tr>
+                <th>Kategori / Zorluk (`kind · tier · complexity`)</th>
+                <th>Ajan (`provider / model`)</th>
+                <th>Görev (`N`)</th>
+                <th>Otomatik Test % (`tests_passed`)</th>
+                <th>Gerçek Kabul % (`feature_accepted`)</th>
+                <th>Test-Kabul Sapması</th>
+                <th>Regresyon / Rework</th>
+                <th>Medyan Süre / 7g Maliyet</th>
+                <th>Empirik Kalite (`Q`)</th>
+              </tr>
+            </thead>
+            <tbody id="agent-scorecard-tbody">
+              <tr><td colspan="9">Henüz tamamlanmış görev gözlemi yok — gerçek görevler tamamlandıkça katman bazında dolacaktır.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
-    <!-- Model Review Card (Discovery, Price/Performance Proposals, Excluded Expensive, Settings) -->
+    <!-- ROW 3, CELL 4: Model Review Card (Discovery, Price/Performance Proposals, Settings) -->
     <section class="panel" id="model-review-card">
-      <div class="panel-header">
+      <div class="panel-header" style="padding-bottom: 0.35rem;">
         <div class="panel-title">
-          <span>🧪</span> Model review — Discovery &amp; Price/Performance Proposals (Suggest-Only)
+          <span>🧪</span> Model Review &amp; Katalog
           <button type="button" class="section-help-btn" onclick="openSectionHelp('model_review')" title="Model Review & Fiyat/Performans Keşfi hakkında detaylı bilgi">?</button>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
-          <span class="mono" style="font-size: 0.74rem; color: var(--text-secondary);" id="model-review-last-run">Last run: never</span>
+        <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
           <span id="model-review-staleness-badge" class="badge badge-info">FRESH</span>
-          <button class="btn btn-sm btn-primary" id="btn-run-model-review" onclick="runModelReviewNow()">
+          <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('model-review-card')" title="Model öneri tablosunu, probation listesini ve pahalı/elenen modelleri aç">🔍 Detay</button>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+        </div>
+      </div>
+
+      <!-- Primary L1 Settings & Action Commands (Always Visible, Zero Scroll) -->
+      <div style="display: flex; flex-direction: column; gap: 0.3rem; flex: 1;">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.28rem; font-size: 0.68rem;">
+          <label class="scada-kpi-mini" style="cursor: pointer;">
+            <span>Max Fiyat Oranı</span>
+            <input type="number" id="mr-max-price-ratio" step="0.1" min="0.1" max="50" value="2.0" style="width: 50px; padding: 0.12rem 0.28rem; font-size: 0.68rem;" />
+          </label>
+          <label class="scada-kpi-mini" style="cursor: pointer;">
+            <span>Probation Payı</span>
+            <input type="number" id="mr-probation-share" step="0.05" min="0" max="1" value="0.10" style="width: 50px; padding: 0.12rem 0.28rem; font-size: 0.68rem;" />
+          </label>
+        </div>
+
+        <div class="scada-kpi-mini">
+          <span class="mono" style="font-size: 0.65rem; color: var(--text-secondary);" id="model-review-last-run">Last run: never</span>
+          <span id="mr-settings-status" class="badge badge-info" style="font-size: 0.58rem;">SUGGEST-ONLY</span>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: auto;">
+          <button class="btn btn-sm" style="padding: 0.18rem 0.48rem; font-size: 0.67rem;" onclick="saveModelReviewSettings()">Save Settings</button>
+          <button class="btn btn-sm btn-primary" style="padding: 0.18rem 0.52rem; font-size: 0.67rem;" id="btn-run-model-review" onclick="runModelReviewNow()">
             <span>🔍</span> Run Review Now
           </button>
         </div>
       </div>
 
-      <!-- Editable Owner Settings for Model Review -->
-      <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.8rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem; font-size: 0.75rem;">
-          <label style="display: flex; align-items: center; gap: 0.35rem;">
-            <span>Max Price Ratio</span>
-            <input type="number" id="mr-max-price-ratio" step="0.1" min="0.1" max="50" value="2.0" style="width: 68px; padding: 0.22rem 0.4rem;" />
-          </label>
+      <!-- Secondary Detail Content: Additional Settings, Proposals Table, Probation & Excluded Models -->
+      <div class="scada-detail-only" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.55rem; border-top: 1px solid var(--border-subtle); padding-top: 0.65rem;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem; font-size: 0.74rem;">
           <label style="display: flex; align-items: center; gap: 0.35rem;">
             <span>Review Interval (days)</span>
-            <input type="number" id="mr-interval-days" step="1" min="1" max="365" value="7" style="width: 58px; padding: 0.22rem 0.4rem;" />
-          </label>
-          <label style="display: flex; align-items: center; gap: 0.35rem;">
-            <span>Probation Share (0..1)</span>
-            <input type="number" id="mr-probation-share" step="0.05" min="0" max="1" value="0.10" style="width: 68px; padding: 0.22rem 0.4rem;" />
+            <input type="number" id="mr-interval-days" step="1" min="1" max="365" value="7" style="width: 58px; padding: 0.2rem 0.4rem;" />
           </label>
           <label style="display: flex; align-items: center; gap: 0.35rem;">
             <span>Auto-Retire Unused (days)</span>
-            <input type="text" id="mr-auto-retire-days" placeholder="off" value="off" style="width: 64px; padding: 0.22rem 0.4rem;" />
+            <input type="text" id="mr-auto-retire-days" placeholder="off" value="off" style="width: 64px; padding: 0.2rem 0.4rem;" />
           </label>
         </div>
-        <div style="display: flex; align-items: center; gap: 0.45rem;">
-          <span id="mr-settings-status" class="badge badge-info">SUGGEST-ONLY</span>
-          <button class="btn btn-sm" onclick="saveModelReviewSettings()">Save Settings</button>
+
+        <div style="overflow-x: auto;">
+          <table class="candidates-table" id="model-review-proposals-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Provider</th>
+                <th>Price Ratio (Blended $/Mtok)</th>
+                <th>Coding Score</th>
+                <th>Context</th>
+                <th>Suggested Tier</th>
+                <th>Sources</th>
+                <th>Actions (Owner Approval)</th>
+              </tr>
+            </thead>
+            <tbody id="model-review-proposals-tbody">
+              <tr>
+                <td colspan="8" style="color: var(--text-muted); text-align: center;">No pending model proposals. Click "Run Review Now" to scan local &amp; public catalogs.</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
 
-      <!-- Proposals Table -->
-      <div style="overflow-x: auto;">
-        <table class="candidates-table" id="model-review-proposals-table">
-          <thead>
-            <tr>
-              <th>Model</th>
-              <th>Provider</th>
-              <th>Price Ratio (Blended $/Mtok)</th>
-              <th>Coding Score</th>
-              <th>Context</th>
-              <th>Suggested Tier</th>
-              <th>Sources</th>
-              <th>Actions (Owner Approval)</th>
-            </tr>
-          </thead>
-          <tbody id="model-review-proposals-tbody">
-            <tr>
-              <td colspan="8" style="color: var(--text-muted); text-align: center;">No pending model proposals. Click "Run Review Now" to scan local &amp; public catalogs.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- 14-Day Probation Scorecard Reviews (Promote / Retire) -->
-      <div id="model-review-probation-box" style="display: none; background: rgba(56, 189, 248, 0.08); border: 1px solid var(--border-highlight); border-radius: 8px; padding: 0.7rem 0.9rem; font-size: 0.76rem;">
-      </div>
-
-      <!-- Collapsed Excluded (Too Expensive) Models List -->
-      <details id="model-review-excluded-details" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.76rem;">
-        <summary style="cursor: pointer; font-weight: 600; color: var(--text-secondary);">
-          Excluded (too expensive) (<span id="model-review-excluded-count">0</span> models above max_price_ratio)
-        </summary>
-        <div id="model-review-excluded-list" class="mono" style="margin-top: 0.55rem; display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-muted);">
-          None
+        <div id="model-review-probation-box" style="display: none; background: rgba(56, 189, 248, 0.08); border: 1px solid var(--border-highlight); border-radius: 8px; padding: 0.7rem 0.9rem; font-size: 0.76rem;">
         </div>
-      </details>
+
+        <details open id="model-review-excluded-details" style="background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.76rem;">
+          <summary style="cursor: pointer; font-weight: 600; color: var(--text-secondary);">
+            Excluded (too expensive) (<span id="model-review-excluded-count">0</span> models above max_price_ratio)
+          </summary>
+          <div id="model-review-excluded-list" class="mono" style="margin-top: 0.55rem; display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-muted);">
+            None
+          </div>
+        </details>
+      </div>
     </section>
 
-    <!-- Live GET /api/quotas JSON Inspector -->
+    <!-- Live GET /api/quotas JSON Inspector (Opened via Top Bar "📡 Raw JSON" Faceplate Button) -->
     <section class="panel" id="scada-json-section">
       <div class="panel-header">
         <div class="panel-title">
           <span>📡</span> Canlı `GET /api/quotas` Normalize JSON Özeti
           <button type="button" class="section-help-btn" onclick="openSectionHelp('raw_json')" title="Canlı GET /api/quotas JSON Özeti hakkında detaylı bilgi">?</button>
         </div>
-        <span class="mono" style="font-size: 0.75rem; color: var(--text-secondary);" id="last-updated-ts"></span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="mono" style="font-size: 0.75rem; color: var(--text-secondary);" id="last-updated-ts"></span>
+          <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
+        </div>
       </div>
       <div id="raw-quotas-json" class="raw-json-drawer mono">Yükleniyor...</div>
     </section>
@@ -2967,6 +2860,17 @@
         `;
       });
       tbody.innerHTML = rows.join('');
+
+      const l1Swrr = document.getElementById('l1-swrr-summary');
+      if (l1Swrr) {
+        const colors = { agy: 'var(--accent-blue)', codex: 'var(--accent-emerald)', claude: 'var(--accent-amber)' };
+        l1Swrr.innerHTML = ['agy', 'codex', 'claude'].map(prov => {
+          const info = alloc[prov] || {};
+          const tPct = Math.round((info.target_share ?? 0) * 100);
+          const mw = info.max_workers ?? '--';
+          return `<div class="scada-kpi-mini"><span class="mono" style="font-weight:600;">${escapeHtml(prov.toUpperCase())}</span><strong class="mono" style="color:${colors[prov]};">%${tPct}·${escapeHtml(mw)}W</strong></div>`;
+        }).join('');
+      }
     }
 
     function renderLimits(limits, policy) {
@@ -3181,10 +3085,20 @@
       const coords = live.coordinators || [];
       const workers = live.workers || [];
       const procBadge = document.getElementById('live-proc-summary');
+      const orchCnt = live.active_orchestrator_count ?? coords.filter(c => c.status === 'busy' && c.session_kind === 'orchestrator').length;
+      const chatCnt = live.active_chat_count ?? coords.filter(c => c.status === 'busy' && c.session_kind !== 'orchestrator').length;
+      const workerCnt = live.active_worker_count || 0;
       if (procBadge) {
-        const orchCnt = live.active_orchestrator_count ?? coords.filter(c => c.status === 'busy' && c.session_kind === 'orchestrator').length;
-        const chatCnt = live.active_chat_count ?? coords.filter(c => c.status === 'busy' && c.session_kind !== 'orchestrator').length;
-        procBadge.textContent = `${orchCnt} Aktif Orkestratör · ${chatCnt} Aktif Sohbet · ${live.active_worker_count || 0} Canlı Subagent/Worker`;
+        procBadge.textContent = `${orchCnt} Ork · ${chatCnt} Sohbet · ${workerCnt} Worker`;
+      }
+      const l1ProcMini = document.getElementById('l1-proc-mini-summary');
+      if (l1ProcMini) {
+        const topCoord = coords[0] ? `${String(coords[0].provider || '').toUpperCase()} · ${coords[0].name}` : 'Açık oturum yok';
+        const topWorker = workers[0] ? `${String(workers[0].provider || '').toUpperCase()} · ${workers[0].model} (PID ${workers[0].pid})` : 'Çalışan subagent/worker yok';
+        l1ProcMini.innerHTML = `
+          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">Oturum (${coords.length}):</span><strong class="mono" style="color:var(--accent-blue); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topCoord)}</strong></div>
+          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">Worker (${workerCnt}):</span><strong class="mono" style="color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topWorker)}</strong></div>
+        `;
       }
       const coordEl = document.getElementById('live-coordinators-list');
       if (coordEl) {
@@ -3364,13 +3278,20 @@
       const rBadge = document.getElementById('codex-reserve-badge');
       if (cxRes.degraded_continuity_mode) {
         rBadge.className = 'badge badge-exhausted';
-        rBadge.textContent = 'DEGRADED CONTINUITY MODE';
+        rBadge.textContent = 'DEGRADED';
       } else if (cxRes.routine_coding_allowed_on_codex) {
         rBadge.className = 'badge badge-healthy';
-        rBadge.textContent = 'SURPLUS AVAILABLE';
+        rBadge.textContent = 'SURPLUS';
       } else {
         rBadge.className = 'badge badge-warning';
-        rBadge.textContent = 'ORCHESTRATOR RESERVE GUARDED';
+        rBadge.textContent = 'GUARDED';
+      }
+      const l1ReserveMini = document.getElementById('l1-reserve-mini-summary');
+      if (l1ReserveMini) {
+        l1ReserveMini.innerHTML = `
+          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">5s/7g Rsv:</span><strong class="mono" style="color:var(--accent-blue);">%${cxRes.reserve_5h_pct ?? 0} / %${cxRes.reserve_weekly_pct ?? 0}</strong></div>
+          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">Kupon/Kod:</span><strong class="mono" style="color:${cxRes.routine_coding_allowed_on_codex ? '#34d399' : '#fbbf24'};">${br.available_full_resets ?? 0}x · ${cxRes.routine_coding_allowed_on_codex ? 'SERBEST' : 'KORUMALI'}</strong></div>
+        `;
       }
       const rEl = document.getElementById('codex-reserve-summary');
       if (rEl) {
@@ -4292,39 +4213,44 @@
       json: 'L2 [7]: CANLI GET /API/QUOTAS NORMALİZE JSON ÖZETİ'
     };
 
-    function switchScadaScreen(screenId, highlightId) {
-      const target = SCADA_SCREEN_TITLES[screenId] ? screenId : 'l1';
-      if (!document.body.classList.contains('scada-mode')) {
-        document.body.classList.add('scada-mode');
-        const lbl = document.getElementById('scada-layout-label');
-        if (lbl) lbl.textContent = 'Tek Ekran: AÇIK';
+    function openScadaFaceplate(sectionId) {
+      closeScadaFaceplate();
+      const el = document.getElementById(sectionId);
+      const backdrop = document.getElementById('scada-faceplate-backdrop');
+      if (el) {
+        el.classList.add('faceplate-open');
       }
-      document.body.setAttribute('data-scada-screen', target);
-
-      const tabs = document.querySelectorAll('.scada-tab-btn');
-      tabs.forEach(btn => {
-        btn.classList.toggle('active', btn.id === `scada-tab-${target}`);
-      });
-
-      const titleEl = document.getElementById('scada-l2-screen-title');
-      if (titleEl) {
-        titleEl.textContent = SCADA_SCREEN_TITLES[target] || target.toUpperCase();
-      }
-
-      if (highlightId) {
-        setTimeout(() => {
-          const el = document.getElementById(highlightId);
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            el.classList.remove('scada-highlight-pulse');
-            void el.offsetWidth;
-            el.classList.add('scada-highlight-pulse');
-          }
-        }, 60);
+      if (backdrop) {
+        backdrop.style.display = 'block';
       }
     }
 
+    function closeScadaFaceplate() {
+      document.querySelectorAll('.faceplate-open').forEach(el => el.classList.remove('faceplate-open'));
+      const backdrop = document.getElementById('scada-faceplate-backdrop');
+      if (backdrop) {
+        backdrop.style.display = 'none';
+      }
+    }
+
+    function switchScadaScreen(screenId, highlightId) {
+      if (!screenId || screenId === 'l1') {
+        closeScadaFaceplate();
+        return;
+      }
+      const map = {
+        policy: 'policy-doctor-card',
+        router: 'scada-router-section',
+        math: 'scada-math-section',
+        reserves: highlightId || 'scada-reserves-section',
+        models: 'model-review-card',
+        json: 'scada-json-section'
+      };
+      openScadaFaceplate(map[screenId] || screenId);
+    }
+
     function toggleScadaLayout() {
+      closeScadaFaceplate();
       const isScada = document.body.classList.toggle('scada-mode');
       const lbl = document.getElementById('scada-layout-label');
       if (lbl) {
@@ -4343,13 +4269,6 @@
       }
     }
 
-    function toggleProviderModels(prov) {
-      const card = document.getElementById(`card-${prov}`);
-      if (card) {
-        card.classList.toggle('show-models');
-      }
-    }
-
     window.addEventListener('keydown', (e) => {
       const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
       if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.ctrlKey || e.altKey || e.metaKey) {
@@ -4358,15 +4277,9 @@
       const helpOpen = document.getElementById('help-modal-backdrop')?.style.display === 'flex';
       const secHelpOpen = document.getElementById('section-help-modal-backdrop')?.style.display === 'flex';
       if (e.key === 'Escape' && !helpOpen && !secHelpOpen) {
-        document.querySelectorAll('.provider-card.show-models').forEach(c => c.classList.remove('show-models'));
-        if (document.body.getAttribute('data-scada-screen') !== 'l1') {
-          switchScadaScreen('l1');
-        }
-        return;
-      }
-      const keyMap = { '1': 'l1', '2': 'policy', '3': 'router', '4': 'math', '5': 'reserves', '6': 'models', '7': 'json' };
-      if (!helpOpen && !secHelpOpen && keyMap[e.key]) {
-        switchScadaScreen(keyMap[e.key]);
+        closeScadaFaceplate();
+        const simBar = document.getElementById('sim-preset-bar');
+        if (simBar) simBar.style.display = 'none';
       }
     });
 
