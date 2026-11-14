@@ -765,6 +765,76 @@
       backdrop-filter: blur(7px);
     }
 
+    /* SCADA Live Telemetry Hover Callout Popover */
+    #scada-hover-popover {
+      display: none;
+      position: fixed;
+      z-index: 98;
+      pointer-events: none;
+      width: 410px;
+      max-width: 92vw;
+      background: rgba(7, 10, 18, 0.97);
+      border: 1px solid rgba(56, 189, 248, 0.65);
+      border-radius: 12px;
+      padding: 0.72rem 0.88rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 22px rgba(56, 189, 248, 0.22);
+      backdrop-filter: blur(10px);
+      color: var(--text-primary);
+      font-size: 0.72rem;
+      line-height: 1.42;
+    }
+
+    .scada-tip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding-bottom: 0.38rem;
+      margin-bottom: 0.45rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      font-weight: 700;
+      font-size: 0.76rem;
+      color: #38bdf8;
+    }
+
+    .scada-tip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.32rem;
+      margin-bottom: 0.42rem;
+    }
+
+    .scada-tip-kv {
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 6px;
+      padding: 0.26rem 0.45rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.35rem;
+      font-size: 0.68rem;
+    }
+
+    .scada-tip-note {
+      background: rgba(15, 23, 42, 0.55);
+      border-left: 2px solid var(--accent-blue);
+      border-radius: 4px;
+      padding: 0.32rem 0.5rem;
+      font-size: 0.69rem;
+      color: var(--text-secondary);
+      margin-top: 0.3rem;
+    }
+
+    [data-scada-tip] {
+      transition: border-color 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    [data-scada-tip]:hover {
+      border-color: rgba(56, 189, 248, 0.55) !important;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.18);
+    }
+
     /* Viewport-Locked Zero-Scroll SCADA Matrix (Desktop >= 1024px) */
     @media (min-width: 1024px) {
       body.scada-mode {
@@ -1040,6 +1110,8 @@
 <body class="scada-mode" data-scada-screen="l1">
   <!-- Backdrop for SCADA Detail Faceplate Modals -->
   <div id="scada-faceplate-backdrop" onclick="closeScadaFaceplate()"></div>
+  <!-- Floating SCADA Mouseover Telemetry Callout -->
+  <div id="scada-hover-popover" role="tooltip" aria-hidden="true"></div>
 
   <header>
     <div class="header-inner">
@@ -1110,13 +1182,13 @@
       <div class="orch-banner-left">
         <div class="pulse-dot"></div>
         <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
-          <span id="active-mode-pill" class="badge badge-info">ENDURANCE MODE</span>
+          <span id="active-mode-pill" class="badge badge-info" data-scada-tip="mode_pill">ENDURANCE MODE</span>
           <button type="button" class="section-help-btn" onclick="openSectionHelp('mode_and_sim')" title="Bu bölüm ne işe yarar? Detaylı açıklama için tıkla">?</button>
           <span style="font-size: 0.73rem; color: var(--text-secondary);" id="active-mode-desc">
             Uzun vadeli haftalık bütçeyi korur; ancak sıfırlanmasına az kalan ("stranded") kotaları agresif biçimde değerlendirir.
           </span>
           <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Önerilen Koordinatör:</span>
-          <strong id="active-orch-name" class="mono" style="font-size: 0.8rem; color: var(--accent-blue);">Yükleniyor...</strong>
+          <strong id="active-orch-name" class="mono" style="font-size: 0.8rem; color: var(--accent-blue); cursor: help;" data-scada-tip="orch_active">Yükleniyor...</strong>
           <span id="active-orch-reason" class="scada-detail-only" style="font-size: 0.72rem; color: var(--text-secondary);"></span>
         </div>
       </div>
@@ -1144,7 +1216,7 @@
     <!-- ROW 1: 3 Provider Telemetry Cards (Primary: Windows & Reset | Detail: Model Breakdown & Source) -->
     <section class="providers-grid" id="scada-providers">
       <!-- 1. Google Antigravity (AGY) -->
-      <div class="provider-card" id="card-agy">
+      <div class="provider-card" id="card-agy" data-scada-tip="prov_agy">
         <div class="provider-header">
           <div class="provider-title">
             <div class="provider-logo logo-agy">AGY</div>
@@ -1230,7 +1302,7 @@
       </div>
 
       <!-- 2. Claude Code (claude) -->
-      <div class="provider-card" id="card-claude">
+      <div class="provider-card" id="card-claude" data-scada-tip="prov_claude">
         <div class="provider-header">
           <div class="provider-title">
             <div class="provider-logo logo-claude">CC</div>
@@ -1296,7 +1368,7 @@
       </div>
 
       <!-- 3. OpenAI Codex (codex) -->
-      <div class="provider-card" id="card-codex">
+      <div class="provider-card" id="card-codex" data-scada-tip="prov_codex">
         <div class="provider-header">
           <div class="provider-title">
             <div class="provider-logo logo-codex">CX</div>
@@ -1370,8 +1442,8 @@
           <button type="button" class="section-help-btn" onclick="openSectionHelp('policy_doctor')" title="Bu bölüm ne işe yarar? Detaylı açıklama için tıkla">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
-          <span id="pd-overall-badge" class="badge badge-healthy">PASS</span>
-          <span id="pd-compaction-badge" class="badge badge-info">KOMP: --/100</span>
+          <span id="pd-overall-badge" class="badge badge-healthy" data-scada-tip="pd_checks">PASS</span>
+          <span id="pd-compaction-badge" class="badge badge-info" data-scada-tip="pd_tokens">KOMP: --/100</span>
           <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('policy-doctor-card')" title="Tüm aktif kuralları, 5 denetim kalemini ve dosya/token tablosunu aç">🔍 Detay</button>
           <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
@@ -1380,21 +1452,21 @@
       <!-- Primary L1 Summary & Command (Always Visible, Zero Scroll) -->
       <div style="display: flex; flex-direction: column; gap: 0.32rem;">
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.3rem;">
-          <div class="scada-kpi-mini">
+          <div class="scada-kpi-mini" data-scada-tip="pd_checks" style="cursor: help;">
             <span style="color: var(--text-muted);">Denetim:</span>
             <strong class="mono" id="pd-kv-checks" style="color: var(--accent-emerald);">—</strong>
           </div>
-          <div class="scada-kpi-mini">
+          <div class="scada-kpi-mini" data-scada-tip="pd_tokens" style="cursor: help;">
             <span style="color: var(--text-muted);">Prompt Yükü:</span>
             <strong class="mono" id="pd-kv-tokens" style="color: var(--accent-blue);">—</strong>
           </div>
         </div>
-        <div class="scada-kpi-mini">
+        <div class="scada-kpi-mini" data-scada-tip="pd_rules" style="cursor: help;">
           <span style="color: var(--text-muted);">Haftalık Tarama:</span>
           <span class="mono" id="pd-kv-dates" style="font-size: 0.65rem; color: var(--text-secondary);">—</span>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; margin-top: 0.1rem;">
-          <span class="mono" style="font-size: 0.65rem; color: var(--text-muted);" id="pd-schedule-info">4 Kural Grubu · Suggest-Only</span>
+          <span class="mono" style="font-size: 0.65rem; color: var(--text-muted); cursor: help;" id="pd-schedule-info" data-scada-tip="pd_rules">4 Kural Grubu · Suggest-Only</span>
           <button class="btn btn-sm btn-primary" style="padding: 0.2rem 0.55rem; font-size: 0.68rem;" id="btn-run-policy-doctor" onclick="runPolicyDoctorNow()">
             <span>🔍</span> Şimdi Denetle
           </button>
@@ -1538,7 +1610,7 @@
       </div>
 
       <!-- Primary L1 Commands: 4 Core Ceilings + Save/Cancel Buttons -->
-      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.32rem; font-size: 0.69rem;">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.32rem; font-size: 0.69rem;" data-scada-tip="limits_pool">
         <label class="scada-kpi-mini" style="cursor: pointer;">
           <span>Max Leaves</span>
           <input type="number" id="limit-max-leaves" min="1" max="20" value="10" style="width: 48px; padding: 0.12rem 0.3rem; font-size: 0.7rem;" oninput="markLimitInputDirty(this)" onchange="markLimitInputDirty(this)" />
@@ -1558,7 +1630,7 @@
       </div>
 
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; margin-top: auto;">
-        <span class="mono" style="font-size: 0.64rem; color: var(--text-muted);">`~/.agents/policy.json`</span>
+        <span class="mono" style="font-size: 0.64rem; color: var(--text-muted); cursor: help;" data-scada-tip="limits_pool">`~/.agents/policy.json`</span>
         <div style="display: flex; align-items: center; gap: 0.3rem;">
           <button class="btn btn-sm btn-primary" style="padding: 0.18rem 0.5rem; font-size: 0.67rem;" id="btn-save-limits" onclick="saveLimits()">Save Limits</button>
           <button class="btn btn-sm" style="padding: 0.18rem 0.45rem; font-size: 0.67rem;" id="btn-cancel-limits" onclick="cancelLimits()">Cancel</button>
@@ -1602,8 +1674,8 @@
           <button type="button" class="section-help-btn" onclick="openSectionHelp('banked_resets')" title="Codex Banked Resets & Fırsat Maliyeti hakkında detaylı bilgi">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
-          <span id="codex-reserve-badge" class="badge badge-healthy">PROTECTED</span>
-          <span id="banked-status-badge" class="badge badge-purple">VERIFIED</span>
+          <span id="codex-reserve-badge" class="badge badge-healthy" data-scada-tip="reserve_status">PROTECTED</span>
+          <span id="banked-status-badge" class="badge badge-purple" data-scada-tip="banked_status">VERIFIED</span>
           <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-reserves-section')" title="Tam Banked Reset kupon listesini, zamanlama analizini ve rezerv detaylarını aç">🔍 Detay</button>
           <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
@@ -1668,7 +1740,7 @@
           <button type="button" class="section-help-btn" onclick="openSectionHelp('project_goals')" title="Uzun Vadeli Hedef & Otonom Görev Üretimi hakkında detaylı bilgi">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
-          <span id="live-proc-summary" class="badge badge-info">Taranıyor...</span>
+          <span id="live-proc-summary" class="badge badge-info" data-scada-tip="proc_sessions">Taranıyor...</span>
           <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-processes-section')" title="Tam süreç/PID listesini ve Otonom Uzun Vadeli Hedef formunu aç">🔍 Detay &amp; Hedef</button>
           <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
@@ -1677,11 +1749,11 @@
       <!-- Primary L1 Summary & Goal Status (Zero Scroll) -->
       <div class="scada-l1-only" style="display: flex; flex-direction: column; gap: 0.28rem; flex: 1;">
         <div id="l1-proc-mini-summary" style="display: flex; flex-direction: column; gap: 0.22rem; font-size: 0.67rem;">
-          <div class="scada-kpi-mini"><span>Aktif Oturumlar:</span><strong class="mono" style="color: var(--accent-blue);">Taranıyor...</strong></div>
-          <div class="scada-kpi-mini"><span>Arka Plan İşçileri:</span><strong class="mono" style="color: var(--text-secondary);">0 Worker</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="proc_sessions"><span>Aktif Oturumlar:</span><strong class="mono" style="color: var(--accent-blue);">Taranıyor...</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="proc_workers"><span>Arka Plan İşçileri:</span><strong class="mono" style="color: var(--text-secondary);">0 Worker</strong></div>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: auto; padding-top: 0.15rem;">
-          <span id="project-goals-badge" class="badge badge-info" style="font-size: 0.62rem;">STANDART KUYRUK MODU</span>
+          <span id="project-goals-badge" class="badge badge-info" style="font-size: 0.62rem; cursor: help;" data-scada-tip="proc_goals">STANDART KUYRUK MODU</span>
           <button type="button" class="btn btn-sm" style="padding: 0.16rem 0.45rem; font-size: 0.66rem; border-color: rgba(56, 189, 248, 0.45); color: #38bdf8;" onclick="openScadaFaceplate('scada-processes-section')">🧭 Hedef Gir</button>
         </div>
       </div>
@@ -1758,7 +1830,7 @@
           <button type="button" class="section-help-btn" onclick="openSectionHelp('assignment_record')" title="Atama Kaydı & Matematiksel Çizelgeleme hakkında detaylı bilgi">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
-          <span id="route-floor-badge" class="badge badge-healthy" style="font-size: 0.6rem;">READY</span>
+          <span id="route-floor-badge" class="badge badge-healthy" style="font-size: 0.6rem; cursor: help;" data-scada-tip="router_summary">READY</span>
           <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-router-section')" title="Tüm yönlendirme parametrelerini, CLI komutunu ve aday model sıralama tablosunu aç">🔍 Detay</button>
           <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
@@ -1781,13 +1853,13 @@
           </select>
         </div>
 
-        <div class="scada-kpi-mini">
+        <div class="scada-kpi-mini" data-scada-tip="router_summary" style="cursor: help;">
           <span style="color: var(--text-muted);">Seçilen:</span>
           <strong class="mono" id="res-model" style="color: var(--accent-emerald); font-size: 0.67rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">—</strong>
         </div>
 
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; margin-top: auto;">
-          <span class="mono" style="font-size: 0.65rem; color: var(--accent-blue);" id="res-pred-cost">Maliyet: —</span>
+          <span class="mono" style="font-size: 0.65rem; color: var(--accent-blue); cursor: help;" id="res-pred-cost" data-scada-tip="router_summary">Maliyet: —</span>
           <button class="btn btn-sm btn-primary" style="padding: 0.18rem 0.55rem; font-size: 0.68rem;" onclick="dispatchWorkPackage()">
             <span>⚡</span> Hesapla &amp; Delege Et
           </button>
@@ -1923,7 +1995,7 @@
           <button type="button" class="section-help-btn" onclick="openSectionHelp('agent_scorecard')" title="Canlı Ajan Performans Karnesi hakkında detaylı bilgi">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
-          <span id="learner-obs-badge" class="badge badge-info" style="font-size: 0.6rem;">0 OBS</span>
+          <span id="learner-obs-badge" class="badge badge-info" style="font-size: 0.6rem; cursor: help;" data-scada-tip="scorecard_obs">0 OBS</span>
           <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('scada-math-section')" title="Tam 4 havuz tablosunu, Huber maliyet tahminlerini ve Ajan Performans Karnesini aç">🔍 Detay</button>
           <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
@@ -2026,7 +2098,7 @@
           <button type="button" class="section-help-btn" onclick="openSectionHelp('model_review')" title="Model Review & Fiyat/Performans Keşfi hakkında detaylı bilgi">?</button>
         </div>
         <div style="display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap;">
-          <span id="model-review-staleness-badge" class="badge badge-info">FRESH</span>
+          <span id="model-review-staleness-badge" class="badge badge-info" data-scada-tip="model_review_status" style="cursor: help;">FRESH</span>
           <button type="button" class="scada-detail-btn" onclick="openScadaFaceplate('model-review-card')" title="Model öneri tablosunu, probation listesini ve pahalı/elenen modelleri aç">🔍 Detay</button>
           <button type="button" class="scada-close-faceplate-btn" onclick="closeScadaFaceplate()">✕ Kapat (ESC)</button>
         </div>
@@ -2045,7 +2117,7 @@
           </label>
         </div>
 
-        <div class="scada-kpi-mini">
+        <div class="scada-kpi-mini" data-scada-tip="model_review_status" style="cursor: help;">
           <span class="mono" style="font-size: 0.65rem; color: var(--text-secondary);" id="model-review-last-run">Last run: never</span>
           <span id="mr-settings-status" class="badge badge-info" style="font-size: 0.58rem;">SUGGEST-ONLY</span>
         </div>
@@ -2865,10 +2937,10 @@
       if (l1Swrr) {
         const colors = { agy: 'var(--accent-blue)', codex: 'var(--accent-emerald)', claude: 'var(--accent-amber)' };
         l1Swrr.innerHTML = ['agy', 'codex', 'claude'].map(prov => {
-          const info = alloc[prov] || {};
+          const info = alloc[prov] || provs[prov] || {};
           const tPct = Math.round((info.target_share ?? 0) * 100);
           const mw = info.max_workers ?? '--';
-          return `<div class="scada-kpi-mini"><span class="mono" style="font-weight:600;">${escapeHtml(prov.toUpperCase())}</span><strong class="mono" style="color:${colors[prov]};">%${tPct}·${escapeHtml(mw)}W</strong></div>`;
+          return `<div class="scada-kpi-mini" data-scada-tip="swrr_${prov}" style="cursor:help;"><span class="mono" style="font-weight:600;">${escapeHtml(prov.toUpperCase())}</span><strong class="mono" style="color:${colors[prov]};">%${tPct}·${escapeHtml(mw)}W</strong></div>`;
         }).join('');
       }
     }
@@ -3096,8 +3168,8 @@
         const topCoord = coords[0] ? `${String(coords[0].provider || '').toUpperCase()} · ${coords[0].name}` : 'Açık oturum yok';
         const topWorker = workers[0] ? `${String(workers[0].provider || '').toUpperCase()} · ${workers[0].model} (PID ${workers[0].pid})` : 'Çalışan subagent/worker yok';
         l1ProcMini.innerHTML = `
-          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">Oturum (${coords.length}):</span><strong class="mono" style="color:var(--accent-blue); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topCoord)}</strong></div>
-          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">Worker (${workerCnt}):</span><strong class="mono" style="color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topWorker)}</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="proc_sessions" style="cursor:help;"><span style="color:var(--text-muted);">Oturum (${coords.length}):</span><strong class="mono" style="color:var(--accent-blue); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topCoord)}</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="proc_workers" style="cursor:help;"><span style="color:var(--text-muted);">Worker (${workerCnt}):</span><strong class="mono" style="color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(topWorker)}</strong></div>
         `;
       }
       const coordEl = document.getElementById('live-coordinators-list');
@@ -3289,8 +3361,8 @@
       const l1ReserveMini = document.getElementById('l1-reserve-mini-summary');
       if (l1ReserveMini) {
         l1ReserveMini.innerHTML = `
-          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">5s/7g Rsv:</span><strong class="mono" style="color:var(--accent-blue);">%${cxRes.reserve_5h_pct ?? 0} / %${cxRes.reserve_weekly_pct ?? 0}</strong></div>
-          <div class="scada-kpi-mini"><span style="color:var(--text-muted);">Kupon/Kod:</span><strong class="mono" style="color:${cxRes.routine_coding_allowed_on_codex ? '#34d399' : '#fbbf24'};">${br.available_full_resets ?? 0}x · ${cxRes.routine_coding_allowed_on_codex ? 'SERBEST' : 'KORUMALI'}</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="reserve_status" style="cursor:help;"><span style="color:var(--text-muted);">5s/7g Rsv:</span><strong class="mono" style="color:var(--accent-blue);">%${cxRes.reserve_5h_pct ?? 0} / %${cxRes.reserve_weekly_pct ?? 0}</strong></div>
+          <div class="scada-kpi-mini" data-scada-tip="banked_status" style="cursor:help;"><span style="color:var(--text-muted);">Kupon/Kod:</span><strong class="mono" style="color:${cxRes.routine_coding_allowed_on_codex ? '#34d399' : '#fbbf24'};">${br.available_full_resets ?? 0}x · ${cxRes.routine_coding_allowed_on_codex ? 'SERBEST' : 'KORUMALI'}</strong></div>
         `;
       }
       const rEl = document.getElementById('codex-reserve-summary');
@@ -3346,7 +3418,7 @@
           const str7 = Math.round((wk.stranded_quota_fraction || 0) * 100);
           const phiWk = (wk.opportunity_cost_phi ?? 0).toFixed(2);
           return `
-            <tr>
+            <tr data-scada-tip="pool_${escapeHtml(ps.pool_id)}" style="cursor:help;">
               <td class="mono" style="font-weight: 600; color: var(--accent-blue);">${escapeHtml(ps.pool_id)}</td>
               <td class="mono">%${Math.round((fh.usable_before_reset || 0) * 100)} <span style="color: ${str5 >= 35 ? '#fbbf24' : 'var(--text-muted)'};">(${str5}% yan.)</span></td>
               <td class="mono">%${Math.round((wk.usable_before_reset || 0) * 100)} <span style="color: ${str7 >= 35 ? '#fbbf24' : 'var(--text-muted)'};">(${str7}% yan.)</span></td>
@@ -3702,6 +3774,7 @@
           body: JSON.stringify(payload)
         });
         const data = await res.json();
+        latestDispatch = data;
         const routing = data.routing || {};
         const rec = routing.assignment_record;
         const exec = data.execution;
@@ -3788,6 +3861,7 @@
 
     function renderModelReview(rev) {
       if (!rev || typeof rev !== 'object') return;
+      latestModelReview = rev;
       const lastRunEl = document.getElementById('model-review-last-run');
       if (lastRunEl) {
         lastRunEl.textContent = rev.last_run ? `Last run: ${rev.last_run}` : 'Last run: never';
@@ -4058,6 +4132,7 @@
 
     function renderPolicyDoctor(data) {
       if (!data) return;
+      latestPolicyDoctor = data;
       const overall = String(data.overall_status || 'PASS').toUpperCase();
       const counts = data.counts || {};
       const comp = data.compaction || {};
@@ -4282,6 +4357,325 @@
         if (simBar) simBar.style.display = 'none';
       }
     });
+
+    let latestDispatch = null;
+    let latestPolicyDoctor = null;
+    let latestModelReview = null;
+
+    function buildScadaTooltipHtml(tipKey) {
+      const q = latestQuotas || {};
+      const p = q.providers || {};
+      const pools = q.pool_states || {};
+      const alloc = q.allocation || {};
+      const allocProvs = alloc.providers || alloc;
+      const lim = q.limits || q.policy || {};
+      const live = q.live_activity || {};
+      const cxRes = q.codex_reserve || {};
+      const br = q.banked_reset_strategy || {};
+      const cl = q.cost_learning || {};
+      const pd = latestPolicyDoctor || {};
+      const mr = latestModelReview || {};
+      const disp = latestDispatch || {};
+
+      if (tipKey === 'mode_pill') {
+        const mode = (q.operating_mode || 'endurance').toUpperCase();
+        const bg = q.backlog_settings || {};
+        return `
+          <div class="scada-tip-header"><span>⚙️ OPERASYON MODU &amp; KUYRUK TELEMETRİSİ</span><span class="badge ${mode === 'SPRINT' ? 'badge-warning' : 'badge-info'}">${escapeHtml(mode)}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Aktif Mod</span><strong>${escapeHtml(mode)}</strong></div>
+            <div class="scada-tip-kv"><span>Kuyruktaki Görev</span><strong>${escapeHtml(bg.unfinished_tasks_count ?? 4)} adet</strong></div>
+            <div class="scada-tip-kv"><span>Bekleyen Review</span><strong>${escapeHtml(bg.pending_reviews_count ?? 2)} adet</strong></div>
+            <div class="scada-tip-kv"><span>Stranded Eşiği</span><strong>%35+ Yanacak Kota</strong></div>
+          </div>
+          <div class="scada-tip-note">${mode === 'SPRINT' ? '⚡ Sprint Modu: Yakın vadeli (5 saat) iş çıkarma hızını maksimize eder; yakında sıfırlanacak kotaları agresif biçimde eritir.' : '🛡️ Endurance Modu: Çok günlü haftalık bütçeyi erken tükenmeye karşı korur; yalnızca sıfırlanmasına az kalan (stranded) kotaları hasat eder.'}</div>
+        `;
+      }
+
+      if (tipKey === 'orch_active') {
+        const orch = q.orchestrator || {};
+        return `
+          <div class="scada-tip-header"><span>🎯 AKTİF ORKESTRATÖR MOTORU</span><span class="badge badge-purple">${escapeHtml((orch.preferred || 'auto').toUpperCase())}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Seçili Motor</span><strong>${escapeHtml(orch.active_label || orch.active || 'auto')}</strong></div>
+            <div class="scada-tip-kv"><span>Tercih Politikası</span><strong>${escapeHtml(orch.preferred || 'auto')}</strong></div>
+          </div>
+          <div class="scada-tip-note"><strong>Seçim Gerekçesi:</strong> ${escapeHtml(orch.reason || 'En sağlıklı kota havuzuna sahip sağlayıcı otomatik seçildi.')}</div>
+        `;
+      }
+
+      if (tipKey === 'prov_agy') {
+        const agy = p.agy || {};
+        const gPool = pools.agy_gemini || {};
+        const cPool = pools.agy_claude_gpt || {};
+        return `
+          <div class="scada-tip-header"><span>🚀 ANTIGRAVITY (AGY) ALT MODEL &amp; HAVUZ DETAYI</span><span class="badge ${getBadgeClass(agy.status).replace('badge ', '')}">${escapeHtml((agy.status || 'unknown').toUpperCase())}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Gemini Flash</span><strong>${formatPct(agy.gemini_flash)}</strong></div>
+            <div class="scada-tip-kv"><span>Gemini Pro (Argon)</span><strong>${formatPct(agy.gemini_pro)}</strong></div>
+            <div class="scada-tip-kv"><span>Claude Sonnet (AGY)</span><strong>${formatPct(agy.claude_sonnet)}</strong></div>
+            <div class="scada-tip-kv"><span>Claude Opus (AGY)</span><strong>${formatPct(agy.claude_opus)}</strong></div>
+            <div class="scada-tip-kv"><span>Gem Usable / Yanacak</span><strong>%${Math.round((gPool.effective_usable ?? 0) * 100)} / %${Math.round((gPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>3P Usable / Yanacak</span><strong>%${Math.round((cPool.effective_usable ?? 0) * 100)} / %${Math.round((cPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>Telemetri Kaynağı</span><strong>${escapeHtml(agy.source || 'language_server.exe')}</strong></div>
+            <div class="scada-tip-kv"><span>En Yakın Reset</span><strong>${formatSeconds(agy.reset_in_sec)}</strong></div>
+          </div>
+          <div class="scada-tip-note">AGY iki bağımsız kota havuzuna sahiptir: <strong>agy_gemini</strong> (Flash/Argon) ve <strong>agy_claude_gpt</strong> (AGY üzerinden sunulan Claude/GPT).</div>
+        `;
+      }
+
+      if (tipKey === 'prov_claude') {
+        const claude = p.claude || {};
+        const cPool = pools.claude_shared || {};
+        const acc = claude.accounting || {};
+        return `
+          <div class="scada-tip-header"><span>🧠 CLAUDE CODE CLI ALT MODEL &amp; MALİYET DETAYI</span><span class="badge ${getBadgeClass(claude.status).replace('badge ', '')}">${escapeHtml((claude.status || 'offline').toUpperCase())}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Sonnet 5.5</span><strong>${formatPct(claude.sonnet)}</strong></div>
+            <div class="scada-tip-kv"><span>Opus 5.5</span><strong>${formatPct(claude.opus)}</strong></div>
+            <div class="scada-tip-kv"><span>Haiku 5.5</span><strong>${formatPct(claude.haiku)}</strong></div>
+            <div class="scada-tip-kv"><span>5-Saatlik Harcama</span><strong>$${(acc.cost_5h_usd ?? 0).toFixed(2)} USD</strong></div>
+            <div class="scada-tip-kv"><span>Usable / Yanacak</span><strong>%${Math.round((cPool.effective_usable ?? 0) * 100)} / %${Math.round((cPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>En Yakın Reset</span><strong>${formatSeconds(claude.reset_in_sec)}</strong></div>
+          </div>
+          <div class="scada-tip-note">Telemetri kaynağı: <strong>${escapeHtml(claude.source || '~/.claude logs')}</strong> · Güven: <strong>${escapeHtml((claude.confidence || 'UNKNOWN').toUpperCase())}</strong></div>
+        `;
+      }
+
+      if (tipKey === 'prov_codex') {
+        const codex = p.codex || {};
+        const xPool = pools.codex_shared || {};
+        const bObj = codex.banked_resets || {};
+        return `
+          <div class="scada-tip-header"><span>⚡ CODEX CLI ALT MODEL &amp; REZERV DETAYI</span><span class="badge ${getBadgeClass(codex.status).replace('badge ', '')}">${escapeHtml((codex.status || 'offline').toUpperCase())}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>gpt-6.1-luna</span><strong>${formatPct(codex.luna)}</strong></div>
+            <div class="scada-tip-kv"><span>gpt-6.1-terra</span><strong>${formatPct(codex.terra)}</strong></div>
+            <div class="scada-tip-kv"><span>gpt-6.1-sol</span><strong>${formatPct(codex.sol)}</strong></div>
+            <div class="scada-tip-kv"><span>Banked Full Resets</span><strong>${escapeHtml(bObj.applicable_available_count ?? 0)} adet</strong></div>
+            <div class="scada-tip-kv"><span>Usable / Yanacak</span><strong>%${Math.round((xPool.effective_usable ?? 0) * 100)} / %${Math.round((xPool.max_stranded_ratio ?? 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>Orkestratör Rezervi</span><strong>%${cxRes.reserve_5h_pct ?? 0} (5s) / %${cxRes.reserve_weekly_pct ?? 0} (7g)</strong></div>
+          </div>
+          <div class="scada-tip-note">Telemetri kaynağı: <strong>${escapeHtml(codex.source || '~/.codex/sessions')}</strong> · Sıfırlama: <strong>${formatSeconds(codex.reset_in_sec)}</strong></div>
+        `;
+      }
+
+      if (tipKey && tipKey.startsWith('swrr_')) {
+        const prov = tipKey.replace('swrr_', '');
+        const info = allocProvs[prov] || alloc[prov] || {};
+        return `
+          <div class="scada-tip-header"><span>🎚️ SWRR CANLI TAHSİS: ${escapeHtml(prov.toUpperCase())}</span><span class="badge badge-info">${escapeHtml(String(info.band || 'normal').toUpperCase())} BAND</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Tercih Slider</span><strong>${escapeHtml(info.slider ?? '--')} / 10</strong></div>
+            <div class="scada-tip-kv"><span>Hedef Pay (Target)</span><strong>%${((info.target_share ?? 0) * 100).toFixed(1)}</strong></div>
+            <div class="scada-tip-kv"><span>24s Gerçekleşen</span><strong>%${((info.actual_share_24h ?? 0) * 100).toFixed(1)}</strong></div>
+            <div class="scada-tip-kv"><span>Sürdürülebilirlik (σ)</span><strong>${info.sigma !== undefined && info.sigma !== null ? Number(info.sigma).toFixed(2) : '--'}</strong></div>
+            <div class="scada-tip-kv"><span>Canlı Worker Tavanı</span><strong>${escapeHtml(info.max_workers ?? '--')} / ${escapeHtml(info.ceiling ?? 6)}</strong></div>
+            <div class="scada-tip-kv"><span>Saatlik Kapasite</span><strong>${info.capacity_tasks_per_hour !== undefined ? Number(info.capacity_tasks_per_hour).toFixed(2) : '--'} görev/s</strong></div>
+          </div>
+          <div class="scada-tip-note"><strong>Efor Politikası:</strong> ${escapeHtml(info.effort_policy || 'default')} · ${escapeHtml(info.summary || 'SWRR kredisi aktif.')}</div>
+        `;
+      }
+
+      if (tipKey === 'limits_pool') {
+        const pp = lim.max_per_pool || {};
+        const pv = lim.max_per_provider || {};
+        return `
+          <div class="scada-tip-header"><span>🚦 EŞZAMANLILIK TAVANLARI (POLICY.JSON)</span><span class="badge badge-info">MAX ${escapeHtml(lim.max_leaves ?? 10)} LEAF</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Sağlayıcı Tavanları</span><strong>AGY:${escapeHtml(pv.agy ?? 6)} · CL:${escapeHtml(pv.claude ?? 6)} · CX:${escapeHtml(pv.codex ?? 6)}</strong></div>
+            <div class="scada-tip-kv"><span>Havuz: agy_gemini</span><strong>Max ${escapeHtml(pp.agy_gemini ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>Havuz: agy_claude_gpt</span><strong>Max ${escapeHtml(pp.agy_claude_gpt ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>Havuz: claude_shared</span><strong>Max ${escapeHtml(pp.claude_shared ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>Havuz: codex_shared</span><strong>Max ${escapeHtml(pp.codex_shared ?? 6)} worker</strong></div>
+            <div class="scada-tip-kv"><span>Kaynak Dosya</span><strong>~/.agents/policy.json</strong></div>
+          </div>
+          <div class="scada-tip-note">Havuz bazlı limitleri değiştirmek için kart üzerindeki <strong>🔍 Detay</strong> butonuna tıklayın.</div>
+        `;
+      }
+
+      if (tipKey === 'proc_sessions' || tipKey === 'proc_workers' || tipKey === 'proc_goals') {
+        const coords = live.coordinators || [];
+        const workers = live.workers || [];
+        const goals = q.project_goals || {};
+        const coordRows = coords.slice(0, 4).map(c => `• <strong>[${escapeHtml((c.provider || '').toUpperCase())}]</strong> ${escapeHtml(c.name)} (${escapeHtml(c.model)}) — <em>${escapeHtml(c.status)}</em>`).join('<br/>') || '• Açık oturum yok';
+        const workerRows = workers.slice(0, 4).map(w => `• <strong>${escapeHtml((w.provider || '').toUpperCase())} · ${escapeHtml(w.model)}</strong> (PID ${escapeHtml(w.pid)}): ${escapeHtml(w.task_summary || w.role || '')}`).join('<br/>') || '• Arka planda çalışan subagent/worker yok';
+        return `
+          <div class="scada-tip-header"><span>🛰️ CANLI OTURUMLAR, WORKER'LAR &amp; OTONOM HEDEF</span><span class="badge ${goals.active ? 'badge-purple' : 'badge-info'}">${goals.active ? 'OTONOM AKTİF' : 'STANDART'}</span></div>
+          <div class="scada-tip-note" style="margin-bottom:0.35rem;"><strong>Açık Oturumlar (${coords.length}):</strong><br/>${coordRows}</div>
+          <div class="scada-tip-note"><strong>Canlı Headless Worker'lar (${workers.length}):</strong><br/>${workerRows}</div>
+          ${goals.long_term_goal ? `<div class="scada-tip-note" style="border-color:rgba(139,92,246,0.4);"><strong>🎯 Uzun Vadeli Hedef:</strong> ${escapeHtml(goals.long_term_goal)}</div>` : ''}
+        `;
+      }
+
+      if (tipKey === 'router_summary') {
+        const routing = disp.routing || {};
+        const rec = routing.assignment_record || {};
+        const cands = (routing.ranked_candidates || []).slice(0, 4);
+        const rejs = (routing.rejected_models || []).slice(0, 3);
+        const candHtml = cands.map((c, idx) => `${idx === 0 ? '★ ' : '• '}<strong>${escapeHtml((c.provider || '').toUpperCase())}/${escapeHtml(c.model_id)}</strong>: Skor ${Number(c.score || 0).toFixed(3)} (Kalan %${Math.round((c.remaining_quota || 0) * 100)})`).join('<br/>') || 'Henüz simülasyon çalıştırılmadı.';
+        return `
+          <div class="scada-tip-header"><span>🧭 YÖNLENDİRİCİ ATAMA &amp; ADAY SKORLARI</span><span class="badge badge-healthy">${escapeHtml(rec.selected_tier || routing.capability_floor || 'MID')}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Seçilen Model</span><strong>${escapeHtml(rec.provider ? `${rec.provider.toUpperCase()} · ${rec.model}` : '—')}</strong></div>
+            <div class="scada-tip-kv"><span>Yedek (Fallback)</span><strong>${escapeHtml(rec.fallback_model || '—')}</strong></div>
+          </div>
+          <div class="scada-tip-note"><strong>En İyi Aday Modeller:</strong><br/>${candHtml}</div>
+          ${rejs.length > 0 ? `<div class="scada-tip-note"><strong>Elenenler (${routing.rejected_models.length}):</strong> ${rejs.map(r => escapeHtml(r.model_id)).join(', ')}</div>` : ''}
+          ${rec.routing_rationale ? `<div class="scada-tip-note"><strong>Gerekçe:</strong> ${escapeHtml(rec.routing_rationale)}</div>` : ''}
+        `;
+      }
+
+      if (tipKey === 'reserve_status' || tipKey === 'banked_status') {
+        const items = br.items || [];
+        const ho = br.harvest_overlay || {};
+        const itemsTxt = items.map(it => `• ${escapeHtml(it.credit_type)}: Son kullanma <strong>${formatSeconds(it.expires_in_sec)}</strong>`).join('<br/>') || '• Kayıtlı kupon yok.';
+        return `
+          <div class="scada-tip-header"><span>🛡️ CODEX CONTINUITY RESERVE &amp; BANKED RESETS</span><span class="badge ${cxRes.routine_coding_allowed_on_codex ? 'badge-healthy' : 'badge-warning'}">${cxRes.routine_coding_allowed_on_codex ? 'SURPLUS' : 'GUARDED'}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>5-Saatlik Rezerv</span><strong>%${escapeHtml(cxRes.reserve_5h_pct ?? 0)}</strong></div>
+            <div class="scada-tip-kv"><span>Haftalık Rezerv</span><strong>%${escapeHtml(cxRes.reserve_weekly_pct ?? 0)}</strong></div>
+            <div class="scada-tip-kv"><span>Banked Reset Kuponu</span><strong>${escapeHtml(br.available_full_resets ?? 0)} adet</strong></div>
+            <div class="scada-tip-kv"><span>Takvim Kayması</span><strong>+${escapeHtml(br.schedule_shift_days_lost ?? 0)} gün</strong></div>
+          </div>
+          <div class="scada-tip-note"><strong>Kupon Envanteri:</strong><br/>${itemsTxt}</div>
+          <div class="scada-tip-note">${escapeHtml(br.recommendation || cxRes.continuity_policy || 'Orkestratör sürekliliği için dinamik rezerv aktif.')} ${ho.active ? ' <strong>(🌾 Pre-Expiry Harvest Aktif)</strong>' : ''}</div>
+        `;
+      }
+
+      if (tipKey === 'pd_checks' || tipKey === 'pd_tokens' || tipKey === 'pd_rules') {
+        const checks = pd.checks || [];
+        const comp = pd.compaction || {};
+        const cats = (pd.active_rules_summary || {}).categories || [];
+        const chkHtml = checks.map(c => `• <strong>[${escapeHtml(c.status)}]</strong> ${escapeHtml(c.title)}: ${escapeHtml(c.summary)}`).join('<br/>') || '• Denetim verisi yükleniyor...';
+        const fileHtml = (comp.file_metrics || []).map(m => `• <strong>${escapeHtml(m.file)}</strong>: ~${escapeHtml(m.est_tokens)}/${escapeHtml(m.token_budget)} tok (%${escapeHtml(m.utilization_pct)})`).join('<br/>');
+        return `
+          <div class="scada-tip-header"><span>🩺 POLICY DOCTOR &amp; KURAL KOMPAKTLIK ANALİZİ</span><span class="badge badge-healthy">SKOR: ${escapeHtml(comp.compaction_health_score ?? 100)}/100</span></div>
+          <div class="scada-tip-note"><strong>5 Otomatik Tutarlılık Kontrolü:</strong><br/>${chkHtml}</div>
+          ${fileHtml ? `<div class="scada-tip-note"><strong>Dosya Bazlı Token Bütçesi:</strong><br/>${fileHtml}</div>` : ''}
+          ${cats.length > 0 ? `<div class="scada-tip-note"><strong>Aktif Kural Kategorileri (${cats.length}):</strong> ${cats.map(c => escapeHtml(c.title)).join(' · ')}</div>` : ''}
+        `;
+      }
+
+      if (tipKey && tipKey.startsWith('pool_')) {
+        const pid = tipKey.replace('pool_', '');
+        const ps = pools[pid] || {};
+        const fh = ps.five_hour || {};
+        const wk = ps.weekly || {};
+        const profs = (cl.cost_profiles || []).filter(pr => pr.pool_id === pid && (pr.kind === 'implement' || pr.kind === 'review'));
+        const profHtml = profs.map(pr => `• <strong>${escapeHtml(pr.tier)}/${escapeHtml(pr.kind)}</strong>: 5s %${(pr.five_hour_mean * 100).toFixed(1)} (üst %${(pr.five_hour_upper * 100).toFixed(1)}) · 7g %${(pr.weekly_mean * 100).toFixed(1)}`).join('<br/>') || '• Maliyet profili varsayılan (prior) değerde.';
+        return `
+          <div class="scada-tip-header"><span>🧮 HAVUZ MATEMATİĞİ: ${escapeHtml(pid)}</span><span class="badge ${getConfidenceBadgeClass(ps.confidence).replace('badge ', '')}">${escapeHtml(ps.confidence || 'OK')}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>5s Usable / Yanacak</span><strong>%${Math.round((fh.usable_before_reset || 0) * 100)} / %${Math.round((fh.stranded_quota_fraction || 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>5s Reset Süresi</span><strong>${formatSeconds(fh.time_until_reset_sec)} (Φ=${(fh.opportunity_cost_phi ?? 0).toFixed(2)})</strong></div>
+            <div class="scada-tip-kv"><span>7g Usable / Yanacak</span><strong>%${Math.round((wk.usable_before_reset || 0) * 100)} / %${Math.round((wk.stranded_quota_fraction || 0) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>7g Reset Süresi</span><strong>${formatSeconds(wk.time_until_reset_sec)} (Φ=${(wk.opportunity_cost_phi ?? 0).toFixed(2)})</strong></div>
+          </div>
+          <div class="scada-tip-note"><strong>Ampirik Huber Maliyet Profilleri:</strong><br/>${profHtml}</div>
+        `;
+      }
+
+      if (tipKey === 'scorecard_obs') {
+        const profs = (cl.cost_profiles || []).filter(pr => pr.kind === 'implement').slice(0, 4);
+        const profHtml = profs.map(pr => `• <strong>${escapeHtml(pr.pool_id)} (${escapeHtml(pr.tier)})</strong>: 5s %${(pr.five_hour_mean * 100).toFixed(1)} · 7g %${(pr.weekly_mean * 100).toFixed(1)} [${escapeHtml(pr.prediction_source)}]`).join('<br/>');
+        return `
+          <div class="scada-tip-header"><span>📊 AMPİRİK MALİYET ÖĞRENİCİ &amp; AJAN KARNESİ</span><span class="badge badge-info">${escapeHtml(cl.measured_single_job_count ?? 0)} ÖLÇÜM</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Tekil Görev Ölçümü</span><strong>${escapeHtml(cl.measured_single_job_count ?? 0)} adet</strong></div>
+            <div class="scada-tip-kv"><span>Son Gözlem Kaydı</span><strong>${escapeHtml((cl.recent_observations || []).length)} adet</strong></div>
+          </div>
+          <div class="scada-tip-note"><strong>Implement Görev Maliyet Ortalamaları:</strong><br/>${profHtml || 'Henüz kayıt yok.'}</div>
+        `;
+      }
+
+      if (tipKey === 'model_review_status') {
+        const props = mr.proposals || [];
+        const excl = mr.excluded_too_expensive || [];
+        const settings = mr.settings || {};
+        const propHtml = props.slice(0, 4).map(p => `• <strong>${escapeHtml(p.model_id)}</strong> (${escapeHtml((p.provider || '').toUpperCase())}) — Önerilen: ${escapeHtml(p.suggested_tier || 'MID')}`).join('<br/>') || '• Bekleyen yeni model önerisi yok.';
+        const exclHtml = excl.slice(0, 4).map(e => `• <strong>${escapeHtml(e.model_id)}</strong>: ${escapeHtml(e.reason || 'fiyat tavanı aşıldı')}`).join('<br/>') || '• Hariç tutulan pahalı model yok.';
+        return `
+          <div class="scada-tip-header"><span>🔬 MODEL REVIEW KEŞİF &amp; FİYAT FİLTRESİ</span><span class="badge ${mr.stale ? 'badge-warning' : 'badge-healthy'}">${mr.stale ? 'STALE' : 'FRESH'}</span></div>
+          <div class="scada-tip-grid">
+            <div class="scada-tip-kv"><span>Max Fiyat Çarpanı</span><strong>${escapeHtml(settings.max_price_ratio ?? 2.0)}x HIGH ref</strong></div>
+            <div class="scada-tip-kv"><span>Deneme (Probation) Payı</span><strong>%${Math.round((settings.probation_share ?? 0.1) * 100)}</strong></div>
+            <div class="scada-tip-kv"><span>Bekleyen Öneri</span><strong>${props.length} model</strong></div>
+            <div class="scada-tip-kv"><span>Elendi (Çok Pahalı)</span><strong>${excl.length} model</strong></div>
+          </div>
+          <div class="scada-tip-note"><strong>Bekleyen Öneriler:</strong><br/>${propHtml}</div>
+          <div class="scada-tip-note"><strong>Anti-Spike Filtresiyle Elenenler:</strong><br/>${exclHtml}</div>
+        `;
+      }
+
+      return '';
+    }
+
+    (function initScadaHoverPopover() {
+      const pop = document.getElementById('scada-hover-popover');
+      if (!pop) return;
+      let activeTipTarget = null;
+
+      function positionPopover(clientX, clientY) {
+        const pad = 14;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const rect = pop.getBoundingClientRect();
+        let left = clientX + pad;
+        let top = clientY + pad;
+        if (left + rect.width + 12 > vw) {
+          left = Math.max(8, clientX - rect.width - pad);
+        }
+        if (top + rect.height + 12 > vh) {
+          top = Math.max(8, clientY - rect.height - pad);
+        }
+        pop.style.left = `${left}px`;
+        pop.style.top = `${top}px`;
+      }
+
+      document.addEventListener('mouseover', (e) => {
+        const raw = e.target;
+        if (!raw || typeof raw.closest !== 'function') return;
+        // Do not trigger hover popovers when hovering directly over interactive inputs/buttons
+        if (raw.closest('input, select, textarea, button.scada-detail-btn, button.section-help-btn, .faceplate-open')) {
+          pop.classList.remove('visible');
+          activeTipTarget = null;
+          return;
+        }
+        const tipEl = raw.closest('[data-scada-tip]');
+        if (!tipEl) {
+          pop.classList.remove('visible');
+          activeTipTarget = null;
+          return;
+        }
+        const tipKey = tipEl.getAttribute('data-scada-tip');
+        const html = buildScadaTooltipHtml(tipKey);
+        if (!html) {
+          pop.classList.remove('visible');
+          activeTipTarget = null;
+          return;
+        }
+        activeTipTarget = tipEl;
+        pop.innerHTML = html;
+        pop.classList.add('visible');
+        positionPopover(e.clientX, e.clientY);
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!activeTipTarget || !pop.classList.contains('visible')) return;
+        positionPopover(e.clientX, e.clientY);
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        if (!activeTipTarget) return;
+        const rel = e.relatedTarget;
+        if (rel && typeof rel.closest === 'function' && rel.closest('[data-scada-tip]') === activeTipTarget) {
+          return;
+        }
+        pop.classList.remove('visible');
+        activeTipTarget = null;
+      });
+    })();
 
     window.addEventListener('DOMContentLoaded', async () => {
       await refreshQuotas();
