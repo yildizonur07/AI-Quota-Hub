@@ -4,19 +4,19 @@
 
 > **⚠️ Deneyimsel / "Olduğu Gibi" (As-Is) Açık Kaynak Sürümü (PR ve Katkılara Açık)**
 >
-> **AI Quota Hub**; **Google Antigravity (`agy`)**, **Claude Code (`claude`)** ve **OpenAI Codex (`codex`)** üzerindeki 5 saatlik ve haftalık kota pencerelerini sıfır token maliyetiyle izlemek ve alt-ajan (subagent) iş paketlerini kota patlaması yaşamadan matematiksel olarak yönlendirmek için geliştirilmiş SCADA tarzı bir mühendislik aracıdır.
+> **AI Quota Hub**; **Google Antigravity (`agy`)**, **Claude Code (`claude`)** ve **OpenAI Codex (`codex`)** üzerindeki 5 saatlik ve haftalık kota pencerelerini sıfır token maliyetiyle izlemek ve alt-ajan (subagent) iş paketlerini kota patlaması yaşamadan matematiksel olarak yönlendirmek için geliştirilmiş bir orkestrasyon ve izleme aracıdır.
 >
 > Sağlayıcı arayüzleri ve telemetri formatları hızla değiştiği için bu proje ticari destek taahhüdü olmaksızın **"olduğu gibi" (as-is)** paylaşılmıştır. Topluluk katkıları (Issue, Fork, Pull Request) memnuniyetle kabul edilir!
 
 ---
 
-## 🎛️ SCADA / High-Performance HMI Tek Ekran Dashboard
+## 🖥️ Tek Ekran Komuta Merkezi Dashboard
 
-Web Dashboard (`http://127.0.0.1:8765`), **SCADA / High-Performance HMI (L1 Ana Genel Bakış + L2 Açılır Faceplate Pencereleri)** felsefesiyle tasarlanmıştır:
+Web Dashboard (`http://127.0.0.1:8765`), **Tek Ekran Genel Bakış + Açılır Detay Pencereleri** yapısıyla tasarlanmıştır:
 - **Çift Dilli Arayüz (`🌐 EN | TR`)**: Varsayılan olarak **İngilizce (`EN`)** açılır; üst bardaki `🌐 EN | TR` butonuyla tek tıkla **Türkçe (`TR`)** diline geçer.
-- **Sıfır Dikey Sayfa Kaydırma (`100vh`)**: Tüm 10 ana alt sistemin en kritik bilgileri ve birincil komutları tek bir ekranda (**L1 Genel Bakış Izgarası**) aynı anda görünür.
-- **Canlı Telemetri Mouseover (Hover) Popup'ları**: Herhangi bir KPI satırı, sağlayıcı kartı, SWRR satırı veya havuz rozeti üzerine fareyle gelindiğinde (`mouseover`), tıklamaya gerek kalmadan alt model kırılımlarını, Usable/Stranded oranlarını, Huber maliyet profillerini ve Policy Doctor denetim özetini gösteren canlı SCADA popup'ı açılır.
-- **Merkezi Modal Faceplate Detayları (`🔍 Detay` / `ESC`)**: Kartlardaki `🔍 Detay` butonuna basıldığında ana ekran hiç kaymadan merkezi açılır pencere (modal faceplate) içinde derinlemesine ayarlar ve tablolar açılır.
+- **Sıfır Dikey Sayfa Kaydırma (`100vh`)**: Tüm 10 ana alt sistemin en kritik bilgileri ve birincil komutları tek bir ekranda aynı anda görünür.
+- **Canlı Telemetri Mouseover (Hover) Popup'ları**: Herhangi bir KPI satırı, sağlayıcı kartı, SWRR satırı veya havuz rozeti üzerine fareyle gelindiğinde (`mouseover`), tıklamaya gerek kalmadan alt model kırılımlarını, Usable/Stranded oranlarını, Huber maliyet profillerini ve Policy Doctor denetim özetini gösteren canlı bilgi kutusu açılır.
+- **Merkezi Modal Detay Pencereleri (`🔍 Detay` / `ESC`)**: Kartlardaki `🔍 Detay` butonuna basıldığında ana ekran hiç kaymadan merkezi açılır pencere içinde derinlemesine ayarlar ve tablolar açılır.
 - **Bağlamsal `?` Yardım Rehberleri**: Her kartın ve pencerenin sağ üst köşesindeki `?` butonu, seçili dilde (`EN` veya `TR`) ilgili metriklerin ve formüllerin açıklamalarını sunar.
 
 ---
@@ -31,7 +31,7 @@ Web Dashboard (`http://127.0.0.1:8765`), **SCADA / High-Performance HMI (L1 Ana 
 - [model_catalog.json](model_catalog.json) & [model_review.py](model_review.py): Kod dışına taşınmış kanonik model kataloğu, sıfır-LLM yerel model keşfi (`agy models`, `~/.codex/models_cache.json`, `models.dev`, `OpenRouter`), harmanlanmış fiyat oranı (`blended_price = 0.25·in + 0.75·out`) ve 14 günlük deneme (`probation`) karne özeti.
 - [orchestrator.py](orchestrator.py) & [scheduler.py](scheduler.py): Capability Floor (`LOW`, `MID`, `HIGH`), SWRR sağlayıcı seçimi, Cross-Family Independent Review, dinamik Codex Koordinatör Rezervi (`R_orch`) ve `%85 / %95` kota el değiştirme (handoff) kurallarını işletir.
 - [main.py](main.py): FastAPI sunucusu (`GET /api/quotas`, `POST /api/preferences`, `POST /api/limits`, `GET /api/policy-doctor`, `POST /api/policy-doctor/run`, `GET /api/models/review`, `POST /api/models/review/run`, `POST /api/models/decision`, `POST /api/orchestrator`, `POST /api/dispatch`, `POST /api/simulate`).
-- [static/index.html](static/index.html): SCADA HMI Tek Ekran (L1/L2) Web Dashboard arayüzü (`EN` varsayılan + `TR` dil seçeneği).
+- [static/index.html](static/index.html): Tek Ekran Web Dashboard arayüzü (`EN` varsayılan + `TR` dil seçeneği).
 
 ---
 
@@ -41,7 +41,7 @@ Web Dashboard (`http://127.0.0.1:8765`), **SCADA / High-Performance HMI (L1 Ana 
 # 1. Bağımlılıkları yükle
 pip install fastapi uvicorn httpx pydantic pytest
 
-# 2. Sunucuyu ve SCADA Web Dashboard'u başlat (http://127.0.0.1:8765)
+# 2. Sunucuyu ve Web Dashboard'u başlat (http://127.0.0.1:8765)
 python cli.py serve --port 8765
 
 # 3. Komut satırından anlık normalize kotaları sorgula (GET /api/quotas formatında)

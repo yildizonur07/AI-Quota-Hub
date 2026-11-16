@@ -4,20 +4,20 @@
 
 > **⚠️ Experimental / "As-Is" Community Release (PRs Welcome)**
 >
-> **AI Quota Hub** is a local engineering & SCADA-style orchestration tool built to monitor live 5-hour and weekly quota windows across **Google Antigravity (`agy`)**, **Claude Code (`claude`)**, and **OpenAI Codex (`codex`)** at zero token cost, and to mathematically route multi-agent work packages without sudden quota exhaustion.
+> **AI Quota Hub** is a local multi-provider quota monitoring and orchestration tool built to track live 5-hour and weekly quota windows across **Google Antigravity (`agy`)**, **Claude Code (`claude`)**, and **OpenAI Codex (`codex`)** at zero token cost, and to mathematically route multi-agent work packages without sudden quota exhaustion.
 >
 > Because AI CLI tools and telemetry formats evolve rapidly, this repository is shared **"as-is"** without commercial support guarantees. Issues, forks, and Pull Requests from the community are warmly welcome!
 
 ---
 
-## 🎛️ SCADA / High-Performance HMI Single-Screen Dashboard
+## 🖥️ Single-Screen Command Center Dashboard
 
-The Web Dashboard (`http://127.0.0.1:8765`) is built around a **SCADA / High-Performance HMI (L1 Overview + L2 Popup Faceplates)** design:
+The Web Dashboard (`http://127.0.0.1:8765`) is built around a **Single-Screen Overview + Modal Detail Overlays** layout:
 - **Bilingual UI (`🌐 EN | TR`)**: Defaults to **English (`EN`)** with one-click live switching to **Turkish (`TR`)** in the top header bar.
-- **Zero Vertical Page Scroll (`100vh`)**: All 10 operational subsystems (Mode/Orchestrator, Live 5h/7d Quotas, 0–10 SWRR Provider Mix, Concurrency Limits, Live Processes & Autonomous Goal, Work Package Router, Reserves & Banked Resets, Policy Doctor, 4 Pools Math & Scorecard, Model Review & JSON API) are visible at a single glance on the **L1 Overview Grid**.
-- **Live Telemetry Hover Callout Popovers**: Hovering over any KPI row, provider card, SWRR row, or pool pill opens a live SCADA telemetry callout popup (`#scada-hover-popover`) with sub-model breakdowns, Usable/Stranded ratios, Huber cost profiles, and Policy Doctor audit results—without clicking.
-- **Centered Modal Faceplates (`🔍 Details` / `ESC`)**: Clicking any card's `🔍 Details` button opens its deep configuration & inspection faceplate as a centered modal overlay without shifting or scrolling the main screen.
-- **Contextual `?` Help Guides**: Every card and faceplate header includes a `?` button that explains its metrics, formulas, and practical usage in the active language (`EN` or `TR`).
+- **Zero Vertical Page Scroll (`100vh`)**: All 10 operational subsystems (Mode/Orchestrator, Live 5h/7d Quotas, 0–10 SWRR Provider Mix, Concurrency Limits, Live Processes & Autonomous Goal, Work Package Router, Reserves & Banked Resets, Policy Doctor, 4 Pools Math & Scorecard, Model Review & JSON API) are visible at a single glance on the main overview grid.
+- **Live Telemetry Hover Popovers**: Hovering over any KPI row, provider card, SWRR row, or pool pill opens a live telemetry callout popup with sub-model breakdowns, Usable/Stranded ratios, Huber cost profiles, and Policy Doctor audit results—without clicking.
+- **Centered Detail Modals (`🔍 Details` / `ESC`)**: Clicking any card's `🔍 Details` button opens its deep configuration and inspection view as a centered modal overlay without shifting or scrolling the main screen.
+- **Contextual `?` Help Guides**: Every card and modal header includes a `?` button that explains its metrics, formulas, and practical usage in the active language (`EN` or `TR`).
 
 ---
 
@@ -31,7 +31,7 @@ The Web Dashboard (`http://127.0.0.1:8765`) is built around a **SCADA / High-Per
 - [model_catalog.json](model_catalog.json) & [model_review.py](model_review.py): Externalized canonical model catalog, zero-LLM local model discovery (`agy models`, `~/.codex/models_cache.json`, `models.dev`, `OpenRouter`), blended price ratio (`0.25·in + 0.75·out`), and 14-day probation scorecard.
 - [orchestrator.py](orchestrator.py) & [scheduler.py](scheduler.py): Enforces Capability Floor (`LOW`, `MID`, `HIGH`), SWRR provider selection, Cross-Family Independent Review, dynamic Codex Continuity Reserve (`R_orch`), and `85% / 95%` quota handoff gates.
 - [main.py](main.py): FastAPI server (`GET /api/quotas`, `POST /api/preferences`, `POST /api/limits`, `GET /api/policy-doctor`, `POST /api/policy-doctor/run`, `GET /api/models/review`, `POST /api/models/review/run`, `POST /api/models/decision`, `POST /api/orchestrator`, `POST /api/dispatch`, `POST /api/simulate`).
-- [static/index.html](static/index.html): Single-Screen SCADA HMI Web Dashboard (`EN` default + `TR` option).
+- [static/index.html](static/index.html): Single-Screen Web Dashboard (`EN` default + `TR` option).
 
 ---
 
@@ -41,7 +41,7 @@ The Web Dashboard (`http://127.0.0.1:8765`) is built around a **SCADA / High-Per
 # 1. Install dependencies
 pip install fastapi uvicorn httpx pydantic pytest
 
-# 2. Start the server & SCADA Web Dashboard (http://127.0.0.1:8765)
+# 2. Start the server & Web Dashboard (http://127.0.0.1:8765)
 python cli.py serve --port 8765
 
 # 3. Query normalized live quotas from the CLI (GET /api/quotas format)

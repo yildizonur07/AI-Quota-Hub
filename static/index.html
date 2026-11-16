@@ -681,8 +681,8 @@
     }
 
     /* ============================================================================
-       SCADA / High-Performance HMI Single-Screen Command Center Architecture
-       Zero-Scroll Main Matrix (Primary Info & Commands) + Faceplate Detail Modals
+       Single-Screen Command Center Architecture
+       Zero-Scroll Main Matrix (Primary Info & Commands) + Detail Modals
        ============================================================================ */
     .scada-nav-bar {
       display: none;
@@ -765,7 +765,7 @@
       backdrop-filter: blur(7px);
     }
 
-    /* SCADA Live Telemetry Hover Callout Popover */
+    /* Live Telemetry Hover Callout Popover */
     #scada-hover-popover {
       display: none;
       position: fixed;
@@ -835,7 +835,7 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.18);
     }
 
-    /* Viewport-Locked Zero-Scroll SCADA Matrix (Desktop >= 1024px) */
+    /* Viewport-Locked Zero-Scroll Matrix (Desktop >= 1024px) */
     @media (min-width: 1024px) {
       body.scada-mode {
         height: 100vh;
@@ -1080,7 +1080,7 @@
         font-size: 0.76rem;
       }
 
-      /* Centered SCADA Faceplate Modal when user clicks "🔍 Detay" */
+      /* Centered Detail Modal when user clicks "🔍 Details" */
       body.scada-mode .faceplate-open {
         position: fixed !important;
         inset: 4vh 5vw !important;
@@ -1108,9 +1108,9 @@
   </style>
 </head>
 <body class="scada-mode" data-scada-screen="l1">
-  <!-- Backdrop for SCADA Detail Faceplate Modals -->
+  <!-- Backdrop for Detail Modals -->
   <div id="scada-faceplate-backdrop" onclick="closeScadaFaceplate()"></div>
-  <!-- Floating SCADA Mouseover Telemetry Callout -->
+  <!-- Floating Mouseover Telemetry Callout -->
   <div id="scada-hover-popover" role="tooltip" aria-hidden="true"></div>
 
   <header>
@@ -1120,7 +1120,7 @@
         <div class="brand-title">
           <h1>
             AI Quota Hub & Reset-Aware Scheduler
-            <span class="badge badge-info" id="scada-mode-pill">SCADA HMI</span>
+            <span class="badge badge-info" id="scada-mode-pill">SINGLE-SCREEN</span>
             <span id="sim-badge" class="badge badge-warning" style="display: none;">SIMULATION MODE</span>
           </h1>
           <div class="brand-subtitle">Reset-Aware Multi-Provider Quota Scheduler · Empirical Cost Learner · Dynamic Codex Reserve</div>
@@ -1157,7 +1157,7 @@
           <span>📡</span> Raw JSON
         </button>
 
-        <button class="btn btn-sm" id="btn-toggle-scada-layout" onclick="toggleScadaLayout()" title="Toggle between SCADA Single-Screen (100vh) and Classic Scroll View">
+        <button class="btn btn-sm" id="btn-toggle-scada-layout" onclick="toggleScadaLayout()" title="Toggle between Single-Screen (100vh) and Classic Scroll View">
           <span>🖥️</span> <span id="scada-layout-label">Single Screen: ON</span>
         </button>
 
@@ -1173,7 +1173,7 @@
     </div>
 
     <!-- Hidden nav helper for backward-compatible test assertions -->
-    <nav class="scada-nav-bar" id="scada-nav-bar" aria-label="SCADA Screen Selector">
+    <nav class="scada-nav-bar" id="scada-nav-bar" aria-label="Screen Selector">
       <button type="button" id="scada-tab-l1" onclick="switchScadaScreen('l1')">L1</button>
     </nav>
   </header>
@@ -4514,7 +4514,7 @@
     }
 
     const SCADA_SCREEN_TITLES = {
-      l1: 'L1: SCADA MAIN OVERVIEW (SINGLE-SCREEN OVERVIEW)',
+      l1: 'L1: MAIN OVERVIEW (SINGLE-SCREEN OVERVIEW)',
       policy: 'L2 [2]: ORCHESTRATOR & SUBAGENT RULES SUMMARY + POLICY DOCTOR',
       router: 'L2 [3]: RESET-AWARE WORK PACKAGE ROUTER & ASSIGNMENT RECORD',
       math: 'L2 [4]: 4 QUOTA POOLS MATH (PHI/STRANDED) & LIVE AGENT SCORECARD',
@@ -4571,7 +4571,7 @@
       const pill = document.getElementById('scada-mode-pill');
       if (pill) {
         pill.textContent = isScada
-          ? 'SCADA HMI'
+          ? trText('SINGLE-SCREEN', 'TEK EKRAN')
           : trText('CLASSIC VIEW', 'KLASİK GÖRÜNÜM');
       }
     }
@@ -4919,7 +4919,8 @@
       '🧪 Sim': '🧪 Sim',
       '🔄 Refresh': '🔄 Yenile',
       '❓ Guide': '❓ Rehber',
-      '✕ Close (ESC)': '✕ Kapat (ESC)'
+      '✕ Close (ESC)': '✕ Kapat (ESC)',
+      'SINGLE-SCREEN': 'TEK EKRAN'
     };
     const STATIC_TR_TO_EN = Object.fromEntries(Object.entries(STATIC_EN_TO_TR).map(([k, v]) => [v, k]));
 
